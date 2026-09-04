@@ -1,0 +1,163 @@
+---
+title: "Taller SADS - UNAM"
+subtitle: "Introdución"
+author: 
+  - "Paulo Inácio Prado (PI)"
+date: ' Septiembre 2026'
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+self-contained: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+options(servr.daemon = TRUE)#para que no bloquee la sesión
+knitr::opts_chunk$set(prompt = TRUE, comment = "")
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+library(ggplot2)
+library(ggthemes)
+library(knitr)
+library(kableExtra)
+library(dplyr)
+library(tidyr)
+
+xaringanExtra::use_share_again()
+xaringanExtra::use_fit_screen()
+xaringanExtra::use_tachyons()
+
+style_solarized_light(
+  title_slide_background_color = "#586e75",# base 3
+  header_color = "#586e75",
+  text_bold_color = "#cb4b16",
+  background_color = "#fdf6e3", # base 3
+  header_font_google = google_font("DM Sans"),
+  text_font_google = google_font("Roboto Condensed", "300", "300i"),
+  code_font_google = google_font("Fira Mono"), text_font_size = "28px",
+  code_font_size="1rem"
+)
+# clipboard
+htmltools::tagList(
+  xaringanExtra::use_clipboard(
+    button_text = "Copy code <i class=\"fa fa-clipboard\"></i>",
+    success_text = "Copied! <i class=\"fa fa-check\" style=\"color: #90BE6D\"></i>",
+    error_text = "Not copied 😕 <i class=\"fa fa-times-circle\" style=\"color: #F94144\"></i>"
+  ),
+  rmarkdown::html_dependency_font_awesome()
+  )
+
+```
+
+## Quién soy
+
+.pull-left[
+<center>
+```{r pi, out.width= "40%", echo=FALSE}
+knitr::include_graphics("figs/PI.jpg")
+```
+
+**PI**, Paulo Inácio Prado (pronombres: él)
+]
+
+.pull-right[
+- Bachiler en Biología (1990), Maestria y Doctorado en Ecologia
+  (1991-1999), en Brasil;
+- Profesor en el Departamento de Ecología del Instituto de Biociências
+  USP;
+- Ecología de comunidades, ecología teórica, conservación;
+- Brasileño, vivo en la ciudad de São Paulo, Brasil;
+- Me gusta: aprender, enseñar, buena comida, cocinar, nadar, charlar y
+conocer a la gente.  ]
+
+
+---
+
+## Para que estoy aquí
+
+ - Para ayudarte a entender mejor las distribuciones de abundancia de
+   especies y cómo ajustar estos modelos a tus propios datos
+   biológicos.
+ 
+ - Para que lo aprendas más rápido y fácil que yo
+ 
+ - Para aprender enseñando, porque la mejor manera de dominar un tema
+   es compartiéndolo (soy profesor por esa razón).
+
+
+<center>
+.left-column[
+```{r mural, out.width= "100%", echo=FALSE}
+knitr::include_graphics("figs/Painel.Paulo.Freire_cropped.JPG")
+```
+]
+</center>
+
+.right-column[
+> «Nadie educa a nadie, nadie se educa a sí mismo, las personas se educan entre sí, mediadas por el mundo»
+>
+> Paulo Freire
+]
+
+---
+
+## Estratégias pedagógicas
+
+.pull-left[
+
+- Clases dialogadas
+ 
+- Tutoriales en R
+
+- Ejercícios
+
+- Todos los recursos de aprendizaje en https://pilaboratory.github.io/sads_UNAM/
+ 
+]
+ 
+ .pull-right[
+
+```{r autonomia, echo=FALSE, out.width=896, fig.align='center', fig.link="https://obind.eco.br/funai-educacao-indigena-instrucao-normativa-da-funai-promove-direitos-e-autonomia-dos-povos-indigenas-de-recente-contato/"}
+include_graphics("figs/autonomia.jpg")
+```
+ 
+]
+ 
+---
+
+
+## Programa
+
+```{r shedule, echo=FALSE}
+read.csv("../programa.csv") |>
+  kbl() |>
+  kable_styling()
+```
+
+---
+
+## Que hacer ahora
+
+.left-column[
+```{r , echo=FALSE, fig.align='center'}
+include_graphics("figs/bora-la.jpg")
+```
+]
+
+.right-column[
+
+#### Haiga los tutoriales:
+
+* Valores faltantes
+           
+]

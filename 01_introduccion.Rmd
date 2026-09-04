@@ -1,0 +1,20 @@
+---
+title: "Introducción a distribuciones de abundancia de especies"
+date: "2026-09-21" 
+author:
+  - name: Paulo Inácio Prado
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Slides
+
+```{r slides}
+#| eval: true
+xaringanExtra::embed_xaringan("01_introduccion/slides.html")
+```
+
+# Tutoriales
+

@@ -1,0 +1,14 @@
+# Rstudio
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Emacs
+*~
+\#*\#
+.\#*
+.DS_Store
+
+## Old stuff
+notaR/src/oldies/
