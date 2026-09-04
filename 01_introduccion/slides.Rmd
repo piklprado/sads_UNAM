@@ -3,7 +3,7 @@ title: "Taller SADS - UNAM"
 subtitle: "Introdución"
 author: 
   - "Paulo Inácio Prado (PI)"
-date: ' Septiembre 2026'
+date: '21 Septiembre 2026'
 output:
   xaringan::moon_reader:
     lib_dir: libs
