@@ -1,0 +1,10 @@
+.centrar-esquerda .remark-slide-content {
+  display: flex;
+  flex-direction: row;
+}
+
+.pull-left.centralizado {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

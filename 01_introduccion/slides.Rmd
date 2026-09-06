@@ -27,6 +27,7 @@ knitr::opts_chunk$set(prompt = TRUE, comment = "")
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
 library(xaringanthemer)
 library(ggplot2)
+library(ggforce)
 library(ggthemes)
 library(knitr)
 library(kableExtra)
@@ -134,15 +135,283 @@ include_graphics("figs/autonomia.jpg")
 ]
  
 ---
-
-
 ## Programa
 
-```{r shedule, echo=FALSE}
-read.csv("../programa.csv") |>
-  kbl() |>
-  kable_styling()
+1. Introdução: história, motivação, teoria e conceitos
+
+2. Ajuste pelo método da verossimilhança
+
+3. Ajuste a dados de frequência em classes de abundância ou cobertura
+
+---
+
+## A ideia de quantificação
+
+.pull-left[
+ 
+* Uma das ideias fundadoras da ecologia é a **quantificação**, como
+   forma de obter descrições precisas da natureza.
+ 
+* O campo que hoje chamamos de **ecologia vegetal** foi pioneiro em
+usar contagens e medições para caracterizar formações vegetais.  ]
+
+.pull-right[ <iframe
+src="https://archive.org/details/researchmethodsi00clem/page/161/mode/1up"
+width="560" height="500" frameborder="0" webkitallowfullscreen="true"
+mozallowfullscreen="true" allowfullscreen></iframe> ]
+
+
+---
+
+## Quantificação de abundâncias
+
+.pull-left[
+A partir de fins do século XIX parcelas quadradas ou circulares
+começaram a ser usadas para registrar a abundância de espécies de
+plantas em diferentes partes do mundo (predominantemente na Europa e EUA).
+]
+.pull-right[
+<div style="text-align:center">
+<img src="figs/fred_and_edith_clements.jpeg" style="width:50%">
+<p style="font-size:0.7em; margin-top:2px">La pareja Clements (<a href="https://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=1000&context=unsmaffil" target="_blank">Oberg, 2019</a>)</p>
+</div>
+<div style="text-align:center; margin-bottom:10px">
+<img src="figs/quadrats_clements.jpg" style="width:90%">
+<p style="font-size:0.7em; margin-top:2px">Parcelas de Clements. (<a href="https://journals.openedition.org/transbordeur/1307" target="_blank">Hughes 2024</a>)</p>
+</div>
+]
+
+
+---
+
+## Um padrão
+
+.pull-left[
+
+Logo se percebeu que nestas amostras a maioria das espécies era rara,
+ao passo que pouquíssimas espécies tinham grande abundância. 
+
+Este é ainda um dos padrões empíricos mais gerais em ecologia.
+]
+
+.pull-right[ 
+<div style="text-align:center"> <img
+src="figs/prof-isao-motomura.jpg" style="width:33%"> <p
+style="font-size:0.7em; margin-top:2px"> <a
+href="https://oikosjournal.wordpress.com/2012/11/22/with-inspiration-from-the-past/"
+target="_blank">Isao Motomura (1904-1981)</a></p> </div> 
+
+> "In a community, there are generally many more species with relatively low abundances."
+>
+> Motomura (1932), apud [Doi & Mori 2012](https://nsojournals.onlinelibrary.wiley.com/doi/abs/10.1111/j.1600-0706.2012.00068.x)
+]
+
+---
+
+## O primeiro modelo
+
+.pull-left[ 
+
+* Motomura (1932) propôs a primeira descrição gráfica de uma distribuição de abundância de espécies: um gráfico do logarítimo da abundância de cada espécie em função da ordem de abundância da espécie.
+
+* Também propôs o primeiro modelo matemático para uma SAD: uma relação linear entre o logaritimo da abundância ($y$) e sua ordem de abundância ($R$):
+
+$$\log (y)  = a - b R$$
+]
+
+.pull-right[
+<div style="display:flex; align-items:flex-start; width:100%">
+<img src="figs/Motomoura_fig1.png" style="width:45%; flex-shrink:0">
+<blockquote style="font-size:0.85em; margin:0 0 0 10px; padding-left:10px; border-left:3px solid #ccc">
+"When the species found within a quadrat are ranked according to abundance (i.e. the order of dominance in the community), a definite graphic pattern is observed between the rank and abundance of species"
+<br><br>
+Motomura (1932), apud <a href="https://nsojournals.onlinelibrary.wiley.com/doi/abs/10.1111/j.1600-0706.2012.00068.x" target="_blank">Doi &amp; Mori 2012</a>
+</blockquote>
+</div>]
+
+---
+
+## SADs como distribuições de probabilidades
+
+.pull-left[
+* O estatístico, geneticista e eugenista Ronald Fisher foi o primeiro
+  a decrever SADs com uma distribuição de probabilidades, usando dados
+  dos entomólogos C.Willians e S. Corbet.
+
+* Fisher propôs que as abundâncias de espécies numa amostra variam
+  devido a diferenças nas abundâncias de espécies e também ao erro
+  amostral.
+
+* Assim, um modelo de SAD deve definir a **probabilidade** de se
+observar cada abundância possível numa **amostra**.  
+] 
+
+.pull-right[
+<div style="text-align:center"> 
+<img src="figs/Fisher_1943.jpg"style="width:30%"> <p style="font-size:0.7em; margin-top:2px">
+<a href="https://www.npg.org.uk/collections/search/portrait/mw93489/Sir-Ronald-Aylmer-Fisher?_gl=1*1xkj9kl*_up*MQ..*_ga*Mzc2MTQ3MDk4LjE3ODg2NTA3NTA.*_ga_3D53N72CHJ*czE3ODg2NTA3NDkkbzEkZzEkdDE3ODg2NTA3NTUkajU0JGwwJGgw"
+target="_blank">Ronald Fisher (1890-1962)</a></p> </div> 
+<div style="text-align:center"> 
+<img src="figs/CBWilliams.jpeg"
+style="width:30%"> <p style="font-size:0.7em; margin-top:2px"><a
+href="https://doi.org/10.1098/rsbm.1982.0025"
+target="_blank">C. B. Willians (1889-1981)</a></p> </div> 
+]
+
+---
+
+## SADs como distribuições de probabilidades
+
+.pull-left[
+* O modelo de Fisher é um caso limite da distribuição
+  binomial negativa truncada em zero, que depois ficou conhecido como
+  **log-série**.
+
+* Neste modelo, a probabilidade de registrar
+$n$ indivíduos de qualquer espécie numa amostra é proporcional a: 
+$$\frac{\alpha X^n}{n}$$
+
+onde $X$ e $\alpha$ são parâmetros da distribuição de probabilidades.
+]
+
+.pull-right[
+<div style="text-align:center; margin-bottom:10px">
+<img src="figs/fisher_et_al_fig1B.png" style="width:75%">
+<p style="font-size:0.7em; margin-top:2px">Ajuste da log-série à frequência de espécies mariposas por número de indivíduos capturados em armadilhas luminosas. (<a href="https://www.jstor.org/stable/1411" target="_blank">Fisher et al. 1943</a>)</p>
+</div>
+]
+
+---
+
+## SADs como distribuições de probabilidades
+
+.pull-left[
+
+* Preston (1948) categorizou as
+  abundâncias de espécies em escala logarítmica de base 2 (**oitavas**).
+
+* Seu modelo é uma distribuição normal nesta escala, ou seja, uma distribuição **log-normal** das
+  abundâncias.
+
+* A cauda esquerda da distribuição estaria escondida por uma "linha da
+  cortina", devido o truncamento na abundância mínima observável na amostra.
+  
+* O aumento da amostragem "desloca a cortina", revelando a curva
+completa. 
+
+]
+
+.pull-right[ 
+<div style="text-align:center"> 
+<img src="figs/frank_preston_1965.png" style="width:30%"> 
+<p style="font-size:0.7em; margin-top:2px">
+<a href="https://www.jstor.org/stable/20167145"> Frank Preston
+(1890-1962)</a></p> </div> <div style="text-align:center"> 
+<img src="figs/preston_1948_fig5.png" style="width:75%">
+<p style="font-size:0.7em; margin-top:2px"> Número de espécies de
+mariposas por classe de abundância em log2 (oitavas), e linha do
+ajuste da distribuição log-normal, truncada no valor 1 <a
+href="https://www.jstor.org/stable/1930989" target="_blank">(Preston,
+1948)</a></p> </div> 
+]
+
+---
+## Modelos de mecanismos
+
+.pull-left[
+
+* [Numata *et al.*
+(1953)](https://www.jstage.jst.go.jp/article/bse/3/3/3_KJ00001586575/_pdf/-char/en)
+propuseram o primeiro modelo de processo ecológico para SADs: se a
+espécie dominante toma uma fração $k$ de todo o recurso, a segunda
+espécie toma a mesma fração do recurso que sobra e assim
+sucessivamente, as abundâncias seguem uma série geométrica.
+
+* Há muito outros modelos de SADs derivadas de processos, como os
+de partição de nichos (MacArthur 1957, Sugihara 1980, Tokeshi
+1990) e modelos neutros (Caswell 1976, Hubbel 2001).  ]
+
+.pull-right[
+.center[
+```{r geometric_part, eval=TRUE, echo=FALSE, fig.height=6}
+# 1. Datos de las barras/rectángulos
+df_rects <- data.frame(
+  etapa = factor(c(
+    "1. Recurso Total",
+    "2. E1 toma el 50%", "2. E1 toma el 50%",
+    "3. E2 toma el 25%", "3. E2 toma el 25%", "3. E2 toma el 25%",
+    "4. E3 toma el 12,5%", "4. E3 toma el 12,5%", "4. E3 toma el 12,5%", "4. E3 toma el 12,5%"
+  ), levels = c("1. Recurso Total", "2. E1 toma el 50%", "3. E2 toma el 25%", "4. E3 toma el 12,5%")), 
+  xmin = c(
+    0,
+    0, 50,
+    0, 50, 75,
+    0, 50, 75, 87.5
+  ),
+  xmax = c(
+    100,
+    50, 100,
+    50, 75, 100,
+    50, 75, 87.5, 100
+  ),
+  rotulo = c(
+    "Resto (100%)",
+    "Especie 1 (50%)", "Resto (50%)",
+    "Especie 1 (50%)", "Especie 2 (25%)", "Resto (25%)",
+    "Especie 1 (50%)", "Especie 2 (25%)", "E3 \n (12,5%)", "Resto..."
+  ),
+  tipo = c(
+    "Resto",
+    "E1", "Resto",
+    "E1", "E2", "Resto",
+    "E1", "E2", "E3", "Resto"
+  )
+)
+y_map <- c("1. Recurso Total" = 4, "2. E1 toma el 50%" = 3, "3. E2 toma el 25%" = 2, "4. E3 toma el 12,5%" = 1)
+df_rects$ymin <- y_map[as.character(df_rects$etapa)] - 0.25
+df_rects$ymax <- y_map[as.character(df_rects$etapa)] + 0.25
+df_rects$x_centro <- (df_rects$xmin + df_rects$xmax) / 2
+df_rects$y_centro <- (df_rects$ymin + df_rects$ymax) / 2
+# 2. Datos de las flechas dinámicas (partiendo del centro del "Resto")
+df_setas <- data.frame(
+  x = c(50, 75, 87.5),          # Mitad del espacio restante superior
+  y = c(3.70, 2.70, 1.70),       # Borde inferior de la barra de origen
+  xend = c(50, 75, 87.5),       # Apunta verticalmente hacia abajo
+  yend = c(3.30, 2.30, 1.30)     # Borde superior de la barra destino
+)
+# 3. Construcción del gráfico
+ggplot() +
+  geom_rect(data = df_rects, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = tipo),
+            color = "black", linewidth = 0.6) +
+  geom_text(data = df_rects, aes(x = x_centro, y = y_centro, label = rotulo),
+            size = 3.3, fontface = "bold", color = "black") +
+  # Dibujar las flechas de división
+  geom_segment(data = df_setas, aes(x = x, y = y, xend = xend, yend = yend),
+               arrow = arrow(length = unit(0.20, "cm"), type = "closed"),
+               linewidth = 0.7, color = "red3") +
+  scale_fill_manual(values = c(
+    "E1" = "#6baed6",
+    "E2" = "#9ecae1",
+    "E3" = "#c6dbef",
+    "Resto" = "#e0e0e0"
+  )) +
+  scale_y_continuous(breaks = 1:4, labels = rev(names(y_map))) +
+  scale_x_continuous(labels = function(x) paste0(x, "%")) +
+  labs(
+    title = "Serie Geométrica: Preención de Nicho (k = 0,5)",
+    x = "Proporción del Recurso Total (%)",
+    y = NULL
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "none",
+    panel.grid.minor = element_blank(),
+    panel.grid.major.y = element_blank(),
+    plot.title = element_text(face = "bold", size = 14),
+    axis.text.y = element_text(face = "bold", color = "black")
+  )
 ```
+]]
 
 ---
 
