@@ -7,7 +7,7 @@ date: '21 Septiembre 2026'
 output:
   xaringan::moon_reader:
     lib_dir: libs
-    css: xaringan-themer.css
+    css: ["xaringan-themer.css", "../meu_estilo.css"]
     nature:
       highlightStyle: github
       highlightLines: true
@@ -33,6 +33,7 @@ library(knitr)
 library(kableExtra)
 library(dplyr)
 library(tidyr)
+library(sads)
 
 xaringanExtra::use_share_again()
 xaringanExtra::use_fit_screen()
@@ -142,6 +143,23 @@ include_graphics("figs/autonomia.jpg")
 2. Ajuste pelo método da verossimilhança
 
 3. Ajuste a dados de frequência em classes de abundância ou cobertura
+
+---
+class: inverse, middle
+
+.col-container[
+.col[
+# Um pouco de história
+]
+
+.col[
+.center[
+<img src="figs/Fisher_window.jpg" style="width: 100%; max-width: 500px; border-radius: 4px;" />
+
+[Contested legacies: R.A. Fisher in retrospect](https://www.cai.cam.ac.uk/discover/fisher-21st-century/contested-legacies-ra-fisher-retrospect)
+]
+]
+]
 
 ---
 
@@ -414,6 +432,229 @@ ggplot() +
 ]]
 
 ---
+## Em resumo: o que sabemos depois de mais um século
+
+* Mais de 40 modelos propostos, sem sinal de esgotamento ([Marquet *et al.* 2003](https://books.google.com.br/books?id=3vUUii37DEQC&lpg=PA64&ots=HKB34n5eS5&dq=marquet%202003%20breaking%20the%20stick&lr&hl=pt-BR&pg=PA73#v=onepage&q&f=false), [McGill *et al.* 2007](https://onlinelibrary.wiley.com/doi/epdf/10.1111/j.1461-0248.2007.01094.x));
+
+* Não se encontrou nenhum modelo universal, mas tão pouco se rejeitou
+  definitivamente algum modelo;
+
+* Modelos deduzidos de certos processos se ajustam a dados que não
+  foram gerados por estes processos (e.g. Modelo neutro);
+
+* Por outro lado, SADs seguem sendo um padrão fundamental em ecologia:
+  a descrição quantitativa mais sintética dos padrões de abundância e
+  raridade das espécies nas comunidades.
+
+
+---
+class: inverse, middle
+
+.col-container[
+.col[
+# Conceitos e definições
+]
+
+.col[
+.center[
+<img src="figs/definitions_xkcd.png" style="width: 90%; max-width: 500px; border-radius: 4px;" />
+
+["Planet definitions", xkcd](https://xkcd.com/3063/)
+]
+]
+]
+
+---
+
+
+## Gráficos de SADs: diagrama de rank-abundância
+
+.pull-left[ 
+
+* Plota o logarítimo da
+abundância de cada espécie (eixo y) em função do rank da espécie,
+ordenadas da mais abundante para mais rara (eixo x).  
+
+* A função `rad` do pacote `sads` cria uma tabela com os valores dos
+ranks e abundâncias, que pode então ser usada para produzir o gráfico
+com a função `plot`: 
+
+```{r code-rank-abund, eval=FALSE}
+## En R classico
+plot( rad(moths) )
+## Con "pipe" nativo de R
+rad(moths) |> plot()
+```
+
+]
+
+.pull-right[
+
+```{r rankabundance-plot, echo=FALSE, fig.align='center', fig.height=5.5, fig.cap="Diagrama de rank-abundância de mariposas capturadas com armadilha luminosa na estação de Rothamsted 1933-1936 (Willians 1943)"}
+rad(moths) |> plot()
+```
+]
+
+---
+
+## Gráficos de SADs: histograma de oitavas
+
+.pull-left[ 
+
+* É um histograma do número de espécies em cada classe de
+  abundância. As classes estão a intervalos de potência de dois 
+  ( $2^0 , 2^1, 2^2, \ldots$ ), que Preston denominou "oitavas".
+
+* A função `octav` do pacote `sads` cria uma tabela com o número de
+espécies por oitavas, que pode então ser usada para produzir o gráfico
+com a função `plot`:
+
+```{r code-octave, eval=FALSE}
+## En R classico
+plot( ocatv(moths) )
+## Con "pipe" nativo de R
+octav(moths) |> plot()
+```
+
+]
+
+.pull-right[
+
+```{r octave-plot, echo=FALSE, fig.align='center', fig.height=5.5, fig.cap="Número de espécies por oitavas, mariposas capturadas com armadilha luminosa na estação de Rothamsted 1933-1936 (Willians 1943)"}
+octav(moths) |> plot()
+```
+]
+
+---
+
+## Modelos de SADs
+
+.pull-left[ 
+
+* Os modelos de SADs são distribuições de probabilidades, ou seja, são
+  funções matemáticas que atribuem probabilidades a cada evento de um
+  espaço amostral. Há dois tipos de modelos, cada um com seu espaço
+  amostral:
+  
+  * Distribuições da probabilidade de abundâncias
+  
+  * Distribuições da probabilidades de rankings de abundância 
+]
+
+.pull-right[
+
+```{r distribuciones, echo=FALSE, fig.align='center', echo=FALSE}
+par(cex.axis = 1.25, cex.lab = 1.25, cex.main=1.5, mar = c(6,7.5,4,2), mgp=c(3.5,1,0),  bty = "l", las=1, mfrow=c(2,1))
+x <- 1:20
+y <- dls(x, N=1000, alpha = 30)
+plot(y~x, xlab = "Abundancia", ylab = "Probabilidad", main= "Modelo log-series de abundância de las especies")
+x <- 1:10
+y <- dgs(x, k = 0.25, S =10)
+plot( y~x, xlab = "Rango", ylab = "Probabilidad", main= "Serie geometrica de rangos de los individuos")
+
+```
+]
+
+---
+
+## Modelos de SADs
+
+No pacote `sads` cada modelo têm as funções padrão para
+  distribuições de probabilidade com os prefixos: 
+
+  * `d` para densidade probabilística: `dpoilog`, `dls` ... 
+  
+  * `p` para probabilidade acumulada: `ppoilog`, `pls` ...
+  
+  * `q` para função quantil: `qpoilog`, `qls` ...
+  
+  * `r` para gerar sorteios da distribuição: `rpoilog`, `rls` ... 
+
+---
+
+## Exemplos
+
+### Função de densidade
+
+Probabilidade de um indivíduo na amostra pertencer à segunda espécie
+mais abundante, segundo a série geométrica
+
+```{r}
+dgs(x = 2, k = 0.5, S = 10)
+```
+
+### Função de probabilidade acumulada
+Probabilidade de uma espécie ter até 5 indivíduos em uma distribuição log-série
+```{r}
+pls(q = 3, alpha = 30, N = 500)
+```
+
+---
+
+## Exemplos 
+
+### Função de quantil
+Qual abundância acumula metade das espécies em uma distribuição log-série
+
+```{r}
+qls(p = 0.5, alpha = 30, N = 500)
+```
+
+### Sorteio de uma distribuição
+Sorteio de 5 valores de rankings de uma distribuição Zipf-Mandelbrodt
+```{r}
+rmand(n = 5, s = 2, v = 1, N = 500)
+```
+---
+
+## Parametros de los modelos
+.pull-left[
+* Cada modelo de distribuição de probabilidade tem seus parâmetros,
+  que definem a forma, posição e dispersão das probabilidades.
+  
+* Por exemplo:
+  * O parâmetro $\alpha$ da log-série afeta a probabilidade de espécies raras
+  * O parâmetro $k$ da série geométrica define dominância das espécies
+	 de maior ranking
+
+* Os modelos de SADs têm entre um e três parâmetros, em geral.	 
+]
+
+.pull-rigth[
+```{r parametros, echo=FALSE, fig.align='center', echo=FALSE}
+par(cex.axis = 1.25, cex.lab = 1.25, cex.main=1.5, mar = c(6,7.5,4,2), mgp=c(3.5,1,0),  bty = "l", las=1, mfrow=c(2,1))
+## Logseries
+x <- 1:10
+alphas <- c(10,50,200)
+y1 <- dls(x, N=1000, alpha = alphas[1])
+y2 <- dls(x, N=1000, alpha = alphas[2])
+y3 <- dls(x, N=1000, alpha = alphas[3])
+plot(y3~x, xlab = "Abundancia", ylab = "Probabilidad",
+     main= "Modelo log-series de abundância de las especies", type="b")
+points(y2~x, type ="b", col =2)
+points(y1~x, type ="b", col =3)
+legend("topright",
+       legend= c(bquote(alpha == .(alphas[1])),
+         bquote(alpha == .(alphas[2])),
+         bquote(alpha == .(alphas[3]))),
+       lty=1, col=3:1, pch=1,
+       bty="n", cex=1.25)
+## Serie logaritmica
+ks <- c(0.5, 0.25, 0.1)
+y1 <- dgs(x, k = ks[1], S =10)
+y2 <- dgs(x, k = ks[2], S =10)
+y3 <- dgs(x, k = ks[3], S =10)
+plot(y1~x, xlab = "Rango", ylab = "Probabilidad", main= "Serie geometrica de rangos de los individuos", type="b")
+points(y2~x, type ="b", col =2)
+points(y3~x, type ="b", col =3)
+legend("topright",
+       legend= paste("k = ", ks[3:1]),
+       lty=1, col=3:1, pch=1,
+       bty="n", cex=1.25)
+
+```
+]
+---
 
 ## Que hacer ahora
 
@@ -427,6 +668,7 @@ include_graphics("figs/bora-la.jpg")
 
 #### Haiga los tutoriales:
 
-* Valores faltantes
+* 
+
            
 ]

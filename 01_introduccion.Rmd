@@ -18,3 +18,37 @@ xaringanExtra::embed_xaringan("01_introduccion/slides.html")
 
 # Tutoriales
 
+## La linea de corte de Preston
+
+
+```{r bci}
+
+library(vegan)
+data(BCI)
+set.seed(42)
+bci.muestreo <- function(n.plots=50){
+    id <- sample(1:50, size = n.plots)
+    apply(BCI[id,], 2, sum)
+}
+
+bci.1ha <- bci.muestreo(1)
+bci.5ha <- bci.muestreo(5)
+bci.10ha <- bci.muestreo(10) 
+bci.50ha <- bci.muestreo(50)
+
+bci.o <- octav(apply(BCI,2,sum))$octav
+par(mfrow = c(2,2))
+plot(octav(bci.1ha, oct=bci.o))
+plot(octav(bci.5ha, oct=bci.o))
+plot(octav(bci.10ha, oct=bci.o))
+plot(octav(bci.50ha, oct=bci.o))
+par(mfrow= c(1,1))
+
+par(mfrow = c(2,2))
+plot(octav(bci.1ha, oct=bci.o, preston=TRUE))
+plot(octav(bci.5ha, oct=bci.o, preston=TRUE))
+plot(octav(bci.10ha, oct=bci.o, preston=TRUE))
+plot(octav(bci.50ha, oct=bci.o, preston=TRUE))
+par(mfrow= c(1,1))
+
+```

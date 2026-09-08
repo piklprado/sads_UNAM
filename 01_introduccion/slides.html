@@ -18,6 +18,7 @@
     <link href="libs/font-awesome/css/all.min.css" rel="stylesheet" />
     <link href="libs/font-awesome/css/v4-shims.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="../meu_estilo.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
@@ -119,6 +120,23 @@ conocer a la gente.  ]
 2. Ajuste pelo método da verossimilhança
 
 3. Ajuste a dados de frequência em classes de abundância ou cobertura
+
+---
+class: inverse, middle
+
+.col-container[
+.col[
+# Um pouco de história
+]
+
+.col[
+.center[
+&lt;img src="figs/Fisher_window.jpg" style="width: 100%; max-width: 500px; border-radius: 4px;" /&gt;
+
+[Contested legacies: R.A. Fisher in retrospect](https://www.cai.cam.ac.uk/discover/fisher-21st-century/contested-legacies-ra-fisher-retrospect)
+]
+]
+]
 
 ---
 
@@ -313,6 +331,209 @@ de partição de nichos (MacArthur 1957, Sugihara 1980, Tokeshi
 ![](slides_files/figure-html/geometric_part-1.png)&lt;!-- --&gt;
 ]]
 
+---
+## Em resumo: o que sabemos depois de mais um século
+
+* Mais de xx modelos propostos (ref)
+
+* Não se encontrou nenhum modelo universal
+
+* Modelos deduzidos de certos processos se ajustam a dados que não
+  foram gerados por estes processos (e.g. Modelo neutro).
+
+* Por outro lado, SADs seguem sedno um padrão fundamental para descriçãod e comunidades (citar McGill que é um syntetic statement e tb Magurran que riqueza é contagem de raras)
+
+---
+class: inverse, middle
+
+.col-container[
+.col[
+# Conceitos e definições
+]
+
+.col[
+.center[
+&lt;img src="figs/definitions_xkcd.png" style="width: 90%; max-width: 500px; border-radius: 4px;" /&gt;
+
+["Planet definitions", xkcd](https://xkcd.com/3063/)
+]
+]
+]
+
+---
+
+
+## Gráficos de SADs: diagrama de rank-abundância
+
+.pull-left[ 
+
+* Plota o logarítimo da
+abundância de cada espécie (eixo y) em função do rank da espécie,
+ordenadas da mais abundante para mais rara (eixo x).  
+
+* A função `rad` do pacote `sads` cria uma tabela com os valores dos
+ranks e abundâncias, que pode então ser usada para produzir o gráfico
+com a função `plot`: 
+
+
+``` r
+&gt; ## En R classico
+&gt; plot( rad(moths) )
+&gt; ## Con "pipe" nativo de R
+&gt; rad(moths) |&gt; plot()
+```
+
+]
+
+.pull-right[
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="slides_files/figure-html/rankabundance-plot-1.png" alt="Diagrama de rank-abundância de mariposas capturadas com armadilha luminosa na estação de Rothamsted 1933-1936 (Willians 1943)"  /&gt;
+&lt;p class="caption"&gt;Diagrama de rank-abundância de mariposas capturadas com armadilha luminosa na estação de Rothamsted 1933-1936 (Willians 1943)&lt;/p&gt;
+&lt;/div&gt;
+]
+
+---
+
+## Gráficos de SADs: histograma de oitavas
+
+.pull-left[ 
+
+* É um histograma do número de espécies em cada classe de
+  abundância. As classes estão a intervalos de potência de dois 
+  ( `\(2^0 , 2^1, 2^2, \ldots\)` ), que Preston denominou "oitavas".
+
+* A função `octav` do pacote `sads` cria uma tabela com o número de
+espécies por oitavas, que pode então ser usada para produzir o gráfico
+com a função `plot`:
+
+
+``` r
+&gt; ## En R classico
+&gt; plot( ocatv(moths) )
+&gt; ## Con "pipe" nativo de R
+&gt; octav(moths) |&gt; plot()
+```
+
+]
+
+.pull-right[
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="slides_files/figure-html/octave-plot-1.png" alt="Número de espécies por oitavas, mariposas capturadas com armadilha luminosa na estação de Rothamsted 1933-1936 (Willians 1943)"  /&gt;
+&lt;p class="caption"&gt;Número de espécies por oitavas, mariposas capturadas com armadilha luminosa na estação de Rothamsted 1933-1936 (Willians 1943)&lt;/p&gt;
+&lt;/div&gt;
+]
+
+---
+
+## Modelos de SADs
+
+.pull-left[ 
+
+* Os modelos de SADs são distribuições de probabilidades, ou seja, são
+  funções matemáticas que atribuem probabilidades a cada evento de um
+  espaço amostral. Há dois tipos de modelos, cada um com seu espaço
+  amostral:
+  
+  * Distribuições da probabilidade de abundâncias
+  
+  * Distribuições da probabilidades de rankings de abundância 
+]
+
+.pull-right[
+
+&lt;img src="slides_files/figure-html/distribuciones-1.png" alt="" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Modelos de SADs
+
+No pacote `sads` cada modelo têm as funções padrão para
+  distribuições de probabilidade com os prefixos: 
+
+  * `d` para densidade probabilística: `dpoilog`, `dls` ... 
+  
+  * `p` para probabilidade acumulada: `ppoilog`, `pls` ...
+  
+  * `q` para função quantil: `qpoilog`, `qls` ...
+  
+  * `r` para gerar sorteios da distribuição: `rpoilog`, `rls` ... 
+
+---
+
+## Exemplos
+
+### Função de densidade
+
+Probabilidade de um indivíduo na amostra pertencer à segunda espécie
+mais abundante, segundo a série geométrica
+
+
+``` r
+&gt; dgs(x = 2, k = 0.5, S = 10)
+```
+
+```
+[1] 0.2502444
+```
+
+### Função de probabilidade acumulada
+Probabilidade de uma espécie ter até 5 indivíduos em uma distribuição log-série
+
+``` r
+&gt; pls(q = 3, alpha = 30, N = 500)
+```
+
+```
+[1] 0.5809379
+```
+
+---
+
+## Exemplos 
+
+### Função de quantil
+Qual abundância acumula metade das espécies em uma distribuição log-série
+
+
+``` r
+&gt; qls(p = 0.5, alpha = 30, N = 500)
+```
+
+```
+[1] 3
+```
+
+### Sorteio de uma distribuição
+Sorteio de 5 valores de rankings de uma distribuição Zipf-Mandelbrodt
+
+``` r
+&gt; rmand(n = 5, s = 2, v = 1, N = 500)
+```
+
+```
+[1] 2 2 1 1 3
+```
+---
+
+## Parametros de los modelos
+.pull-left[
+* Cada modelo de distribuição de probabilidade tem seus parâmetros,
+  que definem a forma, posição e dispersão das probabilidades.
+  
+* Por exemplo:
+  * O parâmetro `\(\alpha\)` da log-série afeta a probabilidade de espécies raras
+  * O parâmetro `\(k\)` da série geométrica define dominância das espécies
+	 de maior ranking
+
+* Os modelos de SADs têm entre um e três parâmetros, em geral.	 
+]
+
+.pull-rigth[
+&lt;img src="slides_files/figure-html/parametros-1.png" alt="" style="display: block; margin: auto;" /&gt;
+]
 ---
 
 ## Que hacer ahora
