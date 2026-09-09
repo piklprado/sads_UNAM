@@ -1,0 +1,166 @@
+---
+title: "La línea de corte de Preston"
+subtitle: "Un tutorial con el paquete sads"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+---
+
+```{r setup_local, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.align = "center")
+```
+
+Preston (1948) propuso que la distribución de abundancias de especies (*species abundance distribution*, SAD) en las comunidades ecológicas se aproxima bien mediante una distribución lognormal. También propuso que, en muestras pequeñas, esta lognormal aparece **cortada**, porque las especies raras tienen poca probabilidad de ser incluidas en la muestra. Preston llamó a este límite **"línea de velo"** (*veil line*), que se va abriendo a medida que el tamaño de la muestra aumenta.
+
+Para visualizar este patrón, Preston propuso agrupar el número de especies en clases de abundancia definidas por potencias de 2 (es decir, 1, 2, 4, 8, 16... individuos) y representarlas en un histograma, lo que se conoció como **"gráfico de Preston"** (*Preston plot*). Preston llamó a estas clases logarítmicas de base 2 **"octavas"**, en analogía con las octavas de la teoría musical.
+
+El método de Preston se convirtió en una de las formas más usadas para representar SADs. En este tutorial vamos a reproducir este método para visualizar el desplazamiento de la línea de velo, tal como Preston lo propuso originalmente.
+
+### Los datos: árboles de Barro Colorado Island (BCI)
+
+Usaremos los datos de conteos de árboles de BCI, disponibles en el paquete `vegan`. Este conjunto de datos contiene el número de individuos de cada especie de árbol registrados en 50 subparcelas de 1 hectárea cada una, dentro de la [parcela permanente de la isla de Barro Colorado](https://ctfs.si.edu/webatlas/datasets/bci/) (Panamá).
+
+Como los datos están divididos en subparcelas de 1 ha, podemos simular la recolección de esfuerzos muestrales que van de 1 a 50 ha, y evaluar cómo este aumento del esfuerzo de muestreo afecta la SAD observada en el gráfico de octavas.
+
+Cargamos los paquetes necesarios y los datos:
+
+```{r bci-load}
+library(vegan)
+library(sads)
+data(BCI)
+```
+
+Inspeccionemos las primeras filas del objeto:
+
+```{r bci-head}
+head(BCI)
+```
+
+El objeto `BCI` tiene el número de especies de árboles (columnas) registrado en cada subparcela de 1 ha (filas). Por lo tanto, podemos obtener la distribución de abundancias resultante de agregar, por ejemplo, las dos primeras parcelas de la siguiente manera:
+
+```{r bci-agregado-ejemplo}
+apply(BCI[1:2, ], 2, sum)
+```
+
+### Simulando distintos esfuerzos de muestreo
+
+La siguiente función generaliza el procedimiento anterior: sortea al azar un número `n.plots` de subparcelas (de un total de 50) y cuenta el número de individuos por especie en ese conjunto agregado.
+
+```{r funcion-muestreo}
+bci.muestreo <- function(n.plots = 50) {
+  id <- sample(1:50, size = n.plots)
+  apply(BCI[id, ], 2, sum)
+}
+```
+
+Usando esta función, vamos a simular las distribuciones de abundancia resultantes de agregar 1, 5, 10 y 50 subparcelas (es decir, el conjunto completo). Guardamos cada resultado en un objeto distinto:
+
+```{r simulaciones}
+set.seed(42)
+bci.1ha <- bci.muestreo(1)
+bci.5ha <- bci.muestreo(5)
+bci.10ha <- bci.muestreo(10)
+bci.50ha <- bci.muestreo(50)
+```
+
+### Construyendo las octavas
+
+Ahora vamos a crear objetos con las frecuencias de especies por octava, usando la función `octav()` del paquete `sads`.
+
+Empezamos con la SAD de la parcela completa, que corresponde a la agregación de las 50 subparcelas de 1 ha:
+
+```{r octav-50ha}
+bci.50ha.o <- octav(bci.50ha)
+```
+
+Los objetos creados son *data frames*, pero de una clase propia del paquete `sads`:
+
+```{r octav-clase}
+class(bci.50ha.o)
+```
+
+Inspeccionemos su contenido:
+
+```{r octav-head}
+head(bci.50ha.o)
+```
+
+Para poder comparar las demás muestras usando las **mismas** octavas, guardamos las octavas ya calculadas:
+
+```{r octavas-guardar}
+bci.o <- bci.50ha.o$octav
+```
+
+Ahora usamos estas octavas para contar el número de especies por octava en las submuestras de 1, 5 y 10 subparcelas. Pasamos las octavas que queremos utilizar en el argumento `oct`. Nótese que esto simplemente registrará un cero en las octavas que no estén representadas en la submuestra correspondiente. 
+
+Para las octavas del muestreo de una subparcela hacemos:
+
+```{r octav-submuestras_1ha}
+bci.1ha.o <- octav(bci.1ha, oct = bci.o)
+```
+Haz lo mismo para calcular las octavas de los muestreos de 5 y 10 subparcelas. Guarda los resultados en objetos llamados `bci.5ha.o` y `bci.10ha.o`. Intenta resolverlo antes de mirar la solución, que aparece oculta a continuación (haz clic en el botón "Code" para mostrarla).
+
+```{r octav-submuestras_5_10-ha, class.source = "fold-hide"}
+bci.5ha.o <- octav(bci.5ha, oct = bci.o)
+bci.10ha.o <- octav(bci.10ha, oct = bci.o)
+```
+
+### El gráfico de Preston
+
+El paquete `sads` incluye un método para crear gráficos de Preston a partir de estos objetos de clase `"octav"`, simplemente usando la función genérica `plot()`:
+
+```{r preston-plot, fig.width=8, fig.height=7}
+par(mfrow = c(2, 2))
+plot(bci.1ha.o, main = "1 ha")
+plot(bci.5ha.o, main = "5 ha")
+plot(bci.10ha.o, main = "10 ha")
+plot(bci.50ha.o, main = "50 ha")
+par(mfrow = c(1, 1))
+```
+
+### El criterio de Preston para dividir las clases límite
+
+La hipótesis de Preston era que la distribución de abundancias sería aproximadamente normal en una escala logarítmica como la de las octavas. Según su hipótesis de la línea de velo, la distribución en esta escala debería aproximarse a una forma de campana incompleta cuando el tamaño muestral es pequeño, y a una campana completa cuando el tamaño muestral es grande.
+
+Si esto no se ve tan evidente en los gráficos que acabamos de producir, no estás solo: el propio Preston notó lo mismo, y por eso modificó un poco las reglas de tabulación de frecuencias, dividiendo las abundancias que caían exactamente en el límite entre dos clases vecinas.
+
+Con este criterio:
+
+- La mitad de las especies con abundancia 1 (límite entre la primera y la segunda octava) se transfiere a la segunda octava.
+- La mitad de las especies con abundancia 2 (límite entre la segunda y la tercera octava) se transfiere a la tercera octava.
+- Y así sucesivamente para los demás límites.
+
+El argumento `preston = TRUE` de la función `octav()` calcula la frecuencia de especies por octava aplicando este criterio. A continuación se muestra cómo usar el operador *pipe* para pasar las octavas con esa opción a la función `plot()`:
+
+```{r ejemplo-preston-true, fig.width=8, fig.height=7}
+bci.1ha |> octav(oct = bci.o, preston = TRUE) |> plot(main = "1 ha")
+```
+
+Veamos el impacto que tiene en los gráficos de todos los muestreos. Usa el comando anterior para construir una figura con cuatro paneles, mostrando el gráfico de Preston de cada submuestra con el argumento `preston = TRUE`. Si quieres verificar tu código, haz clic para desplegar la solución a continuación (está oculta por defecto).
+
+```{r preston-true, fig.width=8, fig.height=7, class.source = "fold-hide"}
+par(mfrow = c(2, 2))
+bci.1ha |> octav(oct = bci.o, preston = TRUE) |> plot(main = "1 ha")
+bci.5ha |> octav(oct = bci.o, preston = TRUE) |> plot(main = "5 ha")
+bci.10ha |> octav(oct = bci.o, preston = TRUE) |> plot(main = "10 ha")
+bci.50ha |> octav(oct = bci.o, preston = TRUE) |> plot(main = "50 ha")
+par(mfrow = c(1, 1))
+```
+
+### Conclusión
+
+Al comparar los gráficos con y sin el criterio de Preston, y al observar cómo cambia la forma de la distribución a medida que aumentamos el esfuerzo de muestreo (de 1 a 50 ha), podemos visualizar directamente el concepto de la **línea de velo**: con muestras pequeñas, una parte importante de las especies raras queda "oculta" por debajo del límite de detección, y esa línea se va desplazando hacia la izquierda a medida que el esfuerzo de muestreo aumenta, revelando una distribución cada vez más completa y simétrica. Sin embargo, la solución de Preston es una aproximación. La solución matemáticamente precisa para el efecto del muestreo sobre la forma de las SAD es definir una distribución compuesta a partir del proceso probabilístico de muestreo y de la distribución de abundancias en la comunidad muestreada (Pielou 1977, Green & Plotkin 2007). Ese fue el método mediante el cual Fisher dedujo el modelo *log-series* (Fisher *et al*. 1943).
+
+### Referencias
+
+Fisher, R.A., Corbet, A.S. and Williams, C.B. (1943) The relation between the number of species and the number of individuals in a random sample of an animal population. *Journal of Animal Ecology*, 12: 42–58.
+
+Green, J. and Plotkin, J.B. (2007) A statistical theory for sampling species abundances. *Ecology Letters*, 10: 1037–1045.
+
+Pielou, E.C. (1977) *Mathematical Ecology*. New York: John Wiley and Sons.
+
+Preston, F.W. (1948) The commonness, and rarity, of species. *Ecology*, 29(3): 254–283.

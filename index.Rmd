@@ -17,8 +17,8 @@ Este es un taller creado por un estudiante de biología de toda la vida
 para ayudar a otros estudiantes a aprender sobre el tema de manera más fácil y
 rápida que él mismo.
 
-> «Nadie educa a nadie, nadie se educa a sí mismo, las personas se educan entre sí, mediadas por el mundo»
->  `r tufte::quote_footer('--- Paulo Freire, Pedagogia do oprimido. Rio de Janeiro: Paz e Terra, 1987.')`
+> «Most ecological communities contain many species of organisms, and the species may vary greatly in their abundance from very common to very rare. Therefore, as soon as one attempts to study whole communities, rather than interrelations among a few chosen species, the question immediately arises: how are the abundances of different species ditributed?»
+>  `r tufte::quote_footer('--- Evelyn C. Pielou, Mathematical Ecology. Wiley, 1977.')`
 
 ## Imparte
 
