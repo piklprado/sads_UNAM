@@ -9,12 +9,7 @@ Instituto de Ecología, UNAM, Ciudad de México, 21 de Septiembre de
 ├── README.md                       # este archivo
 ├── _site.yml                       # configuración del sitio
 ├── 01_introduccion.Rmd            # página principal
-├── 01_introducion/                 # subcarpeta para cada clase + prácticas
-│   ├── lab.Rmd                     # archivo fuente de la práctica
-│   ├── lab.html
-│   ├── slides.Rmd                  # archivo fuente de las diapositivas
-│   ├── slides.html
-│   └── xaringan-themer.css
+├── 01_introducion/                 # subcarpeta para cada clase + prácticas   
 └── theme.css
 ```
 
