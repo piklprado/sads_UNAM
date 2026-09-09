@@ -7,13 +7,11 @@ output:
     toc_float: true
     theme: flatly
     highlight: tango
-    code_folding: show
 ---
 
 ```{r setup_local, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.align = "center")
 ```
-## Introducción
 
 Preston (1948) propuso que la distribución de abundancias de especies (*species abundance distribution*, SAD) en las comunidades ecológicas se aproxima bien mediante una distribución lognormal. También propuso que, en muestras pequeñas, esta lognormal aparece **cortada**, porque las especies raras tienen poca probabilidad de ser incluidas en la muestra. Preston llamó a este límite **"línea de velo"** (*veil line*), que se va abriendo a medida que el tamaño de la muestra aumenta.
 
@@ -21,7 +19,7 @@ Para visualizar este patrón, Preston propuso agrupar el número de especies en 
 
 El método de Preston se convirtió en una de las formas más usadas para representar SADs. En este tutorial vamos a reproducir este método para visualizar el desplazamiento de la línea de velo, tal como Preston lo propuso originalmente.
 
-## Los datos: árboles de Barro Colorado Island (BCI)
+### Los datos: árboles de Barro Colorado Island (BCI)
 
 Usaremos los datos de conteos de árboles de BCI, disponibles en el paquete `vegan`. Este conjunto de datos contiene el número de individuos de cada especie de árbol registrados en 50 subparcelas de 1 hectárea cada una, dentro de la [parcela permanente de la isla de Barro Colorado](https://ctfs.si.edu/webatlas/datasets/bci/) (Panamá).
 
@@ -47,7 +45,7 @@ El objeto `BCI` tiene el número de especies de árboles (columnas) registrado e
 apply(BCI[1:2, ], 2, sum)
 ```
 
-## Simulando distintos esfuerzos de muestreo
+### Simulando distintos esfuerzos de muestreo
 
 La siguiente función generaliza el procedimiento anterior: sortea al azar un número `n.plots` de subparcelas (de un total de 50) y cuenta el número de individuos por especie en ese conjunto agregado.
 
@@ -68,7 +66,7 @@ bci.10ha <- bci.muestreo(10)
 bci.50ha <- bci.muestreo(50)
 ```
 
-## Construyendo las octavas
+### Construyendo las octavas
 
 Ahora vamos a crear objetos con las frecuencias de especies por octava, usando la función `octav()` del paquete `sads`.
 
@@ -103,14 +101,14 @@ Para las octavas del muestreo de una subparcela hacemos:
 ```{r octav-submuestras_1ha}
 bci.1ha.o <- octav(bci.1ha, oct = bci.o)
 ```
-Haz lo mismo para calcular las octavas de los muestreos de 5 y 10 subparcelas. Guarda los resultados en objetos llamados `bci.5ha.o` y `bci.10ha.o`. Intenta resolverlo antes de mirar la solución, que aparece oculta a continuación (haz clic en el botón "Code" para mostrarla).
+Haz lo mismo para calcular las octavas de los muestreos de 5 y 10 subparcelas. Guarda los resultados en objetos llamados `bci.5ha.o` y `bci.10ha.o`. Intenta resolverlo antes de mirar la solución, que aparece oculta a continuación (haz clic en el botón "Show code" para mostrarla).
 
-```{r octav-submuestras_5_10-ha, class.source = "fold-hide"}
+```{r octav-submuestras_5_10-ha, code_folding=TRUE}
 bci.5ha.o <- octav(bci.5ha, oct = bci.o)
 bci.10ha.o <- octav(bci.10ha, oct = bci.o)
 ```
 
-## El gráfico de Preston
+### El gráfico de Preston
 
 El paquete `sads` incluye un método para crear gráficos de Preston a partir de estos objetos de clase `"octav"`, simplemente usando la función genérica `plot()`:
 
@@ -123,7 +121,7 @@ plot(bci.50ha.o, main = "50 ha")
 par(mfrow = c(1, 1))
 ```
 
-## El criterio de Preston para dividir las clases límite
+### El criterio de Preston para dividir las clases límite
 
 La hipótesis de Preston era que la distribución de abundancias sería aproximadamente normal en una escala logarítmica como la de las octavas. Según su hipótesis de la línea de velo, la distribución en esta escala debería aproximarse a una forma de campana incompleta cuando el tamaño muestral es pequeño, y a una campana completa cuando el tamaño muestral es grande.
 
@@ -143,7 +141,7 @@ bci.1ha |> octav(oct = bci.o, preston = TRUE) |> plot(main = "1 ha")
 
 Veamos el impacto que tiene en los gráficos de todos los muestreos. Usa el comando anterior para construir una figura con cuatro paneles, mostrando el gráfico de Preston de cada submuestra con el argumento `preston = TRUE`. Si quieres verificar tu código, haz clic para desplegar la solución a continuación (está oculta por defecto).
 
-```{r preston-true, fig.width=8, fig.height=7, class.source = "fold-hide"}
+```{r preston-true, fig.width=8, fig.height=7, code_folding=TRUE}
 par(mfrow = c(2, 2))
 bci.1ha |> octav(oct = bci.o, preston = TRUE) |> plot(main = "1 ha")
 bci.5ha |> octav(oct = bci.o, preston = TRUE) |> plot(main = "5 ha")
@@ -152,16 +150,7 @@ bci.50ha |> octav(oct = bci.o, preston = TRUE) |> plot(main = "50 ha")
 par(mfrow = c(1, 1))
 ```
 
-## Conclusión
+### Conclusión
 
 Al comparar los gráficos con y sin el criterio de Preston, y al observar cómo cambia la forma de la distribución a medida que aumentamos el esfuerzo de muestreo (de 1 a 50 ha), podemos visualizar directamente el concepto de la **línea de velo**: con muestras pequeñas, una parte importante de las especies raras queda "oculta" por debajo del límite de detección, y esa línea se va desplazando hacia la izquierda a medida que el esfuerzo de muestreo aumenta, revelando una distribución cada vez más completa y simétrica. Sin embargo, la solución de Preston es una aproximación. La solución matemáticamente precisa para el efecto del muestreo sobre la forma de las SAD es definir una distribución compuesta a partir del proceso probabilístico de muestreo y de la distribución de abundancias en la comunidad muestreada (Pielou 1977, Green & Plotkin 2007). Ese fue el método mediante el cual Fisher dedujo el modelo *log-series* (Fisher *et al*. 1943).
 
-## Referencias
-
-Fisher, R.A., Corbet, A.S. and Williams, C.B. (1943) The relation between the number of species and the number of individuals in a random sample of an animal population. *Journal of Animal Ecology*, 12: 42–58.
-
-Green, J. and Plotkin, J.B. (2007) A statistical theory for sampling species abundances. *Ecology Letters*, 10: 1037–1045.
-
-Pielou, E.C. (1977) *Mathematical Ecology*. New York: John Wiley and Sons.
-
-Preston, F.W. (1948) The commonness, and rarity, of species. *Ecology*, 29(3): 254–283.

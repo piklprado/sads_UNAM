@@ -7,7 +7,6 @@ output:
     toc_float: true
     theme: flatly
     highlight: tango
-    code_folding: show
 ---
 
 ```{r setup_local, include=FALSE}
@@ -102,9 +101,9 @@ Para las octavas del muestreo de una subparcela hacemos:
 ```{r octav-submuestras_1ha}
 bci.1ha.o <- octav(bci.1ha, oct = bci.o)
 ```
-Haz lo mismo para calcular las octavas de los muestreos de 5 y 10 subparcelas. Guarda los resultados en objetos llamados `bci.5ha.o` y `bci.10ha.o`. Intenta resolverlo antes de mirar la solución, que aparece oculta a continuación (haz clic en el botón "Code" para mostrarla).
+Haz lo mismo para calcular las octavas de los muestreos de 5 y 10 subparcelas. Guarda los resultados en objetos llamados `bci.5ha.o` y `bci.10ha.o`. Intenta resolverlo antes de mirar la solución, que aparece oculta a continuación (haz clic en el botón "Show code" para mostrarla).
 
-```{r octav-submuestras_5_10-ha, class.source = "fold-hide"}
+```{r octav-submuestras_5_10-ha, code_folding=TRUE}
 bci.5ha.o <- octav(bci.5ha, oct = bci.o)
 bci.10ha.o <- octav(bci.10ha, oct = bci.o)
 ```
@@ -142,7 +141,7 @@ bci.1ha |> octav(oct = bci.o, preston = TRUE) |> plot(main = "1 ha")
 
 Veamos el impacto que tiene en los gráficos de todos los muestreos. Usa el comando anterior para construir una figura con cuatro paneles, mostrando el gráfico de Preston de cada submuestra con el argumento `preston = TRUE`. Si quieres verificar tu código, haz clic para desplegar la solución a continuación (está oculta por defecto).
 
-```{r preston-true, fig.width=8, fig.height=7, class.source = "fold-hide"}
+```{r preston-true, fig.width=8, fig.height=7, code_folding=TRUE}
 par(mfrow = c(2, 2))
 bci.1ha |> octav(oct = bci.o, preston = TRUE) |> plot(main = "1 ha")
 bci.5ha |> octav(oct = bci.o, preston = TRUE) |> plot(main = "5 ha")
@@ -155,12 +154,3 @@ par(mfrow = c(1, 1))
 
 Al comparar los gráficos con y sin el criterio de Preston, y al observar cómo cambia la forma de la distribución a medida que aumentamos el esfuerzo de muestreo (de 1 a 50 ha), podemos visualizar directamente el concepto de la **línea de velo**: con muestras pequeñas, una parte importante de las especies raras queda "oculta" por debajo del límite de detección, y esa línea se va desplazando hacia la izquierda a medida que el esfuerzo de muestreo aumenta, revelando una distribución cada vez más completa y simétrica. Sin embargo, la solución de Preston es una aproximación. La solución matemáticamente precisa para el efecto del muestreo sobre la forma de las SAD es definir una distribución compuesta a partir del proceso probabilístico de muestreo y de la distribución de abundancias en la comunidad muestreada (Pielou 1977, Green & Plotkin 2007). Ese fue el método mediante el cual Fisher dedujo el modelo *log-series* (Fisher *et al*. 1943).
 
-### Referencias
-
-Fisher, R.A., Corbet, A.S. and Williams, C.B. (1943) The relation between the number of species and the number of individuals in a random sample of an animal population. *Journal of Animal Ecology*, 12: 42–58.
-
-Green, J. and Plotkin, J.B. (2007) A statistical theory for sampling species abundances. *Ecology Letters*, 10: 1037–1045.
-
-Pielou, E.C. (1977) *Mathematical Ecology*. New York: John Wiley and Sons.
-
-Preston, F.W. (1948) The commonness, and rarity, of species. *Ecology*, 29(3): 254–283.

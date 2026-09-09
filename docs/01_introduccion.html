@@ -89,7 +89,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 
   <!--radix_placeholder_meta_tags-->
-  <title>Ajustes de distribuciones de abundância de espécies : Introducción a distribuciones de abundancia de especies</title>
+  <title>Ajustes de distribuciones de abundancia de especies : Introducción a distribuciones de abundancia de especies</title>
 
 
   <link rel="license" href="https://creativecommons.org/licenses/by/4.0/"/>
@@ -100,14 +100,14 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <meta name="article:author" content="Paulo Inácio Prado"/>
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Ajustes de distribuciones de abundância de espécies : Introducción a distribuciones de abundancia de especies"/>
+  <meta property="og:title" content="Ajustes de distribuciones de abundancia de especies : Introducción a distribuciones de abundancia de especies"/>
   <meta property="og:type" content="article"/>
   <meta property="og:locale" content="en_US"/>
-  <meta property="og:site_name" content="Ajustes de distribuciones de abundância de espécies "/>
+  <meta property="og:site_name" content="Ajustes de distribuciones de abundancia de especies "/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Ajustes de distribuciones de abundância de espécies : Introducción a distribuciones de abundancia de especies"/>
+  <meta property="twitter:title" content="Ajustes de distribuciones de abundancia de especies : Introducción a distribuciones de abundancia de especies"/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
@@ -2414,6 +2414,12 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   }</style>
   <!--/radix_placeholder_distill-->
   <script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
+  <script src="site_libs/clipboard-2.0.6/clipboard.min.js"></script>
+  <link href="site_libs/xaringanExtra-clipboard-0.2.6/xaringanExtra-clipboard.css" rel="stylesheet" />
+  <script src="site_libs/xaringanExtra-clipboard-0.2.6/xaringanExtra-clipboard.js"></script>
+  <script>window.xaringanExtraClipboard(null, {"button":"Copy code <i class=\"fa fa-clipboard\"><\/i>","success":"Copied! <i class=\"fa fa-check\" style=\"color: #90BE6D\"><\/i>","error":"Not copied 😕 <i class=\"fa fa-times-circle\" style=\"color: #F94144\"><\/i>"})</script>
+  <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+  <link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
   <script src="site_libs/fitvids-2.1.1/fitvids.min.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
@@ -2442,7 +2448,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <header class="header header--fixed" role="banner">
 <nav class="distill-site-nav distill-site-header">
 <div class="nav-left">
-<a href="index.html" class="title">Ajustes de distribuciones de abundância de espécies </a>
+<a href="index.html" class="title">Ajustes de distribuciones de abundancia de especies </a>
 </div>
 <div class="nav-right">
 <a href="index.html">Home</a>
@@ -2456,7 +2462,7 @@ Contenido
 <a href="01_introduccion.html">Introducción</a>
 </div>
 </div>
-<a href="https://github.com/piLaboratory/sads_UNAM">
+<a href="https://github.com/piklprado/sads_UNAM">
 <i class="fa fa-github" aria-hidden="true"></i>
 </a>
 <a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
@@ -2490,6 +2496,11 @@ Contenido
 </div>
 </div>
 <h1 id="tutoriales">Tutoriales</h1>
+<details>
+<summary>
+<b>1. Gráficos</b>
+</summary>
+<h1 id="la-línea-de-corte-de-preston">La línea de corte de Preston</h1>
 <div class="layout-chunk" data-layout="l-body">
 <p>Preston (1948) propuso que la distribución de abundancias de especies (<em>species abundance distribution</em>, SAD) en las comunidades ecológicas se aproxima bien mediante una distribución lognormal. También propuso que, en muestras pequeñas, esta lognormal aparece <strong>cortada</strong>, porque las especies raras tienen poca probabilidad de ser incluidas en la muestra. Preston llamó a este límite <strong>“línea de velo”</strong> (<em>veil line</em>), que se va abriendo a medida que el tamaño de la muestra aumenta.</p>
 <p>Para visualizar este patrón, Preston propuso agrupar el número de especies en clases de abundancia definidas por potencias de 2 (es decir, 1, 2, 4, 8, 16… individuos) y representarlas en un histograma, lo que se conoció como <strong>“gráfico de Preston”</strong> (<em>Preston plot</em>). Preston llamó a estas clases logarítmicas de base 2 <strong>“octavas”</strong>, en analogía con las octavas de la teoría musical.</p>
@@ -2570,12 +2581,17 @@ Contenido
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>bci.1ha.o</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/octav.html'>octav</a></span><span class='op'>(</span><span class='va'>bci.1ha</span>, oct <span class='op'>=</span> <span class='va'>bci.o</span><span class='op'>)</span></span></code></pre>
 </div>
 </div>
-<p>Haz lo mismo para calcular las octavas de los muestreos de 5 y 10 subparcelas. Guarda los resultados en objetos llamados <code>bci.5ha.o</code> y <code>bci.10ha.o</code>. Intenta resolverlo antes de mirar la solución, que aparece oculta a continuación (haz clic en el botón “Code” para mostrarla).</p>
+<p>Haz lo mismo para calcular las octavas de los muestreos de 5 y 10 subparcelas. Guarda los resultados en objetos llamados <code>bci.5ha.o</code> y <code>bci.10ha.o</code>. Intenta resolverlo antes de mirar la solución, que aparece oculta a continuación (haz clic en el botón “Show code” para mostrarla).</p>
 <div class="layout-chunk" data-layout="l-body">
+<details>
+<summary>
+Show code
+</summary>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>bci.5ha.o</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/octav.html'>octav</a></span><span class='op'>(</span><span class='va'>bci.5ha</span>, oct <span class='op'>=</span> <span class='va'>bci.o</span><span class='op'>)</span></span>
 <span><span class='va'>bci.10ha.o</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/octav.html'>octav</a></span><span class='op'>(</span><span class='va'>bci.10ha</span>, oct <span class='op'>=</span> <span class='va'>bci.o</span><span class='op'>)</span></span></code></pre>
 </div>
+</details>
 </div>
 <h3 id="el-gráfico-de-preston">El gráfico de Preston</h3>
 <p>El paquete <code>sads</code> incluye un método para crear gráficos de Preston a partir de estos objetos de clase <code>"octav"</code>, simplemente usando la función genérica <code>plot()</code>:</p>
@@ -2606,6 +2622,10 @@ Contenido
 </div>
 <p>Veamos el impacto que tiene en los gráficos de todos los muestreos. Usa el comando anterior para construir una figura con cuatro paneles, mostrando el gráfico de Preston de cada submuestra con el argumento <code>preston = TRUE</code>. Si quieres verificar tu código, haz clic para desplegar la solución a continuación (está oculta por defecto).</p>
 <div class="layout-chunk" data-layout="l-body">
+<details>
+<summary>
+Show code
+</summary>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
 <span><span class='va'>bci.1ha</span> <span class='op'>|&gt;</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/octav.html'>octav</a></span><span class='op'>(</span>oct <span class='op'>=</span> <span class='va'>bci.o</span>, preston <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>|&gt;</span> <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>main <span class='op'>=</span> <span class='st'>"1 ha"</span><span class='op'>)</span></span>
@@ -2614,16 +2634,18 @@ Contenido
 <span><span class='va'>bci.50ha</span> <span class='op'>|&gt;</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/octav.html'>octav</a></span><span class='op'>(</span>oct <span class='op'>=</span> <span class='va'>bci.o</span>, preston <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>|&gt;</span> <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>main <span class='op'>=</span> <span class='st'>"50 ha"</span><span class='op'>)</span></span>
 <span><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
 </div>
+</details>
 </div>
 <h3 id="conclusión">Conclusión</h3>
 <p>Al comparar los gráficos con y sin el criterio de Preston, y al observar cómo cambia la forma de la distribución a medida que aumentamos el esfuerzo de muestreo (de 1 a 50 ha), podemos visualizar directamente el concepto de la <strong>línea de velo</strong>: con muestras pequeñas, una parte importante de las especies raras queda “oculta” por debajo del límite de detección, y esa línea se va desplazando hacia la izquierda a medida que el esfuerzo de muestreo aumenta, revelando una distribución cada vez más completa y simétrica. Sin embargo, la solución de Preston es una aproximación. La solución matemáticamente precisa para el efecto del muestreo sobre la forma de las SAD es definir una distribución compuesta a partir del proceso probabilístico de muestreo y de la distribución de abundancias en la comunidad muestreada (Pielou 1977, Green &amp; Plotkin 2007). Ese fue el método mediante el cual Fisher dedujo el modelo <em>log-series</em> (Fisher <em>et al</em>. 1943).</p>
-<h3 id="referencias">Referencias</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+</div>
+</details>
+<h1 id="referencias">Referencias</h1>
 <p>Fisher, R.A., Corbet, A.S. and Williams, C.B. (1943) The relation between the number of species and the number of individuals in a random sample of an animal population. <em>Journal of Animal Ecology</em>, 12: 42–58.</p>
 <p>Green, J. and Plotkin, J.B. (2007) A statistical theory for sampling species abundances. <em>Ecology Letters</em>, 10: 1037–1045.</p>
 <p>Pielou, E.C. (1977) <em>Mathematical Ecology</em>. New York: John Wiley and Sons.</p>
 <p>Preston, F.W. (1948) The commonness, and rarity, of species. <em>Ecology</em>, 29(3): 254–283.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
-</div>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
