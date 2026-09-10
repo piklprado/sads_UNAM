@@ -3,20 +3,34 @@ title: "Introducción a distribuciones de abundancia de especies"
 date: "2026-09-21" 
 author:
   - name: Paulo Inácio Prado
+ 
 ---
 
 ```{r setup, include=FALSE}
 
+library(sads)
+library(dplyr)
+library(webexercises)
+library(knitr)
 knitr::opts_chunk$set(eval = FALSE)
 source("funciones.R")
-# clipboard
+
+## clipboard
+
 htmltools::tagList(
   xaringanExtra::use_clipboard(
     button_text = "Copy code <i class=\"fa fa-clipboard\"></i>",
     success_text = "Copied! <i class=\"fa fa-check\" style=\"color: #90BE6D\"></i>",
     error_text = "Not copied 😕 <i class=\"fa fa-times-circle\" style=\"color: #F94144\"></i>"
-  ),
-  rmarkdown::html_dependency_font_awesome()
+    ),
+  rmarkdown::html_dependency_font_awesome(),
+  htmltools::htmlDependency(
+                 name = "webex",
+                 version = as.character(utils::packageVersion("webexercises")),
+                 src = dirname(system.file("reports/default/webex.css", package = "webexercises")),
+                 stylesheet = "webex.css",
+                 script = "webex.js"
+             )
   )
 
 ```
@@ -35,13 +49,29 @@ xaringanExtra::embed_xaringan("01_introduccion/slides.html")
 # La línea de corte de Preston
 
 ```{r capitulo-preston, echo = FALSE, results = "asis", eval = TRUE}
-cat(incluir_capitulo("01_introduccion/linea_corte_preston.Rmd", eval = FALSE), sep = "\n")
+cat(incluir_capitulo("01_introduccion/tutorial_linea_corte_preston.Rmd", eval = FALSE), sep = "\n")
 ```
 
 </details>
 
+<details>
+<summary><b>2. Modelos</b></summary>
+
+# De los parámetros a la forma de la SAD
+
+```{r tutorial-parametros, echo = FALSE, results = "asis", eval = TRUE}
+cat(incluir_capitulo("01_introduccion/tutorial_parametros_sad.Rmd", eval = FALSE), sep = "\n")
+```
+
+</details>
+
+
 # Referencias
 
+Bulmer,M. G. (1974) On Fitting the Poisson Lognormal Distribution to Species-Abundance Data. *Biometrics, 30*: 101-110.
+
+Engen, S., R. Lande, T. Walla & P. J. DeVries (2002) Analyzing spatial structure of communities using the two-dimensional Poisson lognormal species abundance model. *American Naturalist 160*: 60-73.
+	 
 Fisher, R.A., Corbet, A.S. and Williams, C.B. (1943) The relation between the number of species and the number of individuals in a random sample of an animal population. *Journal of Animal Ecology*, 12: 42–58.
 
 Green, J. and Plotkin, J.B. (2007) A statistical theory for sampling species abundances. *Ecology Letters*, 10: 1037–1045.

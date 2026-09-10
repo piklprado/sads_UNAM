@@ -9,10 +9,12 @@ output:
     highlight: tango
 ---
 
-```{r setup_params, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE, fig.align = "center")
+```{r setup_params, include=FALSE, eval=TRUE}
 library(sads)
 library(dplyr)
+library(webexercises)
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE, fig.align = "center")
 ```
 
 En este tutorial vamos a explorar dos modelos clásicos de distribución
@@ -27,9 +29,9 @@ distinta, con más o menos especies raras, más o menos heterogeneidad.
 
 En R, las funciones de una distribución de probabilidad que empiezan
 con `d` (como `dnorm`, `dpois`, o las que usaremos aquí) devuelven la
-**densidad de probabilidad**. Para variáveis discretas, como as
-contagens de indivíduos por espécies, a densidade de probabilidade
-equivale à probabilidade de cada valor de abundância ($x = 1, 2, 3,
+**densidad de probabilidad**. Para variables discretas, como el
+número de individuos por especie, la densidad de probabilidad
+equivale a la probabilidad de cada valor de abundancia ($x = 1, 2, 3,
 \ldots$), según los parámetros de la distribución.
 
 Concretamente: `dls(x, N, alpha)` da la probabilidad de que una
@@ -39,7 +41,7 @@ parámetro `alpha` tenga exactamente `x` individuos. De forma análoga,
 individuos, en una comunidad cuyas abundancias siguen una distribución
 lognormal con parámetros `mu` y `sig`.
 
-Por ejemplo:
+Por ejemplo, ejecute:
 
 ```{r prob-basica}
 dls(x = 1, N = 10000, alpha = 20)
@@ -51,7 +53,7 @@ abundancia 1.
 
 Como es una distribución de probabilidad, si sumamos las
 probabilidades de todas las clases de abundancia posibles (de 1 hasta
-`N` en ese caso), el resultado debe ser 1:
+`N` en ese caso), el resultado debe ser 1. Verifica con el comando:
 
 ```{r prob-suma}
 sum(dls(1:10000, N = 10000, alpha = 20))
@@ -81,12 +83,12 @@ casualidad: es la firma característica de la log-series (y, en
 general, de casi todas las SAD): el modelo predice que la mayoría de
 las especies de una comunidad son raras.
 
-```{r quiz1-opts, echo=FALSE}
+```{r quiz1-opts, echo=FALSE, eval=TRUE}
 quiz1 <- c(
   "el número esperado de especies con exactamente 5 individuos",
   answer = "la probabilidad de que una especie elegida al azar tenga exactamente 5 individuos",
   "la proporción de individuos que pertenecen a especies con abundancia 5",
-  "la probabilidad de una especie elegida al azar tenga hast 5 individos"
+  "la probabilidad de que una especie elegida al azar tenga hasta 5 individuos"
 )
 ```
 
@@ -94,29 +96,30 @@ quiz1 <- c(
 
 `r webexercises::longmcq(quiz1)`
 
-### La log-series: el papel del parametro `alpha`
+### La log-series: el papel del parámetro `alpha`
 
 El parámetro $\alpha$ de la log-series se conoce como el **índice de
 diversidad de Fisher**, y de hecho se sigue usando hoy como una medida
-de diversidad, porque tem uma relação com o número de espécies na
-amostra, e com a proporção entre espécies raras e abundantes. 
+de diversidad, porque tiene una relación con el número de especies en
+la muestra, y con la proporción entre especies raras y abundantes.
 
-Em uma amostra de uma comunidade com distribuição de
-abundância log-série, o número de espécies esperado em uma amostra
-$E[S]$ de $N$ indivíduos é uma função de $\alpha$:
+En una muestra de una comunidad con distribución de
+abundancia log-series, el número de especies esperado en una muestra
+$E[S]$ de $N$ individuos es una función de $\alpha$:
 
 $$ E[S] = \alpha \ln \left( 1+ \frac{N}{\alpha} \right) $$ 
 
-Pero fijate que en la logseries o número de espécies esperado com uma
-abundância $n$ também é uma função de $\alpha$:
+Pero fíjate que en la log-series el número de especies esperado con una
+abundancia $n$ también es una función de $\alpha$:
 
 $$ E[S_n] = \frac{\alpha X^n}{n} $$
 
-en que $X$ es una constante que depende do esforço amostral ($N$), e
-que sempre é menor mas bem próximo de um [^1]. Veja abaixo os cálculos
-de valores esperados de total de espécies, número esperado de espécies
-com abundância um (*singletons*) e proporção desses *singletons* para uma
-amostra de 10000 indivíduos, paratrês valores diferentes de $\alpha$:
+en que $X$ es una constante que depende del esfuerzo muestral ($N$), y
+que siempre es menor pero bien próxima a uno [^1]. Mira a continuación
+los cálculos de los valores esperados del total de especies, del número
+esperado de especies con abundancia uno (*singletons*) y de la
+proporción de esos *singletons*, para una muestra de 10000 individuos,
+para tres valores diferentes de $\alpha$:
 
 
 ```{r tabla-efecto-alpha, echo=FALSE, eval=TRUE}
@@ -132,9 +135,9 @@ N <- 10000
 ```
 
 
-Antes de ejecutar el proximo código, piensa en esta pregunta:
+Antes de ejecutar el próximo código, piensa en esta pregunta:
 
-```{r quiz2-opts, echo=FALSE}
+```{r quiz2-opts, echo=FALSE, eval=TRUE}
 quiz2 <- c(
   "la distribución decae más lentamente: hay relativamente más especies con abundancias intermedias",
   answer="la distribución decae más rápido: hay relativamente más especies con abundancias bajas",
@@ -142,7 +145,7 @@ quiz2 <- c(
 )
 ```
 
-**Manteniendo `N` constante, si aumentamos `alpha`, sabemos que crece el numero de especies en la mostra. ¿Qué esperas que le pase a la forma de la distribución?**
+**Manteniendo `N` constante, si aumentamos `alpha`, sabemos que crece el número de especies en la muestra. ¿Qué esperas que le pase a la forma de la distribución?**
 
 `r webexercises::longmcq(quiz2)`
 
@@ -154,21 +157,21 @@ N <- 10000
 x <- 1:20
 alphas <- c(150, 75, 40, 20)
 
-plot(x, dls(x, N = 10000, alpha = alphas[1]), type = "l", lwd = 2, col = 1,
+plot(x, dls(x, N = N, alpha = alphas[1]), type = "l", lwd = 2, col = 1,
      xlab = "Abundancia", ylab = "Probabilidad",
      main = paste0("Efecto de alpha en la log-series (N = ", N, ")"))
 
 for (i in 2:length(alphas)) {
-  lines(x, dls(x, N = 10000, alpha = alphas[i]), lwd = 2, col = i)
+  lines(x, dls(x, N = N, alpha = alphas[i]), lwd = 2, col = i)
 }
 
 legend("topright", legend = paste("alpha =", alphas), col = 1:length(alphas), lwd = 2)
 ```
 
-Cuanto mayor es $\alpha$, mais espécies há na amostra, mas também más
-rapido decae la curva. Ou seja, para um mesmo tamanho de amostra, o
-aumento de $\alpha$ aumenta a riqueza principalmente pela entrada de
-mais espécies raras na amostra.
+Cuanto mayor es $\alpha$, más especies hay en la muestra, pero también
+más rápido decae la curva. Es decir, para un mismo tamaño de muestra,
+el aumento de $\alpha$ aumenta la riqueza principalmente por la
+entrada de más especies raras en la muestra.
 
 **Ahora hazlo tú:** usando el código anterior como plantilla, grafica la log-series para `N = 5000` y `alpha = 10, 20, 40`. Intenta escribir el código antes de mirar la solución oculta.
 
@@ -179,22 +182,22 @@ N <- 5000
 x <- 1:20
 alphas <- c(40, 20, 10)
 
-plot(x, dls(x, N = 1000, alpha = alphas[1]), type = "l", lwd = 2, col = 1,
+plot(x, dls(x, N = N, alpha = alphas[1]), type = "l", lwd = 2, col = 1,
      xlab = "Abundancia", ylab = "Probabilidad",
      main = paste0("Efecto de alpha en la log-series (N = ", N, ")"))
 
 for (i in 2:length(alphas)) {
-  lines(x, dls(x, N = 1000, alpha = alphas[i]), lwd = 2, col = i)
+  lines(x, dls(x, N = N, alpha = alphas[i]), lwd = 2, col = i)
 }
 
 legend("topright", legend = paste("alpha =", alphas), col = 1:length(alphas), lwd = 2)
 
 ```
 
-O gráfico de oitavas deixa mais evidente as distribuição das classes
-mais altas de abundâcia. Note como para valores mais abixos de
-$\alpha$ há menos espécies na amostra, mas também as espécies mais
-abundantes ocorrem em maior proporção.
+El gráfico de octavas deja más evidente la distribución de las clases
+más altas de abundancia. Nota cómo para valores más bajos de $\alpha$
+hay menos especies en la muestra, pero también las especies más
+abundantes ocurren en mayor proporción.
 
 ```{r octav-plots-dls}
 
@@ -221,19 +224,20 @@ par(mfrow=c(1,1))
 ### La Poisson-lognormal
 
 La Poisson-lognormal asume que las abundancias de las especies en la
-comunidad que se muestra siguen una distribución lognormal. Se a
-amostra toma indivíduos ao acaso, a abundância de cada espécie na
-comunidade seguirá uam distribuição Poisson, com média proporcional à
-densidade da espécie na comunidade. A distribuição de abundâncias na
-amostra será a Poisson-lognormal (Bulmer 1974), que é a solução
-analítica para o "desvelamento" da distribuição de abuncias da
-comunidade, sugerida por Preston (1948). A Poisson lognormal tem dois
-parâmetros, $\mu$ (la media del logaritmo de la abundancia) e $sigma$,
-(el desvío estándar del logaritmo de las abundancias). Na função de
-densidade da Poisson-lognormal do pacote `sads` estes parêmtros têm o
-nome `mu` e `sig`.
+comunidad que se muestrea siguen una distribución lognormal. Si la
+muestra toma individuos al azar, la abundancia de cada especie en la
+comunidad seguirá una distribución de Poisson, con media proporcional
+a la densidad de la especie en la comunidad. La distribución de
+abundancias en la muestra será la Poisson-lognormal (Bulmer 1974), que
+es la solución analítica para el "desvelamiento" (o revelado) de la
+distribución de abundancias de la comunidad, sugerida por Preston
+(1948). 
 
-Comprobemos graficando el efecto de $\sigma$ (con $\mu$ fijo) y el efecto
+La Poisson-lognormal tiene dos parámetros, $\mu$ (la media del
+logaritmo de la abundancia) y $\sigma$ (el desvío estándar del
+logaritmo de las abundancias). En la función de densidad de la
+Poisson-lognormal del paquete `sads` estos parámetros tienen el nombre
+`mu` y `sig`. Comprobemos graficando el efecto de $\sigma$ (con $\mu$ fijo) y el efecto
 de $\mu$ (con $\sigma$ fijo), lado a lado:
 
 ```{r poilog-efecto, fig.width=9, fig.height=4.5}
@@ -261,14 +265,14 @@ par(mfrow = c(1, 1))
 
 ```
 
-El parametro $\sigma$ cambia la forma de distribución. Con $\sig$
-chico, la curva tiene un pico despues del cero es, decir, los
-*singletons* no son la classe con más especies. Mas em valores maiores
-de $\sigma$ a distribuição passa auma forma de "J" invertido, e os
-*singletons* são a classe mais abundante.  El parametro $\mu$, en
-cambio, desplaza el centro de la distribución sin cambiar tanto su
-forma general: es como mover la "escala típica" de abundancia de la
-comunidad.
+El parámetro $\sigma$ cambia la forma de la distribución. Con
+$\sigma$ chico, la curva tiene un pico después del cero, es decir,
+los *singletons* no son la clase con más especies. Pero para valores
+mayores de $\sigma$ la distribución pasa a tener una forma de "J"
+invertida, y los *singletons* son la clase más abundante. El
+parámetro $\mu$, en cambio, desplaza el centro de la distribución sin
+cambiar tanto su forma general: es como mover la "escala típica" de
+abundancia de la comunidad.
 
 **Ahora hazlo tú:** grafica la Poisson-lognormal para `mu = 3` fijo y
 `sig = 0.2, 1, 4`. Intenta escribir el código antes de mirar la
@@ -287,9 +291,9 @@ legend("topright", legend = paste("sig =", sigs), col = 1:length(sigs), lwd = 2)
 
 ```
 
-E agora verifique teste sua compreensão dos parâmteros da Poisson-lognormal:
+Y ahora verifica tu comprensión de los parámetros de la Poisson-lognormal:
 
-```{r quiz3-opts, echo=FALSE}
+```{r quiz3-opts, echo=FALSE, eval=TRUE}
 quiz3 <- c(
   answer = "aumenta la heterogeneidad: las abundancias entre especies se vuelven más dispares",
   "las abundancias entre especies se vuelven más parecidas entre sí",
@@ -304,7 +308,10 @@ quiz3 <- c(
 
 ### Para cerrar: ¿cuál curva es cuál?
 
-Aquí tienes cuatro curvas de la log-series (mismo `N`, distinto `alpha`), identificadas solo con una letra. Usando lo que aprendiste sobre el efecto de `alpha`, intenta adivinar qué valor corresponde a cada una.
+Aquí tienes cuatro curvas de la log-series calculadas con la función `dls`
+(mismo `N`, distinto `alpha`), identificadas solo con una letra. Usando lo que aprendiste
+sobre el efecto de `alpha`, intenta adivinar qué valor corresponde a
+cada una.
 
 ```{r matching-plot, echo=FALSE, fig.width=7, fig.height=5, eval=TRUE}
 
@@ -320,7 +327,7 @@ legend("topright", legend = names(alpha_por_letra), col = 1:4, lwd = 2)
 
 ```
 
-```{r matching-quiz-opts, echo=FALSE}
+```{r matching-quiz-opts, echo=FALSE, eval=TRUE}
 opt_A <- c("5", "20", answer = "60", "150")
 opt_B <- c(answer = "5", "20", "60", "150")
 opt_C <- c("5", "20", "60", answer = "150")
@@ -335,20 +342,20 @@ opt_D <- c("5", answer = "20", "60", "150")
 
 **¿Qué valor de `alpha` corresponde a la curva D?** `r webexercises::mcq(opt_D)`
 
+
 ### Conclusión
 
-Vimos que dos distribuciones de densidad probabilistica que  no son solo herramientas
-de cálculo: cada una encierra una hipótesis distinta sobre cómo se
-distribuyen las abundancias en una comunidad, y sus parámetros
-($\alpha$ en la log-series; $\mu$ y $\sigma$` en la Poisson-lognormal)
-permitem interpretações ecológicas. 
+Vimos que estas dos distribuciones de probabilidad no son solo
+herramientas de cálculo: cada una encierra una hipótesis distinta
+sobre cómo se distribuyen las abundancias en una comunidad, y sus
+parámetros ($\alpha$ en la log-series; $\mu$ y $\sigma$ en la
+Poisson-lognormal) permiten interpretaciones ecológicas.
 
-Muitas outras distribuições de probabilidade podem ser usadas para
-descrever as SADs, em muitos casos com parâmetros interpretáveis, como
-mostramos aqui. En el próximo tutorial vamos aprender como utilizar
-esas funciones para *ajustar* estos modelos a datos reales de
-abundancia. Para isso precisamos encontrar os valores dos parâmetros
-do modelo que resultam no melhor ajuste ao dados.
-
+Muchas otras distribuciones de probabilidad pueden usarse para
+describir las SAD, en muchos casos con parámetros interpretables, como
+mostramos aquí. En el próximo tutorial vamos a aprender cómo usar esas
+funciones para *ajustar* estos modelos a datos reales de abundancia.
+Para eso necesitamos encontrar los valores de los parámetros del
+modelo que resultan en el mejor ajuste a los datos.
 
 [^1]: Para dados biológicos, o valor de da constante $X$ em geral é acima de $0{,9}$. Se a razão número de indivíduos e número de espécies na amostra é maior que 20, então $X>0{,}99$.

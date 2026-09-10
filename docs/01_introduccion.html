@@ -2420,6 +2420,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <script>window.xaringanExtraClipboard(null, {"button":"Copy code <i class=\"fa fa-clipboard\"><\/i>","success":"Copied! <i class=\"fa fa-check\" style=\"color: #90BE6D\"><\/i>","error":"Not copied 😕 <i class=\"fa fa-times-circle\" style=\"color: #F94144\"><\/i>"})</script>
   <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
   <link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+  <link href="site_libs/webex-1.1.0/webex.css" rel="stylesheet" />
+  <script src="site_libs/webex-1.1.0/webex.js"></script>
   <script src="site_libs/fitvids-2.1.1/fitvids.min.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
@@ -2637,16 +2639,389 @@ Show code
 </details>
 </div>
 <h3 id="conclusión">Conclusión</h3>
-<p>Al comparar los gráficos con y sin el criterio de Preston, y al observar cómo cambia la forma de la distribución a medida que aumentamos el esfuerzo de muestreo (de 1 a 50 ha), podemos visualizar directamente el concepto de la <strong>línea de velo</strong>: con muestras pequeñas, una parte importante de las especies raras queda “oculta” por debajo del límite de detección, y esa línea se va desplazando hacia la izquierda a medida que el esfuerzo de muestreo aumenta, revelando una distribución cada vez más completa y simétrica. Sin embargo, la solución de Preston es una aproximación. La solución matemáticamente precisa para el efecto del muestreo sobre la forma de las SAD es definir una distribución compuesta a partir del proceso probabilístico de muestreo y de la distribución de abundancias en la comunidad muestreada (Pielou 1977, Green &amp; Plotkin 2007). Ese fue el método mediante el cual Fisher dedujo el modelo <em>log-series</em> (Fisher <em>et al</em>. 1943).</p>
+<p>Al comparar los gráficos con y sin el criterio de Preston, y al observar cómo cambia la forma de la distribución a medida que aumentamos el esfuerzo de muestreo (de 1 a 50 ha), podemos visualizar directamente el concepto de la <strong>línea de velo</strong>: con muestras pequeñas, una parte importante de las especies raras queda “oculta” por debajo del límite de detección, y esa línea se va desplazando hacia la izquierda a medida que el esfuerzo de muestreo aumenta, revelando una distribución cada vez más completa y simétrica.</p>
+<p>Sin embargo, la solución de Preston es una aproximación. La solución matemáticamente precisa para el efecto del muestreo sobre la forma de las SAD es definir una distribución compuesta a partir del proceso probabilístico de muestreo y de la distribución de abundancias en la comunidad muestreada (Pielou 1977, Green &amp; Plotkin 2007). Ese fue el método mediante el cual Fisher dedujo el modelo <em>log-series</em> (Fisher <em>et al</em>. 1943). El mismo método aplicado a distribución lognormal da como resultado la distribución Poisson-lognormal (Bulmer 1974, Engen <em>et al</em>. 2002).</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 </div>
 </details>
+<details>
+<summary>
+<b>2. Modelos</b>
+</summary>
+<h1 id="de-los-parámetros-a-la-forma-de-la-sad">De los parámetros a la forma de la SAD</h1>
+<div class="layout-chunk" data-layout="l-body">
+<p>En este tutorial vamos a explorar dos modelos clásicos de distribución
+de abundancia de especies (SAD), ambos disponibles en el paquete
+<code>sads</code>: la <strong>log-series de Fisher</strong> (<code>dls</code>) y la <strong>Poisson-lognormal</strong>
+(<code>dpoilog</code>). El objetivo no es solo saber usar estas funciones, sino
+entender qué significan sus parámetros: cómo un cambio en un número
+se traduce en una comunidad ecológica
+distinta, con más o menos especies raras, más o menos heterogeneidad.</p>
+<h3 id="las-funciones-d-devuelven-probabilidades">Las funciones <code>d*</code> devuelven probabilidades</h3>
+<p>En R, las funciones de una distribución de probabilidad que empiezan
+con <code>d</code> (como <code>dnorm</code>, <code>dpois</code>, o las que usaremos aquí) devuelven la
+<strong>densidad de probabilidad</strong>. Para variables discretas, como el
+número de individuos por especie, la densidad de probabilidad
+equivale a la probabilidad de cada valor de abundancia (<span class="math inline">\(x = 1, 2, 3,
+\ldots\)</span>), según los parámetros de la distribución.</p>
+<p>Concretamente: <code>dls(x, N, alpha)</code> da la probabilidad de que una
+especie elegida al azar de una comunidad con <code>N</code> individuos y
+parámetro <code>alpha</code> tenga exactamente <code>x</code> individuos. De forma análoga,
+<code>dpoilog(x, mu, sig)</code> da la probabilidad de que una especie tenga <code>x</code>
+individuos, en una comunidad cuyas abundancias siguen una distribución
+lognormal con parámetros <code>mu</code> y <code>sig</code>.</p>
+<p>Por ejemplo, ejecute:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/dls.html'>dls</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fl'>1</span>, N <span class='op'>=</span> <span class='fl'>10000</span>, alpha <span class='op'>=</span> <span class='fl'>20</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Este número es la probabilidad de que, en una comunidad de 10000
+individuos con <code>alpha = 20</code>, una especie elegida al azar tenga
+abundancia 1.</p>
+<p>Como es una distribución de probabilidad, si sumamos las
+probabilidades de todas las clases de abundancia posibles (de 1 hasta
+<code>N</code> en ese caso), el resultado debe ser 1, Verifica con el comando:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/dls.html'>dls</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10000</span>, N <span class='op'>=</span> <span class='fl'>10000</span>, alpha <span class='op'>=</span> <span class='fl'>20</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Grafiquemos las probabilidades para las primeras clases de abundancia
+como un diagrama de barras:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>15</span></span>
+<span><span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/dls.html'>dls</a></span><span class='op'>(</span><span class='va'>x</span>, N <span class='op'>=</span> <span class='fl'>10000</span>, alpha <span class='op'>=</span> <span class='fl'>20</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/barplot.html'>barplot</a></span><span class='op'>(</span><span class='va'>p</span>, names.arg <span class='op'>=</span> <span class='va'>x</span>, xlab <span class='op'>=</span> <span class='st'>"Abundancia (individuos)"</span>, ylab <span class='op'>=</span> <span class='st'>"Probabilidad"</span>,</span>
+<span>        col <span class='op'>=</span> <span class='st'>"steelblue"</span>,</span>
+<span>        main <span class='op'>=</span> <span class='st'>"Log-series: N = 10000, alpha = 20"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>… y en forma de tabla, para ver los números exactos:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>abundancia <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>,</span>
+<span>                     probabilidad <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/dls.html'>dls</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, N <span class='op'>=</span> <span class='fl'>10000</span>, alpha <span class='op'>=</span> <span class='fl'>20</span><span class='op'>)</span>, <span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Fíjate en algo importante: las clases de <strong>menor</strong> abundancia (1, 2, 3
+individuos) son las que tienen <strong>mayor</strong> probabilidad. Esto no es
+casualidad: es la firma característica de la log-series (y, en
+general, de casi todas las SAD): el modelo predice que la mayoría de
+las especies de una comunidad son raras.</p>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<p><strong>¿Qué representa el valor de <code>dls(5, N = 10000, alpha = 20)</code>?</strong></p>
+<ul>
+<li><ol type="A">
+<li>el número esperado de especies con exactamente 5 individuos<br />
+</li>
+</ol></li>
+<li>(B) la probabilidad de que una especie elegida al azar tenga exactamente 5 individuos<br />
+</li>
+<li>(C) la proporción de individuos que pertenecen a especies con abundancia 5<br />
+</li>
+<li>(D) la probabilidad de que una especie elegida al azar tenga hasta 5 individuos</li>
+</ul>
+<h3 id="la-log-series-el-papel-del-parámetro-alpha">La log-series: el papel del parámetro <code>alpha</code></h3>
+<p>El parámetro <span class="math inline">\(\alpha\)</span> de la log-series se conoce como el <strong>índice de
+diversidad de Fisher</strong>, y de hecho se sigue usando hoy como una medida
+de diversidad, porque tiene una relación con el número de especies en
+la muestra, y con la proporción entre especies raras y abundantes.</p>
+<p>En una muestra de una comunidad con distribución de
+abundancia log-series, el número de especies esperado en una muestra
+<span class="math inline">\(E[S]\)</span> de <span class="math inline">\(N\)</span> individuos es una función de <span class="math inline">\(\alpha\)</span>:</p>
+<p><span class="math display">\[ E[S] = \alpha \ln \left( 1+ \frac{N}{\alpha} \right) \]</span></p>
+<p>Pero fíjate que en la log-series el número de especies esperado con una
+abundancia <span class="math inline">\(n\)</span> también es una función de <span class="math inline">\(\alpha\)</span>:</p>
+<p><span class="math display">\[ E[S_n] = \frac{\alpha X^n}{n} \]</span></p>
+<p>en que <span class="math inline">\(X\)</span> es una constante que depende del esfuerzo muestral (<span class="math inline">\(N\)</span>), y
+que siempre es menor pero bien próxima a uno [^1]. Mira a continuación
+los cálculos de los valores esperados del total de especies, del número
+esperado de especies con abundancia uno (<em>singletons</em>) y de la
+proporción de esos <em>singletons</em>, para una muestra de 10000 individuos,
+para tres valores diferentes de <span class="math inline">\(\alpha\)</span>:</p>
+<div class="layout-chunk" data-layout="l-body">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">alpha</th>
+<th style="text-align: right;">Riqueza</th>
+<th style="text-align: right;">Singletons</th>
+<th style="text-align: right;">% Singletons</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">14.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">265</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">18.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">462</td>
+<td style="text-align: right;">99</td>
+<td style="text-align: right;">21.5</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Antes de ejecutar el próximo código, piensa en esta pregunta:</p>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<p><strong>Manteniendo <code>N</code> constante, si aumentamos <code>alpha</code>, sabemos que crece el número de especies en la muestra. ¿Qué esperas que le pase a la forma de la distribución?</strong></p>
+<ul>
+<li><ol type="A">
+<li>la distribución decae más lentamente: hay relativamente más especies con abundancias intermedias<br />
+</li>
+</ol></li>
+<li>(B) la distribución decae más rápido: hay relativamente más especies con abundancias bajas<br />
+</li>
+<li>(C) la forma de la distribución no cambia en absoluto</li>
+</ul>
+<p>Ahora comprobemos, graficando la log-series para varios valores de <span class="math inline">\(\alpha\)</span>, con <span class="math inline">\(N\)</span> fijo en diez mil individuos:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>N</span> <span class='op'>&lt;-</span> <span class='fl'>10000</span></span>
+<span><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span></span>
+<span><span class='va'>alphas</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>150</span>, <span class='fl'>75</span>, <span class='fl'>40</span>, <span class='fl'>20</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'><a href='https://rdrr.io/pkg/sads/man/dls.html'>dls</a></span><span class='op'>(</span><span class='va'>x</span>, N <span class='op'>=</span> <span class='va'>N</span>, alpha <span class='op'>=</span> <span class='va'>alphas</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>, type <span class='op'>=</span> <span class='st'>"l"</span>, lwd <span class='op'>=</span> <span class='fl'>2</span>, col <span class='op'>=</span> <span class='fl'>1</span>,</span>
+<span>     xlab <span class='op'>=</span> <span class='st'>"Abundancia"</span>, ylab <span class='op'>=</span> <span class='st'>"Probabilidad"</span>,</span>
+<span>     main <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Efecto de alpha en la log-series (N = "</span>, <span class='va'>N</span>, <span class='st'>")"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='kw'>for</span> <span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>2</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>alphas</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>  <span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'><a href='https://rdrr.io/pkg/sads/man/dls.html'>dls</a></span><span class='op'>(</span><span class='va'>x</span>, N <span class='op'>=</span> <span class='va'>N</span>, alpha <span class='op'>=</span> <span class='va'>alphas</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span>, lwd <span class='op'>=</span> <span class='fl'>2</span>, col <span class='op'>=</span> <span class='va'>i</span><span class='op'>)</span></span>
+<span><span class='op'>}</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/legend.html'>legend</a></span><span class='op'>(</span><span class='st'>"topright"</span>, legend <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"alpha ="</span>, <span class='va'>alphas</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>alphas</span><span class='op'>)</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Cuanto mayor es <span class="math inline">\(\alpha\)</span>, más especies hay en la muestra, pero también
+más rápido decae la curva. Es decir, para un mismo tamaño de muestra,
+el aumento de <span class="math inline">\(\alpha\)</span> aumenta la riqueza principalmente por la
+entrada de más especies raras en la muestra.</p>
+<p><strong>Ahora hazlo tú:</strong> usando el código anterior como plantilla, grafica la log-series para <code>N = 5000</code> y <code>alpha = 10, 20, 40</code>. Intenta escribir el código antes de mirar la solución oculta.</p>
+<div class="layout-chunk" data-layout="l-body">
+<details>
+<summary>
+Show code
+</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>N</span> <span class='op'>&lt;-</span> <span class='fl'>5000</span></span>
+<span><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span></span>
+<span><span class='va'>alphas</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>40</span>, <span class='fl'>20</span>, <span class='fl'>10</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'><a href='https://rdrr.io/pkg/sads/man/dls.html'>dls</a></span><span class='op'>(</span><span class='va'>x</span>, N <span class='op'>=</span> <span class='va'>N</span>, alpha <span class='op'>=</span> <span class='va'>alphas</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>, type <span class='op'>=</span> <span class='st'>"l"</span>, lwd <span class='op'>=</span> <span class='fl'>2</span>, col <span class='op'>=</span> <span class='fl'>1</span>,</span>
+<span>     xlab <span class='op'>=</span> <span class='st'>"Abundancia"</span>, ylab <span class='op'>=</span> <span class='st'>"Probabilidad"</span>,</span>
+<span>     main <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Efecto de alpha en la log-series (N = "</span>, <span class='va'>N</span>, <span class='st'>")"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='kw'>for</span> <span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>2</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>alphas</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>  <span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'><a href='https://rdrr.io/pkg/sads/man/dls.html'>dls</a></span><span class='op'>(</span><span class='va'>x</span>, N <span class='op'>=</span> <span class='va'>N</span>, alpha <span class='op'>=</span> <span class='va'>alphas</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span>, lwd <span class='op'>=</span> <span class='fl'>2</span>, col <span class='op'>=</span> <span class='va'>i</span><span class='op'>)</span></span>
+<span><span class='op'>}</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/legend.html'>legend</a></span><span class='op'>(</span><span class='st'>"topright"</span>, legend <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"alpha ="</span>, <span class='va'>alphas</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>alphas</span><span class='op'>)</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span></code></pre>
+</div>
+</details>
+</div>
+<p>El gráfico de octavas deja más evidente la distribución de las clases
+más altas de abundancia. Nota cómo para valores más bajos de <span class="math inline">\(\alpha\)</span>
+hay menos especies en la muestra, pero también las especies más
+abundantes ocurren en mayor proporción.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>N</span> <span class='op'>&lt;-</span> <span class='fl'>10000</span></span>
+<span><span class='va'>alphas</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>150</span>, <span class='fl'>75</span>, <span class='fl'>40</span>, <span class='fl'>20</span><span class='op'>)</span></span>
+<span><span class='co'>## Total de especies para cada valor de alpha</span></span>
+<span><span class='va'>S</span> <span class='op'>&lt;-</span> <span class='va'>alphas</span><span class='op'>*</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>+</span><span class='va'>N</span><span class='op'>/</span><span class='va'>alphas</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='kw'>for</span><span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>alphas</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>    <span class='va'>Octavas</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/octavpred.html'>octavpred</a></span><span class='op'>(</span>sad <span class='op'>=</span> <span class='st'>"ls"</span>,</span>
+<span>              coef <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>N <span class='op'>=</span> <span class='va'>N</span>, alpha <span class='op'>=</span> <span class='va'>alphas</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span>,</span>
+<span>              S <span class='op'>=</span> <span class='va'>S</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, N <span class='op'>=</span> <span class='va'>N</span><span class='op'>)</span></span>
+<span>    </span>
+<span>       <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>Octavas</span>, prop <span class='op'>=</span> <span class='cn'>TRUE</span>,</span>
+<span>             main <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"alpha = "</span>, <span class='va'>alphas</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, <span class='st'>", S = "</span>,<span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span><span class='op'>(</span><span class='va'>S</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span>,<span class='st'>" , N = "</span>, <span class='va'>N</span><span class='op'>)</span>,</span>
+<span>             ylim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0.25</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='op'>}</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<h3 id="la-poisson-lognormal">La Poisson-lognormal</h3>
+<p>La Poisson-lognormal asume que las abundancias de las especies en la
+comunidad que se muestrea siguen una distribución lognormal. Si la
+muestra toma individuos al azar, la abundancia de cada especie en la
+comunidad seguirá una distribución de Poisson, con media proporcional
+a la densidad de la especie en la comunidad. La distribución de
+abundancias en la muestra será la Poisson-lognormal (Bulmer 1974), que
+es la solución analítica para el “desvelamiento” (o revelado) de la
+distribución de abundancias de la comunidad, sugerida por Preston
+(1948).</p>
+<p>La Poisson-lognormal tiene dos parámetros, <span class="math inline">\(\mu\)</span> (la media del
+logaritmo de la abundancia) y <span class="math inline">\(\sigma\)</span> (el desvío estándar del
+logaritmo de las abundancias). En la función de densidad de la
+Poisson-lognormal del paquete <code>sads</code> estos parámetros tienen el nombre
+<code>mu</code> y <code>sig</code>. Comprobemos graficando el efecto de <span class="math inline">\(\sigma\)</span> (con <span class="math inline">\(\mu\)</span> fijo) y el efecto
+de <span class="math inline">\(\mu\)</span> (con <span class="math inline">\(\sigma\)</span> fijo), lado a lado:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fl'>0</span><span class='op'>:</span><span class='fl'>30</span></span>
+<span><span class='va'>sigs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>1</span>,<span class='fl'>0.3</span><span class='op'>)</span></span>
+<span><span class='va'>mu</span> <span class='op'>&lt;-</span> <span class='fl'>1.5</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'>dpoilog</span><span class='op'>(</span><span class='va'>x</span>, mu <span class='op'>=</span> <span class='va'>mu</span>, sig <span class='op'>=</span> <span class='va'>sigs</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>, type <span class='op'>=</span> <span class='st'>"l"</span>, lwd <span class='op'>=</span> <span class='fl'>2</span>,</span>
+<span>     xlab <span class='op'>=</span> <span class='st'>"Abundancia"</span>, ylab <span class='op'>=</span> <span class='st'>"Probabilidad"</span>,</span>
+<span>     main <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Variando sig (mu = "</span>,<span class='va'>mu</span>,<span class='st'>")"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='kw'>for</span> <span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>2</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>sigs</span><span class='op'>)</span><span class='op'>)</span> <span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'>dpoilog</span><span class='op'>(</span><span class='va'>x</span>, mu <span class='op'>=</span> <span class='va'>mu</span>, sig <span class='op'>=</span> <span class='va'>sigs</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span>, lwd <span class='op'>=</span> <span class='fl'>2</span>, col <span class='op'>=</span> <span class='va'>i</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/legend.html'>legend</a></span><span class='op'>(</span><span class='st'>"topright"</span>, legend <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"sig ="</span>, <span class='va'>sigs</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>sigs</span><span class='op'>)</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>sig</span> <span class='op'>&lt;-</span> <span class='fl'>0.3</span></span>
+<span><span class='va'>mus</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1.5</span>, <span class='fl'>2</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'>dpoilog</span><span class='op'>(</span><span class='va'>x</span>, mu <span class='op'>=</span> <span class='va'>mus</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>, sig <span class='op'>=</span> <span class='va'>sig</span><span class='op'>)</span>, type <span class='op'>=</span> <span class='st'>"l"</span>, lwd <span class='op'>=</span> <span class='fl'>2</span>,</span>
+<span>     xlab <span class='op'>=</span> <span class='st'>"Abundancia"</span>, ylab <span class='op'>=</span> <span class='st'>"Probabilidad"</span>,</span>
+<span>     main <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Variando mu (sig = "</span>, <span class='va'>sig</span>,<span class='st'>")"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='kw'>for</span> <span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>2</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>mus</span><span class='op'>)</span><span class='op'>)</span> <span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'>dpoilog</span><span class='op'>(</span><span class='va'>x</span>, mu <span class='op'>=</span> <span class='va'>mus</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span>, sig <span class='op'>=</span> <span class='va'>sig</span><span class='op'>)</span>, lwd <span class='op'>=</span> <span class='fl'>2</span>, col <span class='op'>=</span> <span class='va'>i</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/legend.html'>legend</a></span><span class='op'>(</span><span class='st'>"topright"</span>, legend <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"mu ="</span>, <span class='va'>mus</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>mus</span><span class='op'>)</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>El parámetro <span class="math inline">\(\sigma\)</span> cambia la forma de la distribución. Con
+<span class="math inline">\(\sigma\)</span> chico, la curva tiene un pico después del cero, es decir,
+los <em>singletons</em> no son la clase con más especies. Pero para valores
+mayores de <span class="math inline">\(\sigma\)</span> la distribución pasa a tener una forma de “J”
+invertida, y los <em>singletons</em> son la clase más abundante. El
+parámetro <span class="math inline">\(\mu\)</span>, en cambio, desplaza el centro de la distribución sin
+cambiar tanto su forma general: es como mover la “escala típica” de
+abundancia de la comunidad.</p>
+<p><strong>Ahora hazlo tú:</strong> grafica la Poisson-lognormal para <code>mu = 3</code> fijo y
+<code>sig = 0.2, 1, 4</code>. Intenta escribir el código antes de mirar la
+solución oculta.</p>
+<div class="layout-chunk" data-layout="l-body">
+<details>
+<summary>
+Show code
+</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fl'>0</span><span class='op'>:</span><span class='fl'>50</span></span>
+<span><span class='va'>sigs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>0.2</span><span class='op'>)</span></span>
+<span><span class='va'>mu</span> <span class='op'>&lt;-</span> <span class='fl'>3</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'>dpoilog</span><span class='op'>(</span><span class='va'>x</span>, mu <span class='op'>=</span> <span class='va'>mu</span>, sig <span class='op'>=</span> <span class='va'>sigs</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>, type <span class='op'>=</span> <span class='st'>"l"</span>, lwd <span class='op'>=</span> <span class='fl'>2</span>,</span>
+<span>     xlab <span class='op'>=</span> <span class='st'>"Abundancia"</span>, ylab <span class='op'>=</span> <span class='st'>"Probabilidad"</span>,</span>
+<span>     main <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Variando sig (mu = "</span>,<span class='va'>mu</span>,<span class='st'>")"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='kw'>for</span> <span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>2</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>sigs</span><span class='op'>)</span><span class='op'>)</span> <span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'>dpoilog</span><span class='op'>(</span><span class='va'>x</span>, mu <span class='op'>=</span> <span class='va'>mu</span>, sig <span class='op'>=</span> <span class='va'>sigs</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span><span class='op'>)</span>, lwd <span class='op'>=</span> <span class='fl'>2</span>, col <span class='op'>=</span> <span class='va'>i</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/legend.html'>legend</a></span><span class='op'>(</span><span class='st'>"topright"</span>, legend <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"sig ="</span>, <span class='va'>sigs</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>sigs</span><span class='op'>)</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span></code></pre>
+</div>
+</details>
+</div>
+<p>Y ahora verifica tu comprensión de los parámetros de la Poisson-lognormal:</p>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<p><strong>Manteniendo <code>mu</code> constante, si aumentamos <code>sig</code>, ¿qué esperas que le pase a la heterogeneidad de abundancias entre especies?</strong></p>
+<ul>
+<li><ol type="A">
+<li>aumenta la heterogeneidad: las abundancias entre especies se vuelven más dispares<br />
+</li>
+</ol></li>
+<li>(B) las abundancias entre especies se vuelven más parecidas entre sí<br />
+</li>
+<li>(C) la forma de la distribución no cambia</li>
+</ul>
+<h3 id="para-cerrar-cuál-curva-es-cuál">Para cerrar: ¿cuál curva es cuál?</h3>
+<p>Aquí tienes cuatro curvas de la log-series calculdas con la función <code>dls</code>
+(mismo <code>N</code>, distinto<code>alpha</code>), identificadas solo con una letra. Usando lo que aprendiste
+sobre el efecto de <code>alpha</code>, intenta adivinar qué valor corresponde a
+cada una.</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="01_introduccion_files/figure-html5/matching-plot-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<p><strong>¿Qué valor de <code>alpha</code> corresponde a la curva A?</strong></p>
+<ul>
+<li><ol type="A">
+<li>5<br />
+</li>
+</ol></li>
+<li>(B) 20<br />
+</li>
+<li>(C) 60<br />
+</li>
+<li>(D) 150</li>
+</ul>
+<p><strong>¿Qué valor de <code>alpha</code> corresponde a la curva B?</strong></p>
+<ul>
+<li><ol type="A">
+<li>5<br />
+</li>
+</ol></li>
+<li>(B) 20<br />
+</li>
+<li>(C) 60<br />
+</li>
+<li>(D) 150</li>
+</ul>
+<p><strong>¿Qué valor de <code>alpha</code> corresponde a la curva C?</strong></p>
+<ul>
+<li><ol type="A">
+<li>5<br />
+</li>
+</ol></li>
+<li>(B) 20<br />
+</li>
+<li>(C) 60<br />
+</li>
+<li>(D) 150</li>
+</ul>
+<p><strong>¿Qué valor de <code>alpha</code> corresponde a la curva D?</strong></p>
+<ul>
+<li><ol type="A">
+<li>5<br />
+</li>
+</ol></li>
+<li>(B) 20<br />
+</li>
+<li>(C) 60<br />
+</li>
+<li>(D) 150</li>
+</ul>
+<h3 id="conclusión-1">Conclusión</h3>
+<p>Vimos que estas dos distribuciones de probabilidad no son solo
+herramientas de cálculo: cada una encierra una hipótesis distinta
+sobre cómo se distribuyen las abundancias en una comunidad, y sus
+parámetros (<span class="math inline">\(\alpha\)</span> en la log-series; <span class="math inline">\(\mu\)</span> y <span class="math inline">\(\sigma\)</span> en la
+Poisson-lognormal) permiten interpretaciones ecológicas.</p>
+<p>Muchas otras distribuciones de probabilidad pueden usarse para
+describir las SAD, en muchos casos con parámetros interpretables, como
+mostramos aquí. En el próximo tutorial vamos a aprender cómo usar esas
+funciones para <em>ajustar</em> estos modelos a datos reales de abundancia.
+Para eso necesitamos encontrar los valores de los parámetros del
+modelo que resultan en el mejor ajuste a los datos.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+</div>
+</details>
 <h1 id="referencias">Referencias</h1>
+<p>Bulmer,M. G. (1974) On Fitting the Poisson Lognormal Distribution to Species-Abundance Data. <em>Biometrics, 30</em>: 101-110.</p>
+<p>Engen, S., R. Lande, T. Walla &amp; P. J. DeVries (2002) Analyzing spatial structure of communities using the two-dimensional Poisson lognormal species abundance model. <em>American Naturalist 160</em>: 60-73.</p>
 <p>Fisher, R.A., Corbet, A.S. and Williams, C.B. (1943) The relation between the number of species and the number of individuals in a random sample of an animal population. <em>Journal of Animal Ecology</em>, 12: 42–58.</p>
 <p>Green, J. and Plotkin, J.B. (2007) A statistical theory for sampling species abundances. <em>Ecology Letters</em>, 10: 1037–1045.</p>
 <p>Pielou, E.C. (1977) <em>Mathematical Ecology</em>. New York: John Wiley and Sons.</p>
 <p>Preston, F.W. (1948) The commonness, and rarity, of species. <em>Ecology</em>, 29(3): 254–283.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
@@ -2654,6 +3029,15 @@ Show code
 <div class="d-appendix">
 </div>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->
