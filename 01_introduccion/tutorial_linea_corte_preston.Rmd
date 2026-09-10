@@ -12,6 +12,7 @@ output:
 ```{r setup_local, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.align = "center")
 library(sads)
+library(vegan)
 ```
 
 Preston (1948) propuso que la distribución de abundancias de especies (*species abundance distribution*, SAD) en las comunidades ecológicas se aproxima bien mediante una distribución lognormal. También propuso que, en muestras pequeñas, esta lognormal aparece **cortada**, porque las especies raras tienen poca probabilidad de ser incluidas en la muestra. Preston llamó a este límite **"línea de velo"** (*veil line*), que se va abriendo a medida que el tamaño de la muestra aumenta.
