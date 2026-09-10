@@ -2714,17 +2714,9 @@ las especies de una comunidad son raras.</p>
 
 </div>
 <p><strong>¿Qué representa el valor de <code>dls(5, N = 10000, alpha = 20)</code>?</strong></p>
-<ul>
-<li><ol type="A">
-<li>el número esperado de especies con exactamente 5 individuos<br />
-</li>
-</ol></li>
-<li>(B) la probabilidad de que una especie elegida al azar tenga exactamente 5 individuos<br />
-</li>
-<li>(C) la proporción de individuos que pertenecen a especies con abundancia 5<br />
-</li>
-<li>(D) la probabilidad de que una especie elegida al azar tenga hasta 5 individuos</li>
-</ul>
+<div id="radio_NAHOCSWCZO" class="webex-radiogroup">
+<label><input type="radio" autocomplete="off" name="radio_NAHOCSWCZO" value=""></input> <span>el número esperado de especies con exactamente 5 individuos</span></label><label><input type="radio" autocomplete="off" name="radio_NAHOCSWCZO" value="answer"></input> <span>la probabilidad de que una especie elegida al azar tenga exactamente 5 individuos</span></label><label><input type="radio" autocomplete="off" name="radio_NAHOCSWCZO" value=""></input> <span>la proporción de individuos que pertenecen a especies con abundancia 5</span></label><label><input type="radio" autocomplete="off" name="radio_NAHOCSWCZO" value=""></input> <span>la probabilidad de que una especie elegida al azar tenga hasta 5 individuos</span></label>
+</div>
 <h3 id="la-log-series-el-papel-del-parámetro-alpha">La log-series: el papel del parámetro <code>alpha</code></h3>
 <p>El parámetro <span class="math inline">\(\alpha\)</span> de la log-series se conoce como el <strong>índice de
 diversidad de Fisher</strong>, y de hecho se sigue usando hoy como una medida
@@ -2780,15 +2772,9 @@ para tres valores diferentes de <span class="math inline">\(\alpha\)</span>:</p>
 
 </div>
 <p><strong>Manteniendo <code>N</code> constante, si aumentamos <code>alpha</code>, sabemos que crece el número de especies en la muestra. ¿Qué esperas que le pase a la forma de la distribución?</strong></p>
-<ul>
-<li><ol type="A">
-<li>la distribución decae más lentamente: hay relativamente más especies con abundancias intermedias<br />
-</li>
-</ol></li>
-<li>(B) la distribución decae más rápido: hay relativamente más especies con abundancias bajas<br />
-</li>
-<li>(C) la forma de la distribución no cambia en absoluto</li>
-</ul>
+<div id="radio_UVYGVGGHAQ" class="webex-radiogroup">
+<label><input type="radio" autocomplete="off" name="radio_UVYGVGGHAQ" value=""></input> <span>la distribución decae más lentamente: hay relativamente más especies con abundancias intermedias</span></label><label><input type="radio" autocomplete="off" name="radio_UVYGVGGHAQ" value="answer"></input> <span>la distribución decae más rápido: hay relativamente más especies con abundancias bajas</span></label><label><input type="radio" autocomplete="off" name="radio_UVYGVGGHAQ" value=""></input> <span>la forma de la distribución no cambia en absoluto</span></label>
+</div>
 <p>Ahora comprobemos, graficando la log-series para varios valores de <span class="math inline">\(\alpha\)</span>, con <span class="math inline">\(N\)</span> fijo en diez mil individuos:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -2931,15 +2917,9 @@ Show code
 
 </div>
 <p><strong>Manteniendo <code>mu</code> constante, si aumentamos <code>sig</code>, ¿qué esperas que le pase a la heterogeneidad de abundancias entre especies?</strong></p>
-<ul>
-<li><ol type="A">
-<li>aumenta la heterogeneidad: las abundancias entre especies se vuelven más dispares<br />
-</li>
-</ol></li>
-<li>(B) las abundancias entre especies se vuelven más parecidas entre sí<br />
-</li>
-<li>(C) la forma de la distribución no cambia</li>
-</ul>
+<div id="radio_EXLIXCUXZU" class="webex-radiogroup">
+<label><input type="radio" autocomplete="off" name="radio_EXLIXCUXZU" value="answer"></input> <span>aumenta la heterogeneidad: las abundancias entre especies se vuelven más dispares</span></label><label><input type="radio" autocomplete="off" name="radio_EXLIXCUXZU" value=""></input> <span>las abundancias entre especies se vuelven más parecidas entre sí</span></label><label><input type="radio" autocomplete="off" name="radio_EXLIXCUXZU" value=""></input> <span>la forma de la distribución no cambia</span></label>
+</div>
 <h3 id="para-cerrar-cuál-curva-es-cuál">Para cerrar: ¿cuál curva es cuál?</h3>
 <p>Aquí tienes cuatro curvas de la log-series calculadas con la función <code>dls</code>
 (mismo <code>N</code>, distinto <code>alpha</code>), identificadas solo con una letra. Usando lo que aprendiste
@@ -2951,54 +2931,10 @@ cada una.</p>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
-<p><strong>¿Qué valor de <code>alpha</code> corresponde a la curva A?</strong></p>
-<ul>
-<li><ol type="A">
-<li>5<br />
-</li>
-</ol></li>
-<li>(B) 20<br />
-</li>
-<li>(C) 60<br />
-</li>
-<li>(D) 150</li>
-</ul>
-<p><strong>¿Qué valor de <code>alpha</code> corresponde a la curva B?</strong></p>
-<ul>
-<li><ol type="A">
-<li>5<br />
-</li>
-</ol></li>
-<li>(B) 20<br />
-</li>
-<li>(C) 60<br />
-</li>
-<li>(D) 150</li>
-</ul>
-<p><strong>¿Qué valor de <code>alpha</code> corresponde a la curva C?</strong></p>
-<ul>
-<li><ol type="A">
-<li>5<br />
-</li>
-</ol></li>
-<li>(B) 20<br />
-</li>
-<li>(C) 60<br />
-</li>
-<li>(D) 150</li>
-</ul>
-<p><strong>¿Qué valor de <code>alpha</code> corresponde a la curva D?</strong></p>
-<ul>
-<li><ol type="A">
-<li>5<br />
-</li>
-</ol></li>
-<li>(B) 20<br />
-</li>
-<li>(C) 60<br />
-</li>
-<li>(D) 150</li>
-</ul>
+<p><strong>¿Qué valor de <code>alpha</code> corresponde a la curva A?</strong> <select class='webex-select'><option value='blank'></option><option value=''>5</option><option value=''>20</option><option value='answer'>60</option><option value=''>150</option></select></p>
+<p><strong>¿Qué valor de <code>alpha</code> corresponde a la curva B?</strong> <select class='webex-select'><option value='blank'></option><option value='answer'>5</option><option value=''>20</option><option value=''>60</option><option value=''>150</option></select></p>
+<p><strong>¿Qué valor de <code>alpha</code> corresponde a la curva C?</strong> <select class='webex-select'><option value='blank'></option><option value=''>5</option><option value=''>20</option><option value=''>60</option><option value='answer'>150</option></select></p>
+<p><strong>¿Qué valor de <code>alpha</code> corresponde a la curva D?</strong> <select class='webex-select'><option value='blank'></option><option value=''>5</option><option value='answer'>20</option><option value=''>60</option><option value=''>150</option></select></p>
 <h3 id="conclusión-1">Conclusión</h3>
 <p>Vimos que estas dos distribuciones de probabilidad no son solo
 herramientas de cálculo: cada una encierra una hipótesis distinta

@@ -34,23 +34,36 @@ incluir_capitulo <- function(archivo, eval = TRUE) {
 ## --------------------------------------------------------------
 ## Problema: mcq()/longmcq() deciden si generan el widget HTML o un
 ## texto plano (pensado para salidas LaTeX/PDF) consultando
-## knitr::is_latex_output(), que a su vez depende de la opción interna
-## knitr::opts_knit$get("out.format"). El resaltado de sintaxis del
-## sitio (via distill/downlit) parece modificar esa misma opción al
-## formatear el código fuente de los chunks, sin restaurarla. Una vez
-## que eso ocurre, is_latex_output() queda "pegado" en TRUE por el
-## resto del documento, y todo mcq()/longmcq() posterior deja de
-## generar el widget interactivo.
+## knitr::is_latex_output(), que a su vez depende de opciones internas
+## del knitr (out.format y/o rmarkdown.pandoc.to). En el sitio, algo
+## en la cadena de renderizado (posiblemente el resaltado de sintaxis
+## de distill/downlit) deja esas opciones en un estado que hace que
+## is_latex_output() devuelva TRUE de forma persistente, incluso
+## reseteando out.format antes de cada llamada (eso ya se probó y no
+## alcanza: probablemente rmarkdown.pandoc.to también queda afectado).
 ##
-## Solución: forzar out.format a NULL justo antes de cada llamada,
-## para que is_latex_output() vuelva a evaluar correctamente que la
-## salida es HTML.
+## Solución más robusta: en vez de intentar "arreglar" ese estado
+## global (cuyo origen exacto no está confirmado), estas funciones
+## generan el HTML del widget directamente, replicando la lógica de
+## mcq()/longmcq() del paquete webexercises pero sin consultar
+## is_latex_output() en absoluto. Así el resultado es siempre HTML,
+## sin importar el estado de esas opciones.
 html_mcq <- function(opts) {
-  knitr::opts_knit$set(out.format = NULL)
-  webexercises::mcq(opts)
+  ix <- which(names(opts) == "answer")
+  if (length(ix) == 0) stop("MCQ has no correct answer")
+  options <- sprintf("<option value='%s'>%s</option>", names(opts), opts)
+  sprintf("<select class='webex-select'><option value='blank'></option>%s</select>",
+          paste(options, collapse = ""))
 }
 
 html_longmcq <- function(opts) {
-  knitr::opts_knit$set(out.format = NULL)
-  webexercises::longmcq(opts)
+  ix <- which(names(opts) == "answer")
+  if (length(ix) == 0) stop("The question has no correct answer")
+  opts2 <- gsub("'", "&apos;", opts, fixed = TRUE)
+  qname <- paste0("radio_", paste(sample(LETTERS, 10, TRUE), collapse = ""))
+  options <- sprintf('<label><input type="radio" autocomplete="off" name="%s" value="%s"></input> <span>%s</span></label>',
+                      qname, names(opts), opts2)
+  paste0("<div class='webex-radiogroup' id='", qname, "'>",
+         paste(options, collapse = ""),
+         "</div>\n")
 }
