@@ -48,7 +48,17 @@ htmltools::tagList(
                  src = dirname(system.file("reports/default/webex.css", package = "webexercises")),
                  stylesheet = "webex.css"
              ),
-  htmltools::tags$script(htmltools::HTML(webex_js_txt))
+  ## IMPORTANTE: una tag suelta (htmltools::tags$script(...)) dentro de
+  ## un chunk include=FALSE es descartada en silencio por knitr (ya 
+  ## pasó antes con includeCSS/includeScript). Solo un objeto
+  ## htmlDependency de verdad sobrevive, por eso el script parcheado va
+  ## en el argumento `head`, no como tag suelta.
+  htmltools::htmlDependency(
+                 name = "webex-js-patched",
+                 version = as.character(utils::packageVersion("webexercises")),
+                 src = c(file = tempdir()),
+                 head = paste0("<script>", webex_js_txt, "</script>")
+             )
   )
 
 

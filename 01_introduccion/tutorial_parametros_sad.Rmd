@@ -10,8 +10,6 @@ output:
 ---
 
 ```{r setup_params, include=FALSE, eval=TRUE}
-library(sads)
-library(dplyr)
 library(webexercises)
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE, fig.align = "center")
@@ -24,6 +22,14 @@ de abundancia de especies (SAD), ambos disponibles en el paquete
 entender qué significan sus parámetros: cómo un cambio en un número
 se traduce en una comunidad ecológica
 distinta, con más o menos especies raras, más o menos heterogeneidad.
+
+Antes de empezar, cargue los paquetes que necesarios:
+
+```{r paquetes, eval=TRUE}
+library(sads)
+library(dplyr)
+```
+
 
 ### Las funciones `d*` devuelven probabilidades
 

@@ -2421,6 +2421,209 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
   <link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
   <link href="site_libs/webex-css-1.1.0/webex.css" rel="stylesheet" />
+  <script>
+  /* update total correct if #webex-total_correct exists */
+  update_total_correct = function() {
+    console.log("webex: update total_correct");
+
+    var t = document.getElementsByClassName("webex-total_correct");
+    for (var i = 0; i < t.length; i++) {
+      p = t[i].parentElement;
+      var correct = p.getElementsByClassName("webex-correct").length;
+      var solvemes = p.getElementsByClassName("webex-solveme").length;
+      var radiogroups = p.getElementsByClassName("webex-radiogroup").length;
+      var selects = p.getElementsByClassName("webex-select").length;
+
+      t[i].innerHTML = correct + " of " + (solvemes + radiogroups + selects) + " correct";
+    }
+  }
+
+  /* webex-solution button toggling function */
+  b_func = function() {
+    console.log("webex: toggle hide");
+
+    var cl = this.parentElement.classList;
+    if (cl.contains('open')) {
+      cl.remove("open");
+    } else {
+      cl.add("open");
+    }
+  }
+
+  /* check answers */
+  check_func = function() {
+    console.log("webex: check answers");
+
+    var cl = this.parentElement.classList;
+    if (cl.contains('unchecked')) {
+      cl.remove("unchecked");
+      this.innerHTML = "Hide Answers";
+    } else {
+      cl.add("unchecked");
+      this.innerHTML = "Show Answers";
+    }
+  }
+
+  /* function for checking solveme answers */
+  solveme_func = function(e) {
+    console.log("webex: check solveme");
+
+    var real_answers = JSON.parse(this.dataset.answer);
+    var my_answer = this.value;
+    var cl = this.classList;
+    if (cl.contains("ignorecase")) {
+      my_answer = my_answer.toLowerCase();
+    }
+    if (cl.contains("nospaces")) {
+      my_answer = my_answer.replace(/ /g, "")
+    }
+
+    if (my_answer == "") {
+      cl.remove("webex-correct");
+      cl.remove("webex-incorrect");
+    } else if (real_answers.includes(my_answer)) {
+      cl.add("webex-correct");
+      cl.remove("webex-incorrect");
+    } else {
+      cl.add("webex-incorrect");
+      cl.remove("webex-correct");
+    }
+
+    // match numeric answers within a specified tolerance
+    if(this.dataset.tol > 0){
+      var tol = JSON.parse(this.dataset.tol);
+      var matches = real_answers.map(x => Math.abs(x - my_answer) < tol)
+      if (matches.reduce((a, b) => a + b, 0) > 0) {
+        cl.add("webex-correct");
+      } else {
+        cl.remove("webex-correct");
+      }
+    }
+
+    // added regex bit
+    if (cl.contains("regex")){
+      answer_regex = RegExp(real_answers.join("|"))
+      if (answer_regex.test(my_answer)) {
+        cl.add("webex-correct");
+      }
+    }
+
+    update_total_correct();
+  }
+
+  /* function for checking select answers */
+  select_func = function(e) {
+    console.log("webex: check select");
+
+    var cl = this.classList
+
+    /* add style */
+    cl.remove("webex-incorrect");
+    cl.remove("webex-correct");
+    if (this.value == "answer") {
+      cl.add("webex-correct");
+    } else if (this.value != "blank") {
+      cl.add("webex-incorrect");
+    }
+
+    update_total_correct();
+  }
+
+  /* function for checking radiogroups answers */
+  radiogroups_func = function(e) {
+    console.log("webex: check radiogroups");
+
+    var checked_button = document.querySelector('input[name=' + this.id + ']:checked');
+    var cl = checked_button.parentElement.classList;
+    var labels = checked_button.parentElement.parentElement.children;
+
+    /* get rid of styles */
+    for (i = 0; i < labels.length; i++) {
+      labels[i].classList.remove("webex-incorrect");
+      labels[i].classList.remove("webex-correct");
+    }
+
+    /* add style */
+    if (checked_button.value == "answer") {
+      cl.add("webex-correct");
+    } else {
+      cl.add("webex-incorrect");
+    }
+
+    update_total_correct();
+  }
+
+  window.addEventListener("load", function() {
+    console.log("webex onload");
+    /* set up solution buttons */
+    var buttons = document.getElementsByTagName("button");
+
+    for (var i = 0; i < buttons.length; i++) {
+      if (buttons[i].parentElement.classList.contains('webex-solution')) {
+        buttons[i].onclick = b_func;
+      }
+    }
+
+    var check_sections = document.getElementsByClassName("webex-check");
+    console.log("check:", check_sections.length);
+    for (var i = 0; i < check_sections.length; i++) {
+      check_sections[i].classList.add("unchecked");
+
+      let btn = document.createElement("button");
+      btn.innerHTML = "Show Answers";
+      btn.classList.add("webex-check-button");
+      btn.onclick = check_func;
+      check_sections[i].appendChild(btn);
+
+      let spn = document.createElement("span");
+      spn.classList.add("webex-total_correct");
+      check_sections[i].appendChild(spn);
+    }
+
+    /* set up webex-solveme inputs */
+    var solveme = document.getElementsByClassName("webex-solveme");
+
+    for (var i = 0; i < solveme.length; i++) {
+      /* make sure input boxes don't auto-anything */
+      solveme[i].setAttribute("autocomplete","off");
+      solveme[i].setAttribute("autocorrect", "off");
+      solveme[i].setAttribute("autocapitalize", "off");
+      solveme[i].setAttribute("spellcheck", "false");
+      solveme[i].value = "";
+
+      /* adjust answer for ignorecase or nospaces */
+      var cl = solveme[i].classList;
+      var real_answer = solveme[i].dataset.answer;
+      if (cl.contains("ignorecase")) {
+        real_answer = real_answer.toLowerCase();
+      }
+      if (cl.contains("nospaces")) {
+        real_answer = real_answer.replace(/ /g, "");
+      }
+      solveme[i].dataset.answer = real_answer;
+
+      /* attach checking function */
+      solveme[i].onkeyup = solveme_func;
+      solveme[i].onchange = solveme_func;
+
+      solveme[i].insertAdjacentHTML("afterend", " <span class='webex-icon'></span>")
+    }
+
+    /* set up radiogroups */
+    var radiogroups = document.getElementsByClassName("webex-radiogroup");
+    for (var i = 0; i < radiogroups.length; i++) {
+      radiogroups[i].onchange = radiogroups_func;
+    }
+
+    /* set up selects */
+    var selects = document.getElementsByClassName("webex-select");
+    for (var i = 0; i < selects.length; i++) {
+      selects[i].onchange = select_func;
+      selects[i].insertAdjacentHTML("afterend", " <span class='webex-icon'></span>")
+    }
+
+    update_total_correct();
+  });</script>
   <script src="site_libs/fitvids-2.1.1/fitvids.min.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
@@ -2656,6 +2859,13 @@ de abundancia de especies (SAD), ambos disponibles en el paquete
 entender qué significan sus parámetros: cómo un cambio en un número
 se traduce en una comunidad ecológica
 distinta, con más o menos especies raras, más o menos heterogeneidad.</p>
+<p>Antes de empezar, cargue los paquetes que necesarios:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/piLaboratory/sads'>sads</a></span><span class='op'>)</span></span>
+<span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
 <h3 id="las-funciones-d-devuelven-probabilidades">Las funciones <code>d*</code> devuelven probabilidades</h3>
 <p>En R, las funciones de una distribución de probabilidad que empiezan
 con <code>d</code> (como <code>dnorm</code>, <code>dpois</code>, o las que usaremos aquí) devuelven la
@@ -2713,8 +2923,8 @@ las especies de una comunidad son raras.</p>
 
 </div>
 <p><strong>¿Qué representa el valor de <code>dls(5, N = 10000, alpha = 20)</code>?</strong></p>
-<div id="radio_LQWXHZXJTX" class="webex-radiogroup">
-<label><input type="radio" autocomplete="off" name="radio_LQWXHZXJTX" value=""></input> <span>el número esperado de especies con exactamente 5 individuos</span></label><label><input type="radio" autocomplete="off" name="radio_LQWXHZXJTX" value="answer"></input> <span>la probabilidad de que una especie elegida al azar tenga exactamente 5 individuos</span></label><label><input type="radio" autocomplete="off" name="radio_LQWXHZXJTX" value=""></input> <span>la proporción de individuos que pertenecen a especies con abundancia 5</span></label><label><input type="radio" autocomplete="off" name="radio_LQWXHZXJTX" value=""></input> <span>la probabilidad de que una especie elegida al azar tenga hasta 5 individuos</span></label>
+<div id="radio_DKLHZWMRTK" class="webex-radiogroup">
+<label><input type="radio" autocomplete="off" name="radio_DKLHZWMRTK" value=""></input> <span>el número esperado de especies con exactamente 5 individuos</span></label><label><input type="radio" autocomplete="off" name="radio_DKLHZWMRTK" value="answer"></input> <span>la probabilidad de que una especie elegida al azar tenga exactamente 5 individuos</span></label><label><input type="radio" autocomplete="off" name="radio_DKLHZWMRTK" value=""></input> <span>la proporción de individuos que pertenecen a especies con abundancia 5</span></label><label><input type="radio" autocomplete="off" name="radio_DKLHZWMRTK" value=""></input> <span>la probabilidad de que una especie elegida al azar tenga hasta 5 individuos</span></label>
 </div>
 <h3 id="la-log-series-el-papel-del-parámetro-alpha">La log-series: el papel del parámetro <code>alpha</code></h3>
 <p>El parámetro <span class="math inline">\(\alpha\)</span> de la log-series se conoce como el <strong>índice de
@@ -2771,8 +2981,8 @@ para tres valores diferentes de <span class="math inline">\(\alpha\)</span>:</p>
 
 </div>
 <p><strong>Manteniendo <code>N</code> constante, si aumentamos <code>alpha</code>, sabemos que crece el número de especies en la muestra. ¿Qué esperas que le pase a la forma de la distribución?</strong></p>
-<div id="radio_LTHYRTCTAD" class="webex-radiogroup">
-<label><input type="radio" autocomplete="off" name="radio_LTHYRTCTAD" value=""></input> <span>la distribución decae más lentamente: hay relativamente más especies con abundancias intermedias</span></label><label><input type="radio" autocomplete="off" name="radio_LTHYRTCTAD" value="answer"></input> <span>la distribución decae más rápido: hay relativamente más especies con abundancias bajas</span></label><label><input type="radio" autocomplete="off" name="radio_LTHYRTCTAD" value=""></input> <span>la forma de la distribución no cambia en absoluto</span></label>
+<div id="radio_PFYANZHCFZ" class="webex-radiogroup">
+<label><input type="radio" autocomplete="off" name="radio_PFYANZHCFZ" value=""></input> <span>la distribución decae más lentamente: hay relativamente más especies con abundancias intermedias</span></label><label><input type="radio" autocomplete="off" name="radio_PFYANZHCFZ" value="answer"></input> <span>la distribución decae más rápido: hay relativamente más especies con abundancias bajas</span></label><label><input type="radio" autocomplete="off" name="radio_PFYANZHCFZ" value=""></input> <span>la forma de la distribución no cambia en absoluto</span></label>
 </div>
 <p>Ahora comprobemos, graficando la log-series para varios valores de <span class="math inline">\(\alpha\)</span>, con <span class="math inline">\(N\)</span> fijo en diez mil individuos:</p>
 <div class="layout-chunk" data-layout="l-body">
@@ -2916,8 +3126,8 @@ Show code
 
 </div>
 <p><strong>Manteniendo <code>mu</code> constante, si aumentamos <code>sig</code>, ¿qué esperas que le pase a la heterogeneidad de abundancias entre especies?</strong></p>
-<div id="radio_LSDPTIUTKS" class="webex-radiogroup">
-<label><input type="radio" autocomplete="off" name="radio_LSDPTIUTKS" value="answer"></input> <span>aumenta la heterogeneidad: las abundancias entre especies se vuelven más dispares</span></label><label><input type="radio" autocomplete="off" name="radio_LSDPTIUTKS" value=""></input> <span>las abundancias entre especies se vuelven más parecidas entre sí</span></label><label><input type="radio" autocomplete="off" name="radio_LSDPTIUTKS" value=""></input> <span>la forma de la distribución no cambia</span></label>
+<div id="radio_EYIKCINQVM" class="webex-radiogroup">
+<label><input type="radio" autocomplete="off" name="radio_EYIKCINQVM" value="answer"></input> <span>aumenta la heterogeneidad: las abundancias entre especies se vuelven más dispares</span></label><label><input type="radio" autocomplete="off" name="radio_EYIKCINQVM" value=""></input> <span>las abundancias entre especies se vuelven más parecidas entre sí</span></label><label><input type="radio" autocomplete="off" name="radio_EYIKCINQVM" value=""></input> <span>la forma de la distribución no cambia</span></label>
 </div>
 <h3 id="para-cerrar-cuál-curva-es-cuál">Para cerrar: ¿cuál curva es cuál?</h3>
 <p>Aquí tienes cuatro curvas de la log-series calculadas con la función <code>dls</code>
