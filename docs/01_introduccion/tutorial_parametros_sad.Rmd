@@ -53,7 +53,7 @@ abundancia 1.
 
 Como es una distribución de probabilidad, si sumamos las
 probabilidades de todas las clases de abundancia posibles (de 1 hasta
-`N` en ese caso), el resultado debe ser 1, Verifica con el comando:
+`N` en ese caso), el resultado debe ser 1. Verifica con el comando:
 
 ```{r prob-suma}
 sum(dls(1:10000, N = 10000, alpha = 20))
@@ -94,7 +94,7 @@ quiz1 <- c(
 
 **¿Qué representa el valor de `dls(5, N = 10000, alpha = 20)`?**
 
-`r webexercises::longmcq(quiz1)`
+`r html_longmcq(quiz1)`
 
 ### La log-series: el papel del parámetro `alpha`
 
@@ -147,7 +147,7 @@ quiz2 <- c(
 
 **Manteniendo `N` constante, si aumentamos `alpha`, sabemos que crece el número de especies en la muestra. ¿Qué esperas que le pase a la forma de la distribución?**
 
-`r webexercises::longmcq(quiz2)`
+`r html_longmcq(quiz2)`
 
 Ahora comprobemos, graficando la log-series para varios valores de $\alpha$, con $N$ fijo en diez mil individuos:
 
@@ -303,13 +303,13 @@ quiz3 <- c(
 
 **Manteniendo `mu` constante, si aumentamos `sig`, ¿qué esperas que le pase a la heterogeneidad de abundancias entre especies?**
 
-`r webexercises::longmcq(quiz3)`
+`r html_longmcq(quiz3)`
 
 
 ### Para cerrar: ¿cuál curva es cuál?
 
-Aquí tienes cuatro curvas de la log-series calculdas con la función `dls`
-(mismo `N`, distinto`alpha`), identificadas solo con una letra. Usando lo que aprendiste
+Aquí tienes cuatro curvas de la log-series calculadas con la función `dls`
+(mismo `N`, distinto `alpha`), identificadas solo con una letra. Usando lo que aprendiste
 sobre el efecto de `alpha`, intenta adivinar qué valor corresponde a
 cada una.
 
@@ -334,13 +334,13 @@ opt_C <- c("5", "20", "60", answer = "150")
 opt_D <- c("5", answer = "20", "60", "150")
 ```
 
-**¿Qué valor de `alpha` corresponde a la curva A?** `r webexercises::mcq(opt_A)`
+**¿Qué valor de `alpha` corresponde a la curva A?** `r html_mcq(opt_A)`
 
-**¿Qué valor de `alpha` corresponde a la curva B?** `r webexercises::mcq(opt_B)`
+**¿Qué valor de `alpha` corresponde a la curva B?** `r html_mcq(opt_B)`
 
-**¿Qué valor de `alpha` corresponde a la curva C?** `r webexercises::mcq(opt_C)`
+**¿Qué valor de `alpha` corresponde a la curva C?** `r html_mcq(opt_C)`
 
-**¿Qué valor de `alpha` corresponde a la curva D?** `r webexercises::mcq(opt_D)`
+**¿Qué valor de `alpha` corresponde a la curva D?** `r html_mcq(opt_D)`
 
 
 ### Conclusión
@@ -357,4 +357,6 @@ mostramos aquí. En el próximo tutorial vamos a aprender cómo usar esas
 funciones para *ajustar* estos modelos a datos reales de abundancia.
 Para eso necesitamos encontrar los valores de los parámetros del
 modelo que resultan en el mejor ajuste a los datos.
+
+[^1]: Para datos biológicos, el valor de la constante $X$ en general es mayor que $0.9$. Si la razón entre el número de individuos y el número de especies en la muestra es mayor que 20, entonces $X>0.99$.
 

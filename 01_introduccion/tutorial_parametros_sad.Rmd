@@ -94,7 +94,7 @@ quiz1 <- c(
 
 **¿Qué representa el valor de `dls(5, N = 10000, alpha = 20)`?**
 
-`r webexercises::longmcq(quiz1)`
+`r html_longmcq(quiz1)`
 
 ### La log-series: el papel del parámetro `alpha`
 
@@ -147,7 +147,7 @@ quiz2 <- c(
 
 **Manteniendo `N` constante, si aumentamos `alpha`, sabemos que crece el número de especies en la muestra. ¿Qué esperas que le pase a la forma de la distribución?**
 
-`r webexercises::longmcq(quiz2)`
+`r html_longmcq(quiz2)`
 
 Ahora comprobemos, graficando la log-series para varios valores de $\alpha$, con $N$ fijo en diez mil individuos:
 
@@ -303,7 +303,7 @@ quiz3 <- c(
 
 **Manteniendo `mu` constante, si aumentamos `sig`, ¿qué esperas que le pase a la heterogeneidad de abundancias entre especies?**
 
-`r webexercises::longmcq(quiz3)`
+`r html_longmcq(quiz3)`
 
 
 ### Para cerrar: ¿cuál curva es cuál?
@@ -334,13 +334,13 @@ opt_C <- c("5", "20", "60", answer = "150")
 opt_D <- c("5", answer = "20", "60", "150")
 ```
 
-**¿Qué valor de `alpha` corresponde a la curva A?** `r webexercises::mcq(opt_A)`
+**¿Qué valor de `alpha` corresponde a la curva A?** `r html_mcq(opt_A)`
 
-**¿Qué valor de `alpha` corresponde a la curva B?** `r webexercises::mcq(opt_B)`
+**¿Qué valor de `alpha` corresponde a la curva B?** `r html_mcq(opt_B)`
 
-**¿Qué valor de `alpha` corresponde a la curva C?** `r webexercises::mcq(opt_C)`
+**¿Qué valor de `alpha` corresponde a la curva C?** `r html_mcq(opt_C)`
 
-**¿Qué valor de `alpha` corresponde a la curva D?** `r webexercises::mcq(opt_D)`
+**¿Qué valor de `alpha` corresponde a la curva D?** `r html_mcq(opt_D)`
 
 
 ### Conclusión
@@ -358,4 +358,5 @@ funciones para *ajustar* estos modelos a datos reales de abundancia.
 Para eso necesitamos encontrar los valores de los parámetros del
 modelo que resultan en el mejor ajuste a los datos.
 
-[^1]: Para dados biológicos, o valor de da constante $X$ em geral é acima de $0{,9}$. Se a razão número de indivíduos e número de espécies na amostra é maior que 20, então $X>0{,}99$.
+[^1]: Para datos biológicos, el valor de la constante $X$ en general es mayor que $0.9$. Si la razón entre el número de individuos y el número de especies en la muestra es mayor que 20, entonces $X>0.99$.
+

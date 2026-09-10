@@ -2681,7 +2681,7 @@ individuos con <code>alpha = 20</code>, una especie elegida al azar tenga
 abundancia 1.</p>
 <p>Como es una distribución de probabilidad, si sumamos las
 probabilidades de todas las clases de abundancia posibles (de 1 hasta
-<code>N</code> en ese caso), el resultado debe ser 1, Verifica con el comando:</p>
+<code>N</code> en ese caso), el resultado debe ser 1. Verifica con el comando:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/dls.html'>dls</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10000</span>, N <span class='op'>=</span> <span class='fl'>10000</span>, alpha <span class='op'>=</span> <span class='fl'>20</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
@@ -2738,7 +2738,7 @@ abundancia log-series, el número de especies esperado en una muestra
 abundancia <span class="math inline">\(n\)</span> también es una función de <span class="math inline">\(\alpha\)</span>:</p>
 <p><span class="math display">\[ E[S_n] = \frac{\alpha X^n}{n} \]</span></p>
 <p>en que <span class="math inline">\(X\)</span> es una constante que depende del esfuerzo muestral (<span class="math inline">\(N\)</span>), y
-que siempre es menor pero bien próxima a uno [^1]. Mira a continuación
+que siempre es menor pero bien próxima a uno <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Mira a continuación
 los cálculos de los valores esperados del total de especies, del número
 esperado de especies con abundancia uno (<em>singletons</em>) y de la
 proporción de esos <em>singletons</em>, para una muestra de 10000 individuos,
@@ -2941,8 +2941,8 @@ Show code
 <li>(C) la forma de la distribución no cambia</li>
 </ul>
 <h3 id="para-cerrar-cuál-curva-es-cuál">Para cerrar: ¿cuál curva es cuál?</h3>
-<p>Aquí tienes cuatro curvas de la log-series calculdas con la función <code>dls</code>
-(mismo <code>N</code>, distinto<code>alpha</code>), identificadas solo con una letra. Usando lo que aprendiste
+<p>Aquí tienes cuatro curvas de la log-series calculadas con la función <code>dls</code>
+(mismo <code>N</code>, distinto <code>alpha</code>), identificadas solo con una letra. Usando lo que aprendiste
 sobre el efecto de <code>alpha</code>, intenta adivinar qué valor corresponde a
 cada una.</p>
 <div class="layout-chunk" data-layout="l-body">
@@ -3022,6 +3022,12 @@ modelo que resultan en el mejor ajuste a los datos.</p>
 <p>Pielou, E.C. (1977) <em>Mathematical Ecology</em>. New York: John Wiley and Sons.</p>
 <p>Preston, F.W. (1948) The commonness, and rarity, of species. <em>Ecology</em>, 29(3): 254–283.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Para datos biológicos, el valor de la constante <span class="math inline">\(X\)</span> en general es mayor que <span class="math inline">\(0.9\)</span>. Si la razón entre el número de individuos y el número de especies en la muestra es mayor que 20, entonces <span class="math inline">\(X&gt;0.99\)</span>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

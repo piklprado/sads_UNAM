@@ -14,12 +14,6 @@
 #' mantenerse siempre con eval = TRUE (si no, ni el texto ni el
 #' código del archivo incluido aparecerían en la página).
 #'
-#' Esto permite reutilizar el mismo tutorial en dos contextos:
-#' - Una página "borrador" con eval = FALSE, que muestra el texto y
-#'   el código sin ejecutarlo (rápida de compilar).
-#' - Una página "final", con eval = TRUE, que ejecuta todo el código
-#'   y muestra los resultados, para publicar a los estudiantes.
-#'
 #' @param archivo ruta al archivo .Rmd a incluir
 #' @param eval si TRUE (por defecto), ejecuta los chunks de código
 #'   del archivo incluido; si FALSE, los muestra sin ejecutar
@@ -29,10 +23,34 @@ incluir_capitulo <- function(archivo, eval = TRUE) {
   if (length(marcas_yaml) >= 2) {
     lineas <- lineas[-(marcas_yaml[1]:marcas_yaml[2])]
   }
-  ## Guarda las opciones actuales de chunk y las restaura al salir,
-  ## para no afectar el resto de la página que llama esta función.
   opts_originales <- knitr::opts_chunk$get()
   on.exit(knitr::opts_chunk$set(opts_originales), add = TRUE)
   knitr::opts_chunk$set(eval = eval)
   knitr::knit_child(text = lineas, quiet = TRUE)
+}
+
+## --------------------------------------------------------------
+## Wrappers "blindados" para los widgets de webexercises
+## --------------------------------------------------------------
+## Problema: mcq()/longmcq() deciden si generan el widget HTML o un
+## texto plano (pensado para salidas LaTeX/PDF) consultando
+## knitr::is_latex_output(), que a su vez depende de la opción interna
+## knitr::opts_knit$get("out.format"). El resaltado de sintaxis del
+## sitio (via distill/downlit) parece modificar esa misma opción al
+## formatear el código fuente de los chunks, sin restaurarla. Una vez
+## que eso ocurre, is_latex_output() queda "pegado" en TRUE por el
+## resto del documento, y todo mcq()/longmcq() posterior deja de
+## generar el widget interactivo.
+##
+## Solución: forzar out.format a NULL justo antes de cada llamada,
+## para que is_latex_output() vuelva a evaluar correctamente que la
+## salida es HTML.
+html_mcq <- function(opts) {
+  knitr::opts_knit$set(out.format = NULL)
+  webexercises::mcq(opts)
+}
+
+html_longmcq <- function(opts) {
+  knitr::opts_knit$set(out.format = NULL)
+  webexercises::longmcq(opts)
 }
