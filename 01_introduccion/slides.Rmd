@@ -661,15 +661,19 @@ legend("topright",
 
 .left-column[
 ```{r , echo=FALSE, fig.align='center'}
-include_graphics("figs/bora-la.jpg")
+include_graphics("figs/borala_dic.png")
 ```
 ]
 
 .right-column[
 
-#### Haiga los tutoriales:
+#### Bora lá !
 
-* 
+Haiga los [tutoriales](https://pilaboratory.github.io/sads_UNAM/01_introduccion.html)
+
+* **Gráficos** - La línea de corte de Preston
+
+* **Parametros** - De los parámetros a la forma de la SAD
 
            
 ]
