@@ -1,6 +1,6 @@
 ---
 title: "Taller SADS - UNAM"
-subtitle: "Introdución"
+subtitle: "Introducción"
 author: 
   - "Paulo Inácio Prado (PI)"
 date: '21 Septiembre 2026'
@@ -73,9 +73,9 @@ knitr::include_graphics("figs/PI.jpg")
 ]
 
 .pull-right[
-- Bachiler en Biología (1990), Maestria y Doctorado en Ecologia
+- Bachiller en Biología (1990), Maestría y Doctorado en Ecología
   (1991-1999), en Brasil;
-- Profesor en el Departamento de Ecología del Instituto de Biociências
+- Profesor en el Departamento de Ecología del Instituto de Biociencias
   USP;
 - Ecología de comunidades, ecología teórica, conservación;
 - Brasileño, vivo en la ciudad de São Paulo, Brasil;
@@ -113,7 +113,7 @@ knitr::include_graphics("figs/Painel.Paulo.Freire_cropped.JPG")
 
 ---
 
-## Estratégias pedagógicas
+## Estrategias pedagógicas
 
 .pull-left[
 
@@ -123,7 +123,7 @@ knitr::include_graphics("figs/Painel.Paulo.Freire_cropped.JPG")
 
 - Ejercícios
 
-- Todos los recursos de aprendizaje en https://pilaboratory.github.io/sads_UNAM/
+- Todos los recursos de aprendizaje en https://piklprado.github.io/sads_UNAM/
  
 ]
  
@@ -138,18 +138,18 @@ include_graphics("figs/autonomia.jpg")
 ---
 ## Programa
 
-1. Introdução: história, motivação, teoria e conceitos
+#### 1. Introducción: historia, motivación, teoría y conceptos
 
-2. Ajuste pelo método da verossimilhança
+#### 2. Ajuste por el método de la verosimilitud
 
-3. Ajuste a dados de frequência em classes de abundância ou cobertura
+#### 3. Ajuste a datos de frecuencia en clases de abundancia o cobertura
 
 ---
 class: inverse, middle
 
 .col-container[
 .col[
-# Um pouco de história
+# Un poco de historia
 ]
 
 .col[
@@ -163,15 +163,15 @@ class: inverse, middle
 
 ---
 
-## A ideia de quantificação
+## La idea de cuantificación
 
 .pull-left[
  
-* Uma das ideias fundadoras da ecologia é a **quantificação**, como
-   forma de obter descrições precisas da natureza.
+* Una de las ideas fundadoras de la ecología es la **cuantificación**, como
+   forma de obtener descripciones precisas de la naturaleza.
  
-* O campo que hoje chamamos de **ecologia vegetal** foi pioneiro em
-usar contagens e medições para caracterizar formações vegetais.  ]
+* El campo que hoy llamamos **ecología vegetal** fue pionero en
+usar conteos y mediciones para caracterizar formaciones vegetales.  ]
 
 .pull-right[ <iframe
 src="https://archive.org/details/researchmethodsi00clem/page/161/mode/1up"
@@ -181,12 +181,12 @@ mozallowfullscreen="true" allowfullscreen></iframe> ]
 
 ---
 
-## Quantificação de abundâncias
+## Cuantificación de abundancias
 
 .pull-left[
-A partir de fins do século XIX parcelas quadradas ou circulares
-começaram a ser usadas para registrar a abundância de espécies de
-plantas em diferentes partes do mundo (predominantemente na Europa e EUA).
+A partir de fines del siglo XIX, parcelas cuadradas o circulares
+comenzaron a usarse para registrar la abundancia de especies de
+plantas en diferentes partes del mundo (predominantemente en Europa y EE.UU.).
 ]
 .pull-right[
 <div style="text-align:center">
@@ -202,14 +202,14 @@ plantas em diferentes partes do mundo (predominantemente na Europa e EUA).
 
 ---
 
-## Um padrão
+## Un patrón
 
 .pull-left[
 
-Logo se percebeu que nestas amostras a maioria das espécies era rara,
-ao passo que pouquíssimas espécies tinham grande abundância. 
+Pronto se percibió que en estas muestras la mayoría de las especies era rara,
+mientras que muy pocas especies tenían gran abundancia. 
 
-Este é ainda um dos padrões empíricos mais gerais em ecologia.
+Este sigue siendo uno de los patrones empíricos más generales en ecología.
 ]
 
 .pull-right[ 
@@ -226,13 +226,18 @@ target="_blank">Isao Motomura (1904-1981)</a></p> </div>
 
 ---
 
-## O primeiro modelo
+## El primer modelo
 
 .pull-left[ 
 
-* Motomura (1932) propôs a primeira descrição gráfica de uma distribuição de abundância de espécies: um gráfico do logarítimo da abundância de cada espécie em função da ordem de abundância da espécie.
+* Motomura (1932) propuso la primera descripción gráfica de una
+  distribución de abundancia de especies: un gráfico del logaritmo de
+  la abundancia de cada especie en función del orden de abundancia de
+  la especie.
 
-* Também propôs o primeiro modelo matemático para uma SAD: uma relação linear entre o logaritimo da abundância ($y$) e sua ordem de abundância ($R$):
+* También propuso el primer modelo matemático para una SAD: una
+  relación lineal entre el logaritmo de la abundancia ($y$) y la orden
+  de abundancia de las especies ($R$):
 
 $$\log (y)  = a - b R$$
 ]
@@ -249,19 +254,21 @@ Motomura (1932), apud <a href="https://nsojournals.onlinelibrary.wiley.com/doi/a
 
 ---
 
-## SADs como distribuições de probabilidades
+## Las SAD como distribuciones de probabilidad
 
 .pull-left[
-* O estatístico, geneticista e eugenista Ronald Fisher foi o primeiro
-  a decrever SADs com uma distribuição de probabilidades, usando dados
-  dos entomólogos C.Willians e S. Corbet.
 
-* Fisher propôs que as abundâncias de espécies numa amostra variam
-  devido a diferenças nas abundâncias de espécies e também ao erro
-  amostral.
+* El estadístico, genetista y eugenista Ronald Fisher fue el primero
+  en describir las SAD con una distribución de probabilidad, usando datos
+  de los entomólogos C. Williams y S. Corbet.
 
-* Assim, um modelo de SAD deve definir a **probabilidade** de se
-observar cada abundância possível numa **amostra**.  
+* Fisher propuso que las abundancias de especies en una muestra varían
+  debido a diferencias en las abundancias de las especies y también al error
+  muestral.
+
+* Así, un modelo de SAD debe definir la **probabilidad** de
+observar cada abundancia posible en una **muestra**. 
+
 ] 
 
 .pull-right[
@@ -273,49 +280,52 @@ target="_blank">Ronald Fisher (1890-1962)</a></p> </div>
 <img src="figs/CBWilliams.jpeg"
 style="width:30%"> <p style="font-size:0.7em; margin-top:2px"><a
 href="https://doi.org/10.1098/rsbm.1982.0025"
-target="_blank">C. B. Willians (1889-1981)</a></p> </div> 
+target="_blank">C. B. Williams (1889-1981)</a></p> </div> 
 ]
 
 ---
 
-## SADs como distribuições de probabilidades
+## Las SAD como distribuciones de probabilidad
 
 .pull-left[
-* O modelo de Fisher é um caso limite da distribuição
-  binomial negativa truncada em zero, que depois ficou conhecido como
-  **log-série**.
 
-* Neste modelo, a probabilidade de registrar
-$n$ indivíduos de qualquer espécie numa amostra é proporcional a: 
+* El modelo de Fisher es un caso límite de la distribución
+  binomial negativa truncada en cero, que después se conoció como
+  **log-series**.
+
+* En este modelo, la probabilidad de registrar
+$n$ individuos de cualquier especie en una muestra es proporcional a: 
+
 $$\frac{\alpha X^n}{n}$$
 
-onde $X$ e $\alpha$ são parâmetros da distribuição de probabilidades.
+donde $X$ y $\alpha$ son parámetros de la distribución de probabilidad.
 ]
 
 .pull-right[
 <div style="text-align:center; margin-bottom:10px">
 <img src="figs/fisher_et_al_fig1B.png" style="width:75%">
-<p style="font-size:0.7em; margin-top:2px">Ajuste da log-série à frequência de espécies mariposas por número de indivíduos capturados em armadilhas luminosas. (<a href="https://www.jstor.org/stable/1411" target="_blank">Fisher et al. 1943</a>)</p>
+<p style="font-size:0.7em; margin-top:2px">Ajuste de la log-series a la frecuencia de especies de mariposas nocturnas por número de individuos capturados en trampas de luz. (<a href="https://www.jstor.org/stable/1411" target="_blank">Fisher et al. 1943</a>)</p>
 </div>
 ]
 
 ---
 
-## SADs como distribuições de probabilidades
+## Las SAD como distribuciones de probabilidad
 
 .pull-left[
 
-* Preston (1948) categorizou as
-  abundâncias de espécies em escala logarítmica de base 2 (**oitavas**).
+* Preston (1948) categorizó las abundancias de especies en escala
+  logarítmica de base 2 (**octavas**).
 
-* Seu modelo é uma distribuição normal nesta escala, ou seja, uma distribuição **log-normal** das
-  abundâncias.
+* Su modelo es una distribución normal en esta escala, es decir, una
+  distribución **lognormal** de las abundancias.
 
-* A cauda esquerda da distribuição estaria escondida por uma "linha da
-  cortina", devido o truncamento na abundância mínima observável na amostra.
+* La cola izquierda de la distribución estaría escondida por una
+  "línea de velo", debido al truncamiento en la abundancia mínima
+  observable en la muestra.
   
-* O aumento da amostragem "desloca a cortina", revelando a curva
-completa. 
+* El aumento del muestreo "desplaza el velo", revelando la curva
+completa.
 
 ]
 
@@ -326,9 +336,9 @@ completa.
 <a href="https://www.jstor.org/stable/20167145"> Frank Preston
 (1890-1962)</a></p> </div> <div style="text-align:center"> 
 <img src="figs/preston_1948_fig5.png" style="width:75%">
-<p style="font-size:0.7em; margin-top:2px"> Número de espécies de
-mariposas por classe de abundância em log2 (oitavas), e linha do
-ajuste da distribuição log-normal, truncada no valor 1 <a
+<p style="font-size:0.7em; margin-top:2px"> Número de especies de
+mariposas nocturnas por clase de abundancia en log2 (octavas), y línea del
+ajuste de la distribución lognormal, truncada en el valor 1 <a
 href="https://www.jstor.org/stable/1930989" target="_blank">(Preston,
 1948)</a></p> </div> 
 ]
@@ -340,14 +350,14 @@ href="https://www.jstor.org/stable/1930989" target="_blank">(Preston,
 
 * [Numata *et al.*
 (1953)](https://www.jstage.jst.go.jp/article/bse/3/3/3_KJ00001586575/_pdf/-char/en)
-propuseram o primeiro modelo de processo ecológico para SADs: se a
-espécie dominante toma uma fração $k$ de todo o recurso, a segunda
-espécie toma a mesma fração do recurso que sobra e assim
-sucessivamente, as abundâncias seguem uma série geométrica.
+propusieron el primer modelo de proceso ecológico para SAD: si la
+especie dominante toma una fracción $k$ de todo el recurso, la segunda
+especie toma la misma fracción del recurso que sobra y así
+sucesivamente, las abundancias siguen la serie geométrica de Motomura (1932).
 
-* Há muito outros modelos de SADs derivadas de processos, como os
-de partição de nichos (MacArthur 1957, Sugihara 1980, Tokeshi
-1990) e modelos neutros (Caswell 1976, Hubbel 2001).  ]
+* Hay muchos otros modelos de SAD derivados de procesos, como los
+de partición de nichos (MacArthur 1957, Sugihara 1980, Tokeshi
+1990) y modelos neutros (Caswell 1976, Hubbell 2001).  ]
 
 .pull-right[
 .center[
@@ -416,7 +426,7 @@ ggplot() +
   scale_y_continuous(breaks = 1:4, labels = rev(names(y_map))) +
   scale_x_continuous(labels = function(x) paste0(x, "%")) +
   labs(
-    title = "Serie Geométrica: Preención de Nicho (k = 0,5)",
+    title = "Serie Geométrica: Partición de Nicho (k = 0,5)",
     x = "Proporción del Recurso Total (%)",
     y = NULL
   ) +
@@ -432,19 +442,20 @@ ggplot() +
 ]]
 
 ---
-## Em resumo: o que sabemos depois de mais um século
 
-* Mais de 40 modelos propostos, sem sinal de esgotamento ([Marquet *et al.* 2003](https://books.google.com.br/books?id=3vUUii37DEQC&lpg=PA64&ots=HKB34n5eS5&dq=marquet%202003%20breaking%20the%20stick&lr&hl=pt-BR&pg=PA73#v=onepage&q&f=false), [McGill *et al.* 2007](https://onlinelibrary.wiley.com/doi/epdf/10.1111/j.1461-0248.2007.01094.x));
+## En resumen: qué sabemos después de más de un siglo
 
-* Não se encontrou nenhum modelo universal, mas tão pouco se rejeitou
-  definitivamente algum modelo;
+* Más de 40 modelos propuestos, sin señales de agotamiento ([Marquet *et al.* 2003](https://books.google.com.br/books?id=3vUUii37DEQC&lpg=PA64&ots=HKB34n5eS5&dq=marquet%202003%20breaking%20the%20stick&lr&hl=pt-BR&pg=PA73#v=onepage&q&f=false), [McGill *et al.* 2007](https://onlinelibrary.wiley.com/doi/epdf/10.1111/j.1461-0248.2007.01094.x));
 
-* Modelos deduzidos de certos processos se ajustam a dados que não
-  foram gerados por estes processos (e.g. Modelo neutro);
+* No se encontró ningún modelo universal, pero tampoco se rechazó
+  definitivamente ningún modelo;
 
-* Por outro lado, SADs seguem sendo um padrão fundamental em ecologia:
-  a descrição quantitativa mais sintética dos padrões de abundância e
-  raridade das espécies nas comunidades.
+* Modelos deducidos de ciertos procesos se ajustan a datos que no
+  fueron generados por esos procesos (p. ej. el modelo neutro);
+
+* De todos modos, las SAD siguen siendo un patrón fundamental en ecología:
+  la descripción cuantitativa más sintética de los patrones de abundancia y
+  rareza de las especies en las comunidades.
 
 
 ---
@@ -452,7 +463,7 @@ class: inverse, middle
 
 .col-container[
 .col[
-# Conceitos e definições
+# Conceptos y definiciones
 ]
 
 .col[
@@ -467,17 +478,17 @@ class: inverse, middle
 ---
 
 
-## Gráficos de SADs: diagrama de rank-abundância
+## Gráficos de SAD: diagrama de rango-abundancia
 
 .pull-left[ 
 
-* Plota o logarítimo da
-abundância de cada espécie (eixo y) em função do rank da espécie,
-ordenadas da mais abundante para mais rara (eixo x).  
+* Grafica el logaritmo de la
+abundancia de cada especie (eje y) en función del rango (orden) de la especie,
+ordenadas de la más abundante a la más rara (eje x).  
 
-* A função `rad` do pacote `sads` cria uma tabela com os valores dos
-ranks e abundâncias, que pode então ser usada para produzir o gráfico
-com a função `plot`: 
+* La función `rad` del paquete `sads` crea una tabla con los valores de los
+rangos y abundancias, que puede luego usarse para producir el gráfico
+con la función `plot`: 
 
 ```{r code-rank-abund, eval=FALSE}
 ## En R classico
@@ -490,24 +501,24 @@ rad(moths) |> plot()
 
 .pull-right[
 
-```{r rankabundance-plot, echo=FALSE, fig.align='center', fig.height=5.5, fig.cap="Diagrama de rank-abundância de mariposas capturadas com armadilha luminosa na estação de Rothamsted 1933-1936 (Willians 1943)"}
+```{r rankabundance-plot, echo=FALSE, fig.align='center', fig.height=5.5, fig.cap="Diagrama de rango-abundancia de mariposas nocturnas capturadas con trampa de luz en la estación de Rothamsted 1933-1936 (Williams 1943)"}
 rad(moths) |> plot()
 ```
 ]
 
 ---
 
-## Gráficos de SADs: histograma de oitavas
+## Gráficos de SAD: histograma de octavas
 
 .pull-left[ 
 
-* É um histograma do número de espécies em cada classe de
-  abundância. As classes estão a intervalos de potência de dois 
-  ( $2^0 , 2^1, 2^2, \ldots$ ), que Preston denominou "oitavas".
+* Es un histograma del número de especies en cada clase de
+  abundancia. Las clases están en intervalos de potencia de dos 
+  ( $2^0 , 2^1, 2^2, \ldots$ ), que Preston (1948) denominó "octavas".
 
-* A função `octav` do pacote `sads` cria uma tabela com o número de
-espécies por oitavas, que pode então ser usada para produzir o gráfico
-com a função `plot`:
+* La función `octav` del paquete `sads` crea una tabla con el número de
+especies por octavas, que puede luego usarse para producir el gráfico
+con la función `plot`:
 
 ```{r code-octave, eval=FALSE}
 ## En R classico
@@ -520,25 +531,25 @@ octav(moths) |> plot()
 
 .pull-right[
 
-```{r octave-plot, echo=FALSE, fig.align='center', fig.height=5.5, fig.cap="Número de espécies por oitavas, mariposas capturadas com armadilha luminosa na estação de Rothamsted 1933-1936 (Willians 1943)"}
+```{r octave-plot, echo=FALSE, fig.align='center', fig.height=5.5, fig.cap="Número de especies por octavas, mariposas nocturnas capturadas con trampa de luz en la estación de Rothamsted 1933-1936 (Williams 1943)"}
 octav(moths) |> plot()
 ```
 ]
 
 ---
 
-## Modelos de SADs
+## Modelos de SAD
 
 .pull-left[ 
 
-* Os modelos de SADs são distribuições de probabilidades, ou seja, são
-  funções matemáticas que atribuem probabilidades a cada evento de um
-  espaço amostral. Há dois tipos de modelos, cada um com seu espaço
-  amostral:
+* Los modelos de SAD son distribuciones de probabilidad, es decir, son
+  funciones matemáticas que asignan probabilidades a cada evento de un
+  espacio muestral. Hay dos tipos de modelos, cada uno con su propio espacio
+  muestral:
   
-  * Distribuições da probabilidade de abundâncias
+  * Distribuciones de la probabilidad de abundancias
   
-  * Distribuições da probabilidades de rankings de abundância 
+  * Distribuciones de la probabilidad de rangos de abundancia 
 ]
 
 .pull-right[
@@ -547,80 +558,82 @@ octav(moths) |> plot()
 par(cex.axis = 1.25, cex.lab = 1.25, cex.main=1.5, mar = c(6,7.5,4,2), mgp=c(3.5,1,0),  bty = "l", las=1, mfrow=c(2,1))
 x <- 1:20
 y <- dls(x, N=1000, alpha = 30)
-plot(y~x, xlab = "Abundancia", ylab = "Probabilidad", main= "Modelo log-series de abundância de las especies")
+plot(y~x, xlab = "Abundancia", ylab = "Probabilidad", main= "Modelo log-series de abundancia de las especies")
 x <- 1:10
 y <- dgs(x, k = 0.25, S =10)
-plot( y~x, xlab = "Rango", ylab = "Probabilidad", main= "Serie geometrica de rangos de los individuos")
+plot( y~x, xlab = "Rango", ylab = "Probabilidad", main= "Serie geométrica de rangos de los individuos")
 
 ```
 ]
 
 ---
 
-## Modelos de SADs
+## Modelos de SAD
 
-No pacote `sads` cada modelo têm as funções padrão para
-  distribuições de probabilidade com os prefixos: 
+En el paquete `sads` cada modelo tiene las funciones estándar para
+  distribuciones de probabilidad con los siguientes prefijos: 
 
-  * `d` para densidade probabilística: `dpoilog`, `dls` ... 
+  * `d` para densidad de probabilidad: `dpoilog`, `dls` ... 
   
-  * `p` para probabilidade acumulada: `ppoilog`, `pls` ...
+  * `p` para probabilidad acumulada: `ppoilog`, `pls` ...
   
-  * `q` para função quantil: `qpoilog`, `qls` ...
+  * `q` para función cuantil: `qpoilog`, `qls` ...
   
-  * `r` para gerar sorteios da distribuição: `rpoilog`, `rls` ... 
+  * `r` para generar sorteos de la distribución: `rpoilog`, `rls` ... 
 
 ---
 
-## Exemplos
+## Ejemplos
 
-### Função de densidade
+### Función de densidad
 
-Probabilidade de um indivíduo na amostra pertencer à segunda espécie
-mais abundante, segundo a série geométrica
+Probabilidad de que un individuo de la muestra pertenezca a la segunda especie
+más abundante, según la serie geométrica
 
 ```{r}
 dgs(x = 2, k = 0.5, S = 10)
 ```
 
-### Função de probabilidade acumulada
-Probabilidade de uma espécie ter até 5 indivíduos em uma distribuição log-série
+### Función de probabilidad acumulada
+Probabilidad de que una especie tenga hasta 5 individuos en una distribución log-series
 ```{r}
 pls(q = 3, alpha = 30, N = 500)
 ```
 
 ---
 
-## Exemplos 
+## Ejemplos 
 
-### Função de quantil
-Qual abundância acumula metade das espécies em uma distribuição log-série
+### Función cuantil
+Qué abundancia acumula la mitad de las especies en una distribución
+log-series
 
 ```{r}
 qls(p = 0.5, alpha = 30, N = 500)
 ```
 
-### Sorteio de uma distribuição
-Sorteio de 5 valores de rankings de uma distribuição Zipf-Mandelbrodt
+### Sorteo de una distribución
+Sorteo de 5 valores de rangos de una distribución Zipf-Mandelbrot
 ```{r}
 rmand(n = 5, s = 2, v = 1, N = 500)
 ```
 ---
 
-## Parametros de los modelos
+## Parámetros de los modelos
 .pull-left[
-* Cada modelo de distribuição de probabilidade tem seus parâmetros,
-  que definem a forma, posição e dispersão das probabilidades.
+* Cada modelo de distribución de probabilidad tiene sus parámetros,
+  que definen la forma, posición y dispersión de las probabilidades.
   
-* Por exemplo:
-  * O parâmetro $\alpha$ da log-série afeta a probabilidade de espécies raras
-  * O parâmetro $k$ da série geométrica define dominância das espécies
-	 de maior ranking
+* Por ejemplo:
+  * El parámetro $\alpha$ de la log-series afecta la riqueza de
+    especies y la proporción de especies raras
+  * El parámetro $k$ de la serie geométrica define la dominancia de las especies
+	 de mayor rango
 
-* Os modelos de SADs têm entre um e três parâmetros, em geral.	 
+* Los modelos de SAD tienen entre uno y tres parámetros, en general.	 
 ]
 
-.pull-rigth[
+.pull-right[
 ```{r parametros, echo=FALSE, fig.align='center', echo=FALSE}
 
 par(cex.axis = 1.25, cex.lab = 1.25, cex.main=1.5, mar = c(6,7.5,4,2), mgp=c(3.5,1,0),  bty = "l", las=1, mfrow=c(2,1))
@@ -631,7 +644,7 @@ y1 <- dls(x, N=1000, alpha = alphas[1])
 y2 <- dls(x, N=1000, alpha = alphas[2])
 y3 <- dls(x, N=1000, alpha = alphas[3])
 plot(y3~x, xlab = "Abundancia", ylab = "Probabilidad",
-     main= "Modelo log-series de abundância de las especies", type="b")
+     main= "Modelo log-series de abundancia de las especies", type="b")
 points(y2~x, type ="b", col =2)
 points(y1~x, type ="b", col =3)
 legend("topright",
@@ -645,7 +658,7 @@ ks <- c(0.5, 0.25, 0.1)
 y1 <- dgs(x, k = ks[1], S =10)
 y2 <- dgs(x, k = ks[2], S =10)
 y3 <- dgs(x, k = ks[3], S =10)
-plot(y1~x, xlab = "Rango", ylab = "Probabilidad", main= "Serie geometrica de rangos de los individuos", type="b")
+plot(y1~x, xlab = "Rango", ylab = "Probabilidad", main= "Serie geométrica de rangos de los individuos", type="b")
 points(y2~x, type ="b", col =2)
 points(y3~x, type ="b", col =3)
 legend("topright",
@@ -657,7 +670,7 @@ legend("topright",
 ]
 ---
 
-## Que hacer ahora
+## Qué hacer ahora
 
 .left-column[
 ```{r , echo=FALSE, fig.align='center'}
@@ -667,13 +680,13 @@ include_graphics("figs/borala_dic.png")
 
 .right-column[
 
-#### Bora lá !
+#### Bora lá!
 
-Haiga los [tutoriales](https://pilaboratory.github.io/sads_UNAM/01_introduccion.html)
+Encuentra en nuestro sitio los [tutoriales](https://piklprado.github.io/sads_UNAM/01_introduccion.html)
 
-* **Gráficos** - La línea de corte de Preston
+* **Gráficos** - *La línea de corte de Preston*
 
-* **Parametros** - De los parámetros a la forma de la SAD
+* **Parametros** - *De los parámetros a la forma de la SAD*
 
            
 ]
