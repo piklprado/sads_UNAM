@@ -1,5 +1,4 @@
 ---
-
 title: "Taller SADS - UNAM"
 subtitle: "Ajuste de modelos de SADs por máxima verosimilitud"
 author: 
@@ -8,7 +7,7 @@ date: '21 Septiembre 2026'
 output:
   xaringan::moon_reader:
     lib_dir: libs
-    css: ["xaringan-themer.css", "../meu_estilo.css"]
+    css: ["../xaringan-themer.css", "../meu_estilo.css"]
     nature:
       highlightStyle: github
       highlightLines: true
@@ -17,13 +16,12 @@ output:
 self-contained: true
 editor_options: 
   chunk_output_type: console
-
 ---
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
 options(servr.daemon = TRUE)#para que no bloquee la sesión
-knitr::opts_chunk$set(prompt = TRUE, comment = "")
+knitr::opts_chunk$set(prompt = TRUE, comment = "", out.width="90%")
 ```
 
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
@@ -33,6 +31,7 @@ library(ggforce)
 library(ggthemes)
 library(knitr)
 library(kableExtra)
+library(htmltools)
 library(dplyr)
 library(tidyr)
 library(sads)
@@ -63,16 +62,374 @@ htmltools::tagList(
 
 ```
 
-## O que é um ajuste de modelo estatístico
+
+## Como ajustar de modelo estatístico ?
 
 .pull-left[
+
+* Modelos estatísticos são funções que atribuem probabilidades a cada
+  observação.
+
+* Modelos com valores diferentes dos parâmetros atribuirão
+  probabilidades diferentes aos dados.
+
+* Um critério: para ajustar modelos aos dados, **buscamos os valores de
+  parâmetros que atribuem a maior probabilidade** possível aos dados.
 
 ]
 
 .pull-right[
 
-```{r ejemplo-ajuste-ls}
+```{r ejemplo-ajuste-ls, echo=FALSE}
+
+moths.oc <- octav(moths)
+moths.ls <- fitls(moths)
+moths.ls.oc <- octavpred(moths.ls)
+moths.a <- coef(moths.ls)["alpha"]
+moths.ls2.oc <- octavpred(moths, sad = "ls",
+                          coef=list(N=sum(moths), alpha = 200))
+plot(moths.oc, prop=TRUE,
+     xlab = "Clase de abundancia (octava)",
+     ylab = "Probabilidad", ylim = c(0,.3))
+lines(moths.ls.oc, prop=TRUE, lwd=1.5)
+lines(moths.ls2.oc, prop=TRUE, col = "red", lwd=1.5)
+v1 <- round(moths.a)
+v2 <- round(200)
+legend("topright", legend= c(bquote(alpha == .(v1)),
+                             bquote(alpha == .(v2))),
+       pch=1, lty=1, col=c("blue", "red"),
+       cex = 1.25, bty = "n")
 
 ```
 
 ]
+
+---
+
+### The likelihood law (informal statement)
+
+.bg-washed-blue.b--navy.ba.bw2.br3.shadow-5.ph4.mt1[
+.center[**IF**]
+
+* There are many models to describe a given data set, 
+
+* and each model assigns different probabilities to data
+]
+
+--
+
+.center[
+.bg-washed-blue.b--navy.ba.bw2.br3.shadow-5.ph4.mt4[
+**THEN**
+
+The model that assigns the larger probability to data is the best
+supported by the data, or the more plausible model.  ]
+]
+
+---
+
+##Likelihood law: a simple example
+
+.pull-left[
+
+**Two models**
+
+* $M_A$: the balls in the urn are all red
+
+* $M_B$: half of the balls are red and half are white
+
+**Data collecting**
+
+Draw balls at random from the urn, with replacement
+]
+
+.center[
+.pull-right[
+```{r, echo=FALSE}
+knitr::include_graphics("figs/urn2.png")
+```
+]]
+
+---
+
+##Likelihood law: a simple example
+
+### A single drawn, and the ball is red
+
+$$
+\begin{align}
+\\
+P(\text{red} \mid M_A) & = 1 \\[1em]
+P(\text{red} \mid M_B) & = 0.5
+\\
+\end{align}
+$$
+
+$M_A$ is $\frac{1}{0.5}\; = \; 2$ times more plausible (or better
+supported by the observation) than $M_B$.
+
+---
+
+##Likelihood law: a simple example
+
+### Two draws, both of red balls
+
+$$
+\begin{align}
+\\
+P(\{\text{red, red}\} \mid M_A) & = 1 \times 1 = 1\\[1em]
+P(\{\text{red, red}\} \mid M_B) & = 0.5 \times 0.5 = 0.25
+\\
+\end{align}
+$$
+
+$M_A$ is $\frac{1}{0.25}\; = \; 4$ times more plausible (or better
+supported by the observations) than $M_B$. <sup>1</sup> 
+
+.footnote[[1] under the assumption that the data are independent observations]
+
+---
+
+##The likelihood function
+
+Any function proportional to the product of probabilities assigned by
+a statistical model to each observation in data:
+
+
+.bg-washed-blue.b--navy.ba.bw2.br3.shadow-5.ph4.mt5[
+$$ \mathcal{L} \propto P(y_1 \mid M) \times P(y_2 \mid M) \times \ldots P(y_i \mid M)$$
+]
+
+
+---
+
+##The likelihood function
+
+Any function proportional to the product of probabilities assigned by
+a statistical model to each observation in data:
+
+
+.bg-washed-blue.b--navy.ba.bw2.br3.shadow-5.ph4.mt5[
+$$ \mathcal{L} \propto \prod^N P(y_i \mid M)$$
+]
+
+---
+
+##The log-likelihood function
+
+The logarithm of the likelihood function, that is, any function
+proportional to the **sum of the probabilities** assigned by a model
+to each observation in data:
+
+.bg-washed-blue.b--navy.ba.bw2.br3.shadow-5.ph4.mt5[
+$$ \textbf{L} \propto \sum^N \ln P(y_i \mid M)$$
+]
+
+
+---
+
+## Important remarks
+
+.mt5[
+
+* **The likelihood is a function of the model parameters:** likelihoods
+are conditional to a given data set. That is, data is taken as an
+invariant, while the model parameters can change.
+]
+--
+
+* ** Probability distributions are function of data**, conditioned to fixed values of parameters. Moreover, probability distributions sum (or integrate) up to one, while likelihood functions do not.
+
+--
+
+* In summary, **likelihood functions are not probability distribution functions**,
+though you need probabilities distributions to calculate likelihoods.
+
+
+---
+class: middle
+## Exemplo do cálculo da verossimilhança
+
+.col-container[
+.col[
+
+```{r ejemplo2-calculos, echo=FALSE, results="asis"}
+
+res_final <-
+    table(moths) |>
+    as.data.frame() |>
+    rename(Abund = moths) |>
+    mutate(Abund = as.numeric(as.character(Abund)),
+           p = dls(Abund, N = sum(moths), alpha = moths.a),
+           lp = log(p),
+           slp = Freq * lp) |>
+    filter(Abund<=6) |>
+    mutate(
+        Abund = as.character(Abund),
+        Freq  = as.character(Freq),
+        p     = sprintf("%.3f", p),
+        lp    = sprintf("%.3f", lp),
+        slp   = sprintf("%.3f", slp)) |>
+    rbind(data.frame(Abund = ". . .", Freq = "", p = "", lp = "", slp = "")) |>
+    rbind(data.frame(Abund = "",Freq  = "",p     = "",lp    = "Suma",
+                     slp   = sprintf("%.1f", as.numeric(logLik(moths.ls)))))
+tbl <- kable(res_final,
+      format = "html",
+      align = "c",
+      escape = FALSE,
+      col.names = c("Abund. (\\(x\\))", 
+                    "N especies (\\(N\\))", 
+                    "\\(P(x)\\)", 
+                    "\\(\\ln P(x)\\)", 
+                    "\\(N \\ln P(x)\\)")) |>
+  kable_styling(full_width = FALSE) |>
+  row_spec(7, background = "#f0f4f8", color = "#005f73", bold = TRUE) 
+
+cat(htmltools::htmlPreserve(as.character(tbl)))
+
+```
+]
+
+.col[
+.center[
+```{r ejemplo2-ajuste-ls, echo=FALSE}
+plot(moths.oc, prop=TRUE,
+     xlab = "Clase de abundancia (octava)",
+     ylab = "Probabilidad", ylim = c(0,.3))
+lines(moths.ls.oc, prop=TRUE, lwd=1.5)
+legend("topright", legend= c(bquote(alpha == .(v1))),
+       pch=1, lty=1, col="blue",
+       cex = 1.25, bty = "n")
+```
+]]]
+
+---
+
+## Máxima verosimilitud
+
+.pull-left[
+
+```{r, echo=FALSE}
+alfa <- 200
+x <- 1:200
+moth.ls.ll <- function(x)
+    sum(dls(moths, N=sum(moths), alpha=x, log=TRUE))
+x.ll <- sapply(x, moth.ls.ll)
+p1 <- function(y){
+    plot(x.ll ~ x, type ="l", col ="darkblue",
+     xlab = "Alfa", ylab = "Log-verosimilitud",
+     main="Log-series fitted to moth data", lwd=1.25)
+    points(alfa, x.ll[x==y], col = "red", pch=19, cex =2)
+}
+p1(alfa)
+
+```
+]
+.pull-right[
+
+```{r , echo=FALSE}
+
+p2 <- function(x){
+    y <- octavpred(moths, sad = "ls",
+              coef=list(N=sum(moths), alpha = x))
+    plot(moths.oc, prop=TRUE,
+         xlab = "Clase de abundancia (octava)",
+         ylab = "Probabilidad", ylim = c(0,.3))
+    lines(y, prop=TRUE, lwd=1.5, col="red")
+    legend("topright", legend= c(bquote(alpha == .(x))),
+           pch=1, lty=1, col="red",
+           cex = 1.25, bty = "n")
+}
+p2(alfa)
+```
+]
+
+---
+## Máxima verosimilitud
+
+.pull-left[
+
+```{r , echo=FALSE}
+alfa <- 150
+p1(alfa)
+```
+]
+.pull-right[
+
+```{r , echo=FALSE}
+p2(alfa)
+```
+]
+
+---
+
+## Máxima verosimilitud
+
+.pull-left[
+
+```{r , echo=FALSE}
+alfa <- 100
+p1(alfa)
+```
+]
+.pull-right[
+
+```{r , echo=FALSE}
+p2(alfa)
+```
+]
+
+---
+
+## Máxima verosimilitud
+
+.pull-left[
+
+```{r , echo=FALSE}
+alfa <- 40
+p1(alfa)
+```
+]
+.pull-right[
+
+```{r , echo=FALSE}
+p2(alfa)
+```
+]
+
+---
+
+## Máxima verosimilitud
+
+.pull-left[
+
+```{r , echo=FALSE}
+alfa <- 10
+p1(alfa)
+```
+]
+.pull-right[
+
+```{r , echo=FALSE}
+p2(alfa)
+```
+]
+
+---
+
+## Máxima verosimilitud
+
+.pull-left[
+
+```{r , echo=FALSE}
+alfa <- 2
+p1(alfa)
+```
+]
+.pull-right[
+
+```{r , echo=FALSE}
+p2(alfa)
+```
+]
+

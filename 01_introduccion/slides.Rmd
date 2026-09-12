@@ -7,7 +7,7 @@ date: '21 Septiembre 2026'
 output:
   xaringan::moon_reader:
     lib_dir: libs
-    css: ["xaringan-themer.css", "../meu_estilo.css"]
+    css: ["../xaringan-themer.css", "../meu_estilo.css"]
     nature:
       highlightStyle: github
       highlightLines: true
