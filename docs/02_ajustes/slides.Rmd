@@ -768,7 +768,7 @@ include_graphics("../01_introduccion/figs/bora-la.jpg")
 
 ### ¡Vámonos!
 
-Encuentra en nuestro sitio los [tutoriales](https://piklprado.github.io/sads_UNAM/docs/02_ajustes.html):
+Encuentra en nuestro sitio los [tutoriales](https://piklprado.github.io/sads_UNAM/02_ajustes.html):
 
 * **Máxima verosimilitud** - *MLE a la fuerza bruta*
 

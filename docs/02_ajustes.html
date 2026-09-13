@@ -2707,8 +2707,7 @@ Contenido
 <b>1. Maxima verosimilitud</b>
 </summary>
 <h2 id="mle-en-la-fuerza-bruta">MLE en la fuerza bruta</h2>
-<section id="máxima-verosimilitud-a-la-fuerza-bruta" class="layout-chunk" data-layout="l-body">
-<h1>Máxima verosimilitud a la fuerza bruta</h1>
+<div class="layout-chunk" data-layout="l-body">
 <p>En este tutorial vamos a buscar el ajuste por máxima verosimilitud del
 modelo log-series a los datos originalmente usados por Fisher <em>et al</em>.
 (1943) para presentar este modelo: el número de mariposas nocturnas de
@@ -2778,8 +2777,8 @@ valores de <code>alfa</code>:</p>
 <p><strong>Ponte a prueba:</strong> según este gráfico, ¿cuál es tu mejor estimación
 para el valor de <em>alfa</em> que da la máxima verosimilitud de la log-series
 ajustada a estos datos?</p>
-<div id="radio_HBLIOOXJKI" class="webex-radiogroup">
-<label><input type="radio" autocomplete="off" name="radio_HBLIOOXJKI" value=""></input> <span>20</span></label><label><input type="radio" autocomplete="off" name="radio_HBLIOOXJKI" value=""></input> <span>35</span></label><label><input type="radio" autocomplete="off" name="radio_HBLIOOXJKI" value="answer"></input> <span>40</span></label><label><input type="radio" autocomplete="off" name="radio_HBLIOOXJKI" value=""></input> <span>50</span></label>
+<div id="radio_VMUVFGTVPC" class="webex-radiogroup">
+<label><input type="radio" autocomplete="off" name="radio_VMUVFGTVPC" value=""></input> <span>20</span></label><label><input type="radio" autocomplete="off" name="radio_VMUVFGTVPC" value=""></input> <span>35</span></label><label><input type="radio" autocomplete="off" name="radio_VMUVFGTVPC" value="answer"></input> <span>40</span></label><label><input type="radio" autocomplete="off" name="radio_VMUVFGTVPC" value=""></input> <span>50</span></label>
 </div>
 <p>Ahora verifica cuál fue el valor de <code>alfa</code> para el mayor valor de
 log-verosimilitud:</p>
@@ -2837,12 +2836,13 @@ calculando la log-verosimilitud de cada uno. Vale notar que en este
 caso fue relativamente fácil aproximarse al <em>mle</em>, porque la
 log-series tiene un único parámetro libre, para el cual el propio
 modelo nos da un buen valor inicial (el número de singletons) a
-partir del cual explorar la función de verosimilitud. Cuando los
-modelos tienen más de un parámetro, esta exploración manual deja de
-ser práctica, y se hace necesario recurrir a los métodos de
-optimización numérica que el paquete <code>sads</code> usa internamente.</p>
+partir del cual explorar la función de verosimilitud.</p>
+<p>Cuando los modelos tienen más de un parámetro, esta exploración manual
+deja de ser práctica, y se hace necesario recurrir a los métodos de
+optimización numérica que el paquete <code>sads</code> usa internamente (véase
+Bolker 2008, 2026).</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
-</section>
+</div>
 </details>
 <details>
 <summary>
@@ -2851,6 +2851,16 @@ optimización numérica que el paquete <code>sads</code> usa internamente.</p>
 <h2 id="ajuste-y-seleción-de-modelos-de-sads">Ajuste y seleción de modelos de SADs</h2>
 </details>
 <h1 id="referencias">Referencias</h1>
+<p>Bolker, B. M. (2008). Ecological models and data in R. In Ecological
+models and data in R. Princeton University Press.</p>
+<p>Bolker B, R Development Core Team (2026). <em>bbmle: Tools for General Maximum
+Likelihood Estimation</em>. <a href="doi:10.32614/CRAN.package.bbmle" class="uri">doi:10.32614/CRAN.package.bbmle</a>
+<a href="https://doi.org/10.32614/CRAN.package.bbmle" class="uri">https://doi.org/10.32614/CRAN.package.bbmle</a>. R package version
+1.0.26, <a href="https://CRAN.R-project.org/package=bbmle" class="uri">https://CRAN.R-project.org/package=bbmle</a>.</p>
+<p>Fisher, R.A., Corbet, A.S. and Williams, C.B. (1943) The relation
+between the number of species and the number of individuals in a
+random sample of an animal population. <em>Journal of Animal Ecology</em>,
+12: 42–58.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->

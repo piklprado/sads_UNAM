@@ -92,4 +92,15 @@ cat(incluir_capitulo("02_ajustes/tutorial_maxima_verosimilitud.Rmd", eval = FALS
 
 # Referencias
 
+Bolker, B. M. (2008). Ecological models and data in R. In Ecological
+models and data in R. Princeton University Press.
 
+Bolker B, R Development Core Team (2026). _bbmle: Tools for General Maximum
+Likelihood Estimation_.  doi:10.32614/CRAN.package.bbmle
+<https://doi.org/10.32614/CRAN.package.bbmle>. R package version
+1.0.26, <https://CRAN.R-project.org/package=bbmle>.
+  
+Fisher, R.A., Corbet, A.S. and Williams, C.B. (1943) The relation
+between the number of species and the number of individuals in a
+random sample of an animal population. *Journal of Animal Ecology*,
+12: 42–58.

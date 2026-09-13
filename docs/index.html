@@ -2514,7 +2514,7 @@ measurement. Springer Science &amp; Business Media.</p>
 distributions: moving beyond single prediction theories to integration
 within an ecological framework. Ecology letters, 10(10), 995-1015.</p>
 <h2 id="preparate-para-el-curso">Preparate para el curso</h2>
-<h3 id="instale-r-y-rstudio">Instale R y RStudio</h3>
+<h3 id="instale-r-y-los-paquetes">Instale R y los paquetes</h3>
 <p>Dispondremos de computadoras durante las lecciones, pero le
 recomendamos que también instale R en una computadora de trabajo para
 que pueda realizar los tutoriales y ejercicios.</p>
@@ -2523,13 +2523,23 @@ que pueda realizar los tutoriales y ejercicios.</p>
 (el más cercano a tu ubicación) y sigue las instrucciones para instalar R
 según tu sistema operativo.</p></li>
 <li><p>Elije y instale una <a href="https://www.geeksforgeeks.org/r-language/best-ides-for-r-programming/">IDE</a> para hacer más facil el uso de R <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p></li>
-<li><p>En R instale la versión de desarrollo del paquete sads:</p></li>
+<li><p>EN R instale los paquetes que vamos a utilizar</p></li>
 </ol>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'>if</span> <span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"remotes"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
-<span>  <span class='fu'><a href='https://rdrr.io/r/utils/install.packages.html'>install.packages</a></span><span class='op'>(</span><span class='st'>"remotes"</span><span class='op'>)</span></span>
-<span><span class='op'>}</span></span>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>paquetes</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ggplot2"</span>, <span class='st'>"dplyr"</span>, <span class='st'>"vegan"</span>, <span class='st'>"remotes"</span><span class='op'>)</span></span>
+<span><span class='va'>novos_paq</span> <span class='op'>&lt;-</span> <span class='va'>paquetes</span><span class='op'>[</span><span class='op'>!</span><span class='op'>(</span><span class='va'>paquetes</span> <span class='op'><a href='https://rdrr.io/r/base/match.html'>%in%</a></span> <span class='fu'><a href='https://rdrr.io/r/utils/installed.packages.html'>installed.packages</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>[</span>, <span class='st'>"Package"</span><span class='op'>]</span><span class='op'>)</span><span class='op'>]</span></span>
+<span><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>novos_paq</span><span class='op'>)</span> <span class='op'>&gt;</span> <span class='fl'>0</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>  <span class='fu'><a href='https://rdrr.io/r/utils/install.packages.html'>install.packages</a></span><span class='op'>(</span><span class='va'>novos_paq</span><span class='op'>)</span></span>
+<span><span class='op'>}</span></span></code></pre>
+</div>
+</div>
+<ol start="4" type="1">
+<li>En R instale la versión de desarrollo del paquete <code>sads</code>:</li>
+</ol>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://remotes.r-lib.org'>remotes</a></span><span class='op'>)</span></span>
 <span><span class='fu'>remotes</span><span class='fu'>::</span><span class='fu'><a href='https://remotes.r-lib.org/reference/install_github.html'>install_github</a></span><span class='op'>(</span><span class='st'>"pilaboratory/sads"</span>,</span>
 <span>                        ref<span class='op'>=</span><span class='st'>"dev"</span>,</span>
 <span>                        dependencies <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Depends"</span>, <span class='st'>"Imports"</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>

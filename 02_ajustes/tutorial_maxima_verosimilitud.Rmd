@@ -16,8 +16,6 @@ if (!exists("html_longmcq", mode = "function")) {
 library(sads)
 ```
 
-# Máxima verosimilitud a la fuerza bruta
-
 En este tutorial vamos a buscar el ajuste por máxima verosimilitud del
 modelo log-series a los datos originalmente usados por Fisher *et al*.
 (1943) para presentar este modelo: el número de mariposas nocturnas de
@@ -157,7 +155,9 @@ calculando la log-verosimilitud de cada uno. Vale notar que en este
 caso fue relativamente fácil aproximarse al *mle*, porque la
 log-series tiene un único parámetro libre, para el cual el propio
 modelo nos da un buen valor inicial (el número de singletons) a
-partir del cual explorar la función de verosimilitud. Cuando los
-modelos tienen más de un parámetro, esta exploración manual deja de
-ser práctica, y se hace necesario recurrir a los métodos de
-optimización numérica que el paquete `sads` usa internamente.
+partir del cual explorar la función de verosimilitud. 
+
+Cuando los modelos tienen más de un parámetro, esta exploración manual
+deja de ser práctica, y se hace necesario recurrir a los métodos de
+optimización numérica que el paquete `sads` usa internamente (véase
+Bolker 2008, 2026).

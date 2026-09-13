@@ -65,7 +65,7 @@ within an ecological framework. Ecology letters, 10(10), 995-1015.
 
 ## Preparate para el curso
 
-### Instale R y RStudio
+### Instale R y los paquetes
 
 Dispondremos de computadoras durante las lecciones, pero le
 recomendamos que también instale R en una computadora de trabajo para
@@ -77,12 +77,20 @@ según tu sistema operativo.
 
 2. Elije y instale una [IDE](https://www.geeksforgeeks.org/r-language/best-ides-for-r-programming/) para hacer más facil el uso de R [^1].
 
-3. En R instale la versión de desarrollo del paquete sads:
+3. EN R instale los paquetes que vamos a utilizar
+
+```{r instala_paquetes, eval=FALSE, echo=TRUE}
+paquetes <- c("ggplot2", "dplyr", "vegan", "remotes")
+novos_paq <- paquetes[!(paquetes %in% installed.packages()[, "Package"])]
+if (length(novos_paq) > 0) {
+  install.packages(novos_paq)
+}
+```
+
+4. En R instale la versión de desarrollo del paquete `sads`:
 
 ```{r install_sads, eval=FALSE, echo=TRUE}
-if (!requireNamespace("remotes", quietly = TRUE)) {
-  install.packages("remotes")
-}
+library(remotes)
 remotes::install_github("pilaboratory/sads",
                         ref="dev",
                         dependencies = c("Depends", "Imports"))
