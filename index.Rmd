@@ -11,6 +11,11 @@ library(knitr)
 library(tufte)
 library(kableExtra)
 ```
+
+```{r, echo=FALSE, include=TRUE}
+htmltools::tagList(rmarkdown::html_dependency_jquery())
+```
+
 ## Bienvenida(o)
 
 Este es un taller creado por un estudiante de biología de toda la vida
