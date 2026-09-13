@@ -1,0 +1,163 @@
+---
+title: "Máxima verosimilitud a la fuerza bruta"
+author: "Paulo Inácio Prado"
+date: "2026-09-21"
+---
+
+```{r setup-tutorial-mle, include=FALSE}
+## Este chunk asegura que el tutorial también funcione si se renderiza
+## de forma independiente (fuera de incluir_capitulo()), sin depender
+## de que la página que lo incluye ya haya cargado sads/webexercises
+## y la función html_longmcq() de funciones.R.
+if (!exists("html_longmcq", mode = "function")) {
+  library(webexercises)
+  html_longmcq <- webexercises::longmcq
+}
+library(sads)
+```
+
+# Máxima verosimilitud a la fuerza bruta
+
+En este tutorial vamos a buscar el ajuste por máxima verosimilitud del
+modelo log-series a los datos originalmente usados por Fisher *et al*.
+(1943) para presentar este modelo: el número de mariposas nocturnas de
+cada especie capturadas con una trampa de luz en la estación de
+Rothamsted, Reino Unido, entre 1933 y 1936. Estos datos están
+disponibles en el objeto `moths` del paquete `sads`.
+
+Vamos a probar en la computadora diferentes valores del parámetro
+$\alpha$ de la log-series (el "Alfa de Fisher"), y calcular la verosimilitud del modelo para
+cada uno de ellos, hasta encontrar el valor que resulta en la mayor
+log-verosimilitud. Es decir, vamos a estimar el parámetro por máxima
+verosimilitud "a la fuerza bruta", sin usar ningún algoritmo de
+optimización, para entender paso a paso en qué consiste este método.
+
+## Una función de log-verosimilitud
+
+El primer paso es definir una función en R que calcula la
+log-verosimilitud de la log-series, condicionada a los datos. Esta
+función recibe un valor cualquiera de $\alpha$ (parámetro `A` en la
+función), calcula la probabilidad que una log-series con ese valor
+asigna a cada observación (usando la función de densidad `dls`),
+calcula el logaritmo de esas probabilidades y luego las suma:
+
+```{r logvero-mle}
+moths.ls.ll <- function(A)
+    sum( dls(moths, N = sum(moths), alpha = A, log = TRUE) )
+```
+
+Verifica que esta función devuelve un valor numérico si le das
+cualquier valor de `A`:
+
+```{r logvero-mle-test}
+moths.ls.ll(100)
+```
+
+## Explorando distintos valores de alfa
+
+Ahora vamos a usar esta función para calcular la log-verosimilitud
+para una serie de valores de $\alpha$. Para eso necesitamos empezar con
+algún valor inicial de referencia.
+
+En el caso de la log-series, sabemos que el número de especies con
+abundancia igual a 1 (los llamados *singletons*) es aproximadamente
+$\alpha X$, donde $X$ es un valor muy cercano a uno. Así, un buen
+valor inicial para $\alpha$ es el número de singletons en la muestra:
+
+```{r singletons-mle}
+(n1 <- sum(moths == 1))
+```
+
+Vamos a explorar valores de $\alpha$ desde la mitad hasta el doble de
+este número de *singletons*:
+
+```{r alfas-mle}
+alfas <- seq(n1/2, n1*2, by = 0.5)
+```
+
+Ahora aplicamos nuestra función de log-verosimilitud a cada uno de
+estos valores y guardamos el resultado en un objeto:
+
+```{r calculo-L-mle}
+moths.ls.L <- sapply(alfas, moths.ls.ll)
+```
+
+Y graficamos los valores de la log-verosimilitud en función de los
+valores de `alfa`:
+
+```{r grafico-L-mle}
+plot(moths.ls.L ~ alfas, type = "l", ylab = "Log-verosimilitud")
+```
+
+**Ponte a prueba:** según este gráfico, ¿cuál es tu mejor estimación
+para el valor de *alfa* que da la máxima verosimilitud de la log-series
+ajustada a estos datos?
+
+`r html_longmcq(c("20", "35", answer = "40", "50"))`
+
+Ahora verifica cuál fue el valor de `alfa` para el mayor valor de
+log-verosimilitud:
+
+```{r max-L-mle}
+alfas[moths.ls.L == max(moths.ls.L)]
+```
+
+Lo que hicimos aquí fue una **búsqueda por fuerza bruta**: probamos
+muchos valores posibles del parámetro para encontrar, de forma
+aproximada, el valor de máxima verosimilitud y el *mle*
+correspondiente. 
+
+El paquete `sads` usa optimización computacional para
+hacer esto de forma mucho más precisa y eficiente: se trata de
+técnicas numéricas para encontrar máximos y mínimos de funciones, que
+pueden tener uno o varios parámetros, sin necesidad de evaluarlas en
+todos los valores posibles.
+
+## Comparando con el mle calculado por el paquete
+
+Verifica el *mle* obtenido usando el paquete `sads`:
+
+```{r fitsad-ls-mle}
+moths.ls <- fitsad(moths, sad = "ls")
+moths.ls
+```
+
+Vemos que el *mle* calculado de esta forma, más precisa, es muy
+cercano al que encontramos con nuestro método de fuerza bruta. Además,
+podemos calcular el intervalo de confianza del *mle*:
+
+```{r confint-ls-mle}
+confint(moths.ls)
+```
+
+Este intervalo corresponde, de forma aproximada, a los valores de
+$\alpha$ que resultan en una log-verosimilitud hasta dos puntos menor
+que el máximo. Es decir, los modelos con valores de $\alpha$ dentro de
+este intervalo son, como máximo, $e^2 \approx 8$ veces menos
+plausibles que el modelo con el *mle*. 
+
+Este límite de diferencia de
+plausibilidad (dos puntos en la escala de la log-verosimilitud) es un
+criterio muy usado para considerar dos modelos como equivalentes: si
+la diferencia entre sus log-verosimilitudes es de hasta dos puntos,
+se consideran igualmente plausibles.
+
+Agreguemos al gráfico la línea que delimita este intervalo:
+
+```{r grafico-intervalo-mle}
+plot(moths.ls.L ~ alfas, type = "l", ylab = "Log-verosimilitud")
+abline(h = max(moths.ls.L) - 2, lty = 2, col = "red")
+```
+
+## En resumen
+
+En este tutorial estimamos el parámetro $\alpha$ de la log-series por
+máxima verosimilitud, explorando manualmente distintos valores y
+calculando la log-verosimilitud de cada uno. Vale notar que en este
+caso fue relativamente fácil aproximarse al *mle*, porque la
+log-series tiene un único parámetro libre, para el cual el propio
+modelo nos da un buen valor inicial (el número de singletons) a
+partir del cual explorar la función de verosimilitud. Cuando los
+modelos tienen más de un parámetro, esta exploración manual deja de
+ser práctica, y se hace necesario recurrir a los métodos de
+optimización numérica que el paquete `sads` usa internamente.

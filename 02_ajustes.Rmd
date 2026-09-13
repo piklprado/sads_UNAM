@@ -77,6 +77,9 @@ xaringanExtra::embed_xaringan("02_ajustes/slides.html")
 
 ## MLE en la fuerza bruta
 
+```{r tutorial-mle, echo = FALSE, results = "asis", eval = TRUE}
+cat(incluir_capitulo("02_ajustes/tutorial_maxima_verosimilitud.Rmd", eval = FALSE), sep = "\n")
+```
 </details>
 
 <details>

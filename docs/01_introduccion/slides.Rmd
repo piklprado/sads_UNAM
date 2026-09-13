@@ -680,9 +680,9 @@ include_graphics("figs/borala_dic.png")
 
 .right-column[
 
-#### Bora lá!
+### Bora lá!
 
-Encuentra en nuestro sitio los [tutoriales](https://piklprado.github.io/sads_UNAM/01_introduccion.html)
+Encuentra en nuestro sitio los [tutoriales](https://piklprado.github.io/sads_UNAM/docs/01_introduccion.html)
 
 * **Gráficos** - *La línea de corte de Preston*
 

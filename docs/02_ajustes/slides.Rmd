@@ -67,18 +67,18 @@ htmltools::tagList(
 ```
 
 
-## Como ajustar modelos estatísticos ?
+## ¿Cómo ajustar modelos estadísticos?
 
 .pull-left[
 
-* Modelos estatísticos são funções que atribuem probabilidades a cada
-  observação.
+* Los modelos estadísticos son funciones que asignan probabilidades a cada
+  observación.
 
-* Modelos com valores diferentes dos parâmetros atribuirão
-  probabilidades diferentes aos dados.
+* Modelos con valores diferentes de los parámetros asignarán
+  probabilidades diferentes a los datos.
 
-* Um critério: para ajustar modelos aos dados, **buscamos os valores de
-  parâmetros que atribuem a maior probabilidade** possível aos dados.
+* Un criterio: para ajustar modelos a los datos, **buscamos los valores de
+  parámetros que asignan la mayor probabilidad** posible a los datos.
 
 ]
 
@@ -110,41 +110,41 @@ legend("topright", legend= c(bquote(alpha == .(v1)),
 
 ---
 
-### The likelihood law (informal statement)
+### La ley de verosimilitud (enunciado informal)
 
 .bg-washed-blue.b--navy.ba.bw2.br3.shadow-5.ph4.mt1[
-.center[**IF**]
+.center[**SI**]
 
-* There are many models to describe a given data set, 
+* Hay varios modelos para describir un mismo conjunto de datos, 
 
-* and each model assigns different probabilities to data
+* y cada modelo asigna probabilidades diferentes a los datos
 ]
 
 --
 
 .center[
 .bg-washed-blue.b--navy.ba.bw2.br3.shadow-5.ph4.mt4[
-**THEN**
+**ENTONCES**
 
-The model that assigns the larger probability to data is the best
-supported by the data, or the more plausible model.  ]
+El modelo que asigna la mayor probabilidad a los datos es el mejor
+apoyado por los datos, o el modelo más plausible.  ]
 ]
 
 ---
 
-## Likelihood law: a simple example
+## Ley de verosimilitud: un ejemplo sencillo
 
 .pull-left[
 
-**Two models**
+**Dos modelos**
 
-* $M_A$: the balls in the urn are all red
+* $M_A$: todas las bolas de la urna son rojas
 
-* $M_B$: half of the balls are red and half are white
+* $M_B$: la mitad de las bolas son rojas y la mitad son blancas
 
-**Data collecting**
+**Recolección de datos**
 
-Draw balls at random from the urn, with replacement
+Sacar bolas al azar de la urna, con reemplazo
 ]
 
 .center[
@@ -156,48 +156,48 @@ knitr::include_graphics("figs/urn2.png")
 
 ---
 
-##Likelihood law: a simple example
+##Ley de verosimilitud: un ejemplo sencillo
 
-### A single drawn, and the ball is red
-
-$$
-\begin{align}
-\\
-P(\text{red} \mid M_A) & = 1 \\[1em]
-P(\text{red} \mid M_B) & = 0.5
-\\
-\end{align}
-$$
-
-$M_A$ is $\frac{1}{0.5}\; = \; 2$ times more plausible (or better
-supported by the observation) than $M_B$.
-
----
-
-##Likelihood law: a simple example
-
-### Two draws, both of red balls
+### Una sola extracción, y la bola es roja
 
 $$
 \begin{align}
 \\
-P(\{\text{red, red}\} \mid M_A) & = 1 \times 1 = 1\\[1em]
-P(\{\text{red, red}\} \mid M_B) & = 0.5 \times 0.5 = 0.25
+P(\text{roja} \mid M_A) & = 1 \\[1em]
+P(\text{roja} \mid M_B) & = 0.5
 \\
 \end{align}
 $$
 
-$M_A$ is $\frac{1}{0.25}\; = \; 4$ times more plausible (or better
-supported by the observations) than $M_B$. <sup>1</sup> 
-
-.footnote[[1] under the assumption that the data are independent observations]
+$M_A$ es $\frac{1}{0.5}\; = \; 2$ veces más plausible (o mejor
+apoyado por la observación) que $M_B$.
 
 ---
 
-## The likelihood function
+##Ley de verosimilitud: un ejemplo sencillo
 
-Any function proportional to the product of probabilities assigned by
-a statistical model to each observation in data:
+### Dos extracciones, ambas bolas rojas
+
+$$
+\begin{align}
+\\
+P(\{\text{roja, roja}\} \mid M_A) & = 1 \times 1 = 1\\[1em]
+P(\{\text{roja, roja}\} \mid M_B) & = 0.5 \times 0.5 = 0.25
+\\
+\end{align}
+$$
+
+$M_A$ es $\frac{1}{0.25}\; = \; 4$ veces más plausible (o mejor
+apoyado por las observaciones) que $M_B$. <sup>1</sup> 
+
+.footnote[[1] bajo el supuesto de que los datos son observaciones independientes]
+
+---
+
+## La función de verosimilitud
+
+Cualquier función proporcional al producto de probabilidades asignadas por
+un modelo estadístico a cada observación de los datos:
 
 
 .bg-washed-blue.b--navy.ba.bw2.br3.shadow-5.ph4.mt5[
@@ -212,10 +212,10 @@ $$ \mathcal{L} \propto \prod^N P(y_i \mid M)$$
 
 ---
 
-## A likelihood function
+## Una función de verosimilitud
 
-The product of probabilities assigned by
-a statistical model to each observation in data:
+El producto de probabilidades asignadas por
+un modelo estadístico a cada observación de los datos:
 
 
 .bg-washed-blue.b--navy.ba.bw2.br3.shadow-5.ph4.mt5[
@@ -224,10 +224,11 @@ $$ \mathcal{L} = \prod^N P(y_i \mid M)$$
 
 ---
 
-## The log-likelihood function
+## La función de log-verosimilitud
 
-The logarithm of the likelihood function, that is, the **sum of the logarithm of probabilities** assigned by a model
-to each observation in data <sup>2</sup> :
+El logaritmo de la función de verosimilitud, es decir, la **suma del
+logaritmo de las probabilidades** asignadas por un modelo a cada
+observación de los datos <sup>2</sup> :
 
 .bg-washed-blue.b--navy.ba.bw2.br3.shadow-5.ph4.mt5[
 $$ \textbf{L} = \sum^N \ln P(y_i \mid M)$$
@@ -235,11 +236,11 @@ $$ \textbf{L} = \sum^N \ln P(y_i \mid M)$$
 
 
 
-.footnote[[2] or any function proportional to this sum]
+.footnote[[2] o cualquier función proporcional a esta suma]
 
 ---
 class: middle
-## Exemplo do cálculo da verossimilhança
+## Ejemplo del cálculo de la verosimilitud
 
 .col-container[
 .col[
@@ -297,7 +298,7 @@ legend("topright", legend= c(bquote(alpha == .(v1))),
 
 ---
 
-## Ajuste por Máxima Verossimilhança
+## Ajuste por Máxima Verosimilitud
 
 .pull-left[
 
@@ -310,7 +311,7 @@ x.ll <- sapply(x, moth.ls.ll)
 p1 <- function(y){
     plot(x.ll ~ x, type ="l", col ="darkblue",
      xlab = "Alfa", ylab = "Log-verosimilitud",
-     main="Log-series fitted to moth data", lwd=1.25)
+     main="Log-series ajustada a los datos de mariposas", lwd=1.25)
     points(alfa, x.ll[x==y], col = "red", pch=19, cex =2)
 }
 p1(alfa)
@@ -428,37 +429,37 @@ p2(alfa)
 
 ---
  
-## Em resumo
+## En resumen
 
-* Ajustar um modelo pelo método da máxima verossimilhança equivale a
-  encontrar a combinação de parâmetros do modelo que maximizam a sua
-  função de verossimilhança, **para um certo conjunto de dados**.
-
---
-
-* Dizemos que o modelo assim ajustado é o que tem o maior apoio dos
-  dados, ou que é o mais plausível.
+* Ajustar un modelo por el método de máxima verosimilitud equivale a
+  encontrar la combinación de parámetros del modelo que maximizan su
+  función de verosimilitud, **para un cierto conjunto de datos**.
 
 --
 
-* A diferença de log-verossimilhança entre dois ajustes expressa o
-  quão mais plausível um ajuste é, em relação a outros.
+* Decimos que esta combinación de parámetros es la que tiene el mayor apoyo de
+  los datos, o que es el más plausible, para este modelo.
 
 --
 
-* Os valores dos parâmetros obtidos por este método chama-se
-  *estimativas de máxima verossimilhança* (**mle**), e têm várias
-  propriedades estatísticas interessantes.
+* La diferencia de log-verosimilitud entre dos ajustes expresa
+  cuánto más plausible es un ajuste, respecto a otros.
 
 --
 
-* Muitos dos métodos de ajuste de modelos estatísticos mais conhecidos
-  são casos particulares do método da máxima verossimulhança, como
-  mínimos quadrados ou ajustes de *glms* (métodos *iwls*).
+* Los valores de los parámetros obtenidos por este método se llaman
+  *estimaciones de máxima verosimilitud* (**mle**), y tienen varias
+  propiedades estadísticas interesantes.
+
+--
+
+* Muchos de los métodos de ajuste de modelos estadísticos más conocidos
+  son casos particulares del método de máxima verosimilitud, como
+  mínimos cuadrados o ajustes de *glms* (método *iwls*).
 
 ---
 
-## Mais parâmetros: superfície de verossimilhança
+## Más parámetros: superficie de verosimilitud
 
 ```{r moths-poilog }
 
@@ -473,7 +474,7 @@ mle_z <- max(perfil)
 ```
 
 ```{r moth-pl-superficie, , , message=FALSE, warning=FALSE, fig.height=6, out.width='100%', out.height='500px'}
-plot_ly(height = 500) |> # Define a altura interna do container Plotly (em pixels)
+plot_ly(height = 500) |> # Define la altura interna del contenedor Plotly (en pixeles)
   add_surface(
     x = ~mus, y = ~sigs, z = ~perfil,
     colorscale = "YlOrRd",
@@ -494,19 +495,19 @@ plot_ly(height = 500) |> # Define a altura interna do container Plotly (em pixel
   ) |>
   layout(
     autosize = TRUE,
-    margin = list(l = 10, r = 10, b = 10, t = 10), # Reduz margens externas desnecessárias
+    margin = list(l = 10, r = 10, b = 10, t = 10), # Reduce márgenes externos innecesarios
     scene = list(
       xaxis = list(title = "mu"),
       yaxis = list(title = "sigma"),
-      zaxis = list(title = "Log-Verossimilhança")
+      zaxis = list(title = "Log-verosimilitud")
     )
   ) |>
-  config(displayModeBar = FALSE) # Desabilita a barra de ferramentas (ícones do topo)
+  config(displayModeBar = FALSE) # Deshabilita la barra de herramientas (íconos superiores)
 ```
 
 ---
 
-## Superficie de uma Poisson-lognormal
+## Superficie de una Poisson-lognormal
 
 .pull-left[
 
@@ -558,18 +559,18 @@ lines(moths.pl.oc, prop=TRUE, lwd=1.5)
 
 .pull-left[
 
-* `sads` ajusta os modelos mais usados por máxima verosimilhança com 3 funções:
+* El paquete ajusta por máxima verosimilitud los modelos de SADs más usados, con 3 funciones:
   
-  * `fitsad()` para abundâncias de espécies
-  * `fitsadC()` para classes de abundância (e.g. cobertura)
-  * `fitrad()` para rankings de abundância
+  * `fitsad()` para abundancias de especies
+  * `fitsadC()` para clases de abundancia (e.g. cobertura)
+  * `fitrad()` para rankings de abundancia
 
-* Primeiro argumento (`x`): um vetor numérico com os dados
-* Segundo argumento (`sad`): o nome do modelo.
+* Primer argumento (`x`): un vector numérico con los datos
+* Segundo argumento (`sad`): el nombre del modelo.
 
 ]
 .pull-right[
-#### Ajuste da log-series aos dados de BCI
+#### Ajuste de la log-series a los datos de BCI
 ```{r bci-ls-ajuste, echo = TRUE}
 (bci.ls <- fitsad(x = bci, sad = "ls"))
 ```
@@ -580,14 +581,14 @@ lines(moths.pl.oc, prop=TRUE, lwd=1.5)
 
 .pull-left[
 
-O ajuste resulta em um objeto com todos os métodos usuais para objetos
-  de modelos do **R**, como :
+El ajuste resulta en un objeto con todos los métodos usuales para objetos
+  de modelos de **R**, como:
 
-* `coef()` para valores dos coeficientes do modelo (*mle*s) 
-* `confint()` para intervalos de confiança dos *mle*s
-* `logLik()` para log-verossimilhança do ajuste
-* `summary()` para um resumo do ajuste
-* ... e muito mais!
+* `coef()` para valores de los coeficientes del modelo (*mle*s) 
+* `confint()` para intervalos de confianza de los *mle*s
+* `logLik()` para log-verosimilitud del ajuste
+* `summary()` para un resumen del ajuste
+* ... ¡y mucho más!
 ]
 
 --
@@ -603,14 +604,14 @@ AIC(bci.ls)
 
 ---
 
-## Diagnóstico do ajuste
+## Diagnóstico del ajuste
 
 .pull-left[
 
-A função `plot()` aplicada ao objeto de modelo gera 4 gráficos de
-comparação das previsões do modelo com os dados:
-* octave plots and rank-bundance plots vs.  predicted values
-* qq and pp-plots of observed vs. predicted abundances. 
+La función `plot()` aplicada al objeto de modelo genera 4 gráficos de
+comparación de las predicciones del modelo con los datos:
+* gráficos de octavas y de rank-abundancia vs. valores predichos
+* gráficos qq y pp de abundancias observadas vs. predichas. 
 
 ```{r bci-ls-diagnostics, eval=FALSE, echo=TRUE}
 par(mfrow = c(2,2))
@@ -629,26 +630,26 @@ par(mfrow=c(1,1))
 
 ---
 
-## Seleção de modelos
+## Selección de modelos
 
 .pull-left[
 
-* O critério de informação de Akaike (**AIC**) estima **o erro de previsão** de um modelo
-  estatístico,  calculado de sua log-verossimilhança.
+* El criterio de información de Akaike (**AIC**) estima **el error de predicción** de un modelo
+  estadístico, calculado a partir de su log-verosimilitud.
   
-* Assim, o AIC pode ser usado para comparar modelos quanto a sua
-  capacidade de prever dados de novas amostras da mesma comunidade.
+* Así, el AIC puede usarse para comparar modelos en cuanto a su
+  capacidad de predecir datos de nuevas muestras de la misma comunidad.
 
-* Os objetos de modelos do pacote `sads` contêm toda a informação para
-  o cálculo do AIC no **R**, possibilitando usar este critério para seleção de
-  modelos ajustados aos **mesmos dados**.
+* Los objetos de modelos del paquete `sads` contienen toda la información para
+  el cálculo del AIC en **R**, permitiendo usar este criterio para selección de
+  modelos ajustados a los **mismos datos**.
 
 ]
 
 .pull-right[
 
-#### Seleção de 3 modelos para BCI
-```{r bci-pln, echo=TRUE, chache=TRUE}
+#### Selección de 3 modelos para BCI
+```{r bci-pln, echo=TRUE}
 
 ## Poisson lognormal
 bci.p <- fitsad(bci, sad = "poilog")
@@ -665,17 +666,17 @@ AICtab(bci.ls, bci.p, bci.u,
 
 ---
 
-## Previstos pelos modelos
+## Predichos por los modelos
 
 .pull-left[
 
-O pacote `sads` tem duas funções para cálculo de valores previstos pelos modelos:
+El paquete `sads` tiene dos funciones para calcular los valores predichos por los modelos:
  
- * `octavpred()`: número (ou proporção) de espécies previstas por oitava de abundância
+ * `octavpred()`: número (o proporción) de especies predichas por octava de abundancia
  
- * `radpred()` : abundância prevista para a espécie de cada ranking de abundância.
+ * `radpred()` : abundancia predicha para la especie de cada ranking de abundancia.
  
- As duas funções retornam *data frames* com os valores previstos.
+ Las dos funciones devuelven *data frames* con los valores predichos.
 
 
 
@@ -697,12 +698,12 @@ head(rp1, 4)
 
 ---
 
-## Comparação gráfica de previstos nas oitavas
+## Comparación gráfica de predichos en las octavas
 
 .pull-left[
 
 ```{r comp-pred-bci, echo=TRUE, eval=FALSE}
-## Oitavas previstas
+## Octavas predichas
 op2 <- octavpred(bci.u)
 op3 <- octavpred(bci.p)
 ## Gráfica
@@ -726,13 +727,13 @@ legend("toprigh",
 
 ---
 
-## Comparação gráfica de previstos nas RAD
+## Comparación gráfica de predichos en las RAD
 
 .pull-left[
 
 ```{r comp-pred-bci-rad, echo=TRUE, eval=FALSE}
 
-## RADs previstas
+## RADs predichas
 rp1 <- radpred(bci.ls)
 rp2 <- radpred(bci.u)
 rp3 <- radpred(bci.p)
@@ -765,11 +766,11 @@ include_graphics("../01_introduccion/figs/bora-la.jpg")
 
 .right-column[
 
-#### Vamonos!
+### ¡Vámonos!
 
-Encuentra en nuestro sitio los [tutoriales](https://piklprado.github.io/sads_UNAM/02_ajustes.html):
+Encuentra en nuestro sitio los [tutoriales](https://piklprado.github.io/sads_UNAM/docs/02_ajustes.html):
 
-* **Maxima verosimilitud** - *MLE en la fuerza bruta*
+* **Máxima verosimilitud** - *MLE a la fuerza bruta*
 
-* **Ajuste** - *Ajuste y seleción de modelos de SADs*           
+* **Ajuste** - *Ajuste y selección de modelos de SADs*           
 ]
