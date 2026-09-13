@@ -12,9 +12,6 @@ library(tufte)
 library(kableExtra)
 ```
 
-```{r, echo=FALSE, include=TRUE}
-htmltools::tagList(rmarkdown::html_dependency_jquery())
-```
 
 ## Bienvenida(o)
 
@@ -92,7 +89,7 @@ remotes::install_github("pilaboratory/sads",
 ```
 
 
-[^1]: [R Studio](https://www.rstudio.com/products/rstudio/download/)es
+[^1]: [R Studio](https://www.rstudio.com/products/rstudio/download/) es
    uno de los muchos
    [IDE](https://es.wikipedia.org/wiki/Entorno_de_desarrollo_integrado)
    para programar en R. Si ya usas otro IDE puede quedarte con él en
