@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Taller SADS - UNAM</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Paulo Inácio Prado (PI)" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <script src="libs/clipboard/clipboard.min.js"></script>
+    <link href="libs/shareon/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain/shareagain.js"></script>
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <link href="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.js"></script>
+    <script>window.xaringanExtraClipboard(null, {"button":"Copy code <i class=\"fa fa-clipboard\"><\/i>","success":"Copied! <i class=\"fa fa-check\" style=\"color: #90BE6D\"><\/i>","error":"Not copied 😕 <i class=\"fa fa-times-circle\" style=\"color: #F94144\"><\/i>"})</script>
+    <link href="libs/font-awesome/css/all.min.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="../meu_estilo.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Taller SADS - UNAM
+]
+.subtitle[
+## Introducción
+]
+.author[
+### Paulo Inácio Prado (PI)
+]
+.date[
+### 21 Septiembre 2026
+]
+
+---
+
+
+
+
+
+
+## Quién soy
+
+.pull-left[
+&lt;center&gt;
+&lt;img src="figs/PI.jpg" alt="" width="40%" /&gt;
+
+**PI**, Paulo Inácio Prado (pronombres: él)
+]
+
+.pull-right[
+- Bachiller en Biología (1990), Maestría y Doctorado en Ecología
+  (1991-1999), en Brasil;
+- Profesor en el Departamento de Ecología del Instituto de Biociencias
+  USP;
+- Ecología de comunidades, ecología teórica, conservación;
+- Brasileño, vivo en la ciudad de São Paulo, Brasil;
+- Me gusta: aprender, enseñar, buena comida, cocinar, nadar, charlar y
+conocer a la gente.  ]
+
+
+---
+
+## Para que estoy aquí
+
+ - Para ayudarte a entender mejor las distribuciones de abundancia de
+   especies y cómo ajustar estos modelos a tus propios datos
+   biológicos.
+ 
+ - Para que lo aprendas más rápido y fácil que yo
+ 
+ - Para aprender enseñando, porque la mejor manera de dominar un tema
+   es compartiéndolo (soy profesor por esa razón).
+
+
+&lt;center&gt;
+.left-column[
+&lt;img src="figs/Painel.Paulo.Freire_cropped.JPG" alt="" width="100%" /&gt;
+]
+&lt;/center&gt;
+
+.right-column[
+&gt; «Nadie educa a nadie, nadie se educa a sí mismo, las personas se educan entre sí, mediadas por el mundo»
+&gt;
+&gt; Paulo Freire
+]
+
+---
+
+## Estrategias pedagógicas
+
+.pull-left[
+
+- Clases dialogadas
+ 
+- Tutoriales en R
+
+- Ejercícios
+
+- Todos los recursos de aprendizaje en https://piklprado.github.io/sads_UNAM/
+ 
+]
+ 
+ .pull-right[
+
+&lt;a href="https://obind.eco.br/funai-educacao-indigena-instrucao-normativa-da-funai-promove-direitos-e-autonomia-dos-povos-indigenas-de-recente-contato/" target="_blank"&gt;&lt;img src="figs/autonomia.jpg" alt="" width="896" style="display: block; margin: auto;" /&gt;&lt;/a&gt;
+ 
+]
+ 
+---
+## Programa
+
+#### 1. Introducción: historia, motivación, teoría y conceptos
+
+#### 2. Ajuste por el método de la verosimilitud
+
+#### 3. Ajuste a datos de frecuencia en clases de abundancia o cobertura
+
+---
+class: inverse, middle
+
+.col-container[
+.col[
+# Un poco de historia
+]
+
+.col[
+.center[
+&lt;img src="figs/Fisher_window.jpg" style="width: 100%; max-width: 500px; border-radius: 4px;" /&gt;
+
+[Contested legacies: R.A. Fisher in retrospect](https://www.cai.cam.ac.uk/discover/fisher-21st-century/contested-legacies-ra-fisher-retrospect)
+]
+]
+]
+
+---
+
+## La idea de cuantificación
+
+.pull-left[
+ 
+* Una de las ideas fundadoras de la ecología es la **cuantificación**, como
+   forma de obtener descripciones precisas de la naturaleza.
+ 
+* El campo que hoy llamamos **ecología vegetal** fue pionero en
+usar conteos y mediciones para caracterizar formaciones vegetales.  ]
+
+.pull-right[ &lt;iframe
+src="https://archive.org/details/researchmethodsi00clem/page/161/mode/1up"
+width="560" height="500" frameborder="0" webkitallowfullscreen="true"
+mozallowfullscreen="true" allowfullscreen&gt;&lt;/iframe&gt; ]
+
+
+---
+
+## Cuantificación de abundancias
+
+.pull-left[
+A partir de fines del siglo XIX, parcelas cuadradas o circulares
+comenzaron a usarse para registrar la abundancia de especies de
+plantas en diferentes partes del mundo (predominantemente en Europa y EE.UU.).
+]
+.pull-right[
+&lt;div style="text-align:center"&gt;
+&lt;img src="figs/fred_and_edith_clements.jpeg" style="width:50%"&gt;
+&lt;p style="font-size:0.7em; margin-top:2px"&gt;La pareja Clements (&lt;a href="https://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=1000&amp;context=unsmaffil" target="_blank"&gt;Oberg, 2019&lt;/a&gt;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div style="text-align:center; margin-bottom:10px"&gt;
+&lt;img src="figs/quadrats_clements.jpg" style="width:90%"&gt;
+&lt;p style="font-size:0.7em; margin-top:2px"&gt;Parcelas de Clements. (&lt;a href="https://journals.openedition.org/transbordeur/1307" target="_blank"&gt;Hughes 2024&lt;/a&gt;)&lt;/p&gt;
+&lt;/div&gt;
+]
+
+
+---
+
+## Un patrón
+
+.pull-left[
+
+Pronto se percibió que en estas muestras la mayoría de las especies era rara,
+mientras que muy pocas especies tenían gran abundancia. 
+
+Este sigue siendo uno de los patrones empíricos más generales en ecología.
+]
+
+.pull-right[ 
+&lt;div style="text-align:center"&gt; &lt;img
+src="figs/prof-isao-motomura.jpg" style="width:33%"&gt; &lt;p
+style="font-size:0.7em; margin-top:2px"&gt; &lt;a
+href="https://oikosjournal.wordpress.com/2012/11/22/with-inspiration-from-the-past/"
+target="_blank"&gt;Isao Motomura (1904-1981)&lt;/a&gt;&lt;/p&gt; &lt;/div&gt; 
+
+&gt; "In a community, there are generally many more species with relatively low abundances."
+&gt;
+&gt; Motomura (1932), apud [Doi &amp; Mori 2012](https://nsojournals.onlinelibrary.wiley.com/doi/abs/10.1111/j.1600-0706.2012.00068.x)
+]
+
+---
+
+## El primer modelo
+
+.pull-left[ 
+
+* Motomura (1932) propuso la primera descripción gráfica de una
+  distribución de abundancia de especies: un gráfico del logaritmo de
+  la abundancia de cada especie en función del orden de abundancia de
+  la especie.
+
+* También propuso el primer modelo matemático para una SAD: una
+  relación lineal entre el logaritmo de la abundancia (`\(y\)`) y la orden
+  de abundancia de las especies (`\(R\)`):
+
+`$$\log (y)  = a - b R$$`
+]
+
+.pull-right[
+&lt;div style="display:flex; align-items:flex-start; width:100%"&gt;
+&lt;img src="figs/Motomoura_fig1.png" style="width:45%; flex-shrink:0"&gt;
+&lt;blockquote style="font-size:0.85em; margin:0 0 0 10px; padding-left:10px; border-left:3px solid #ccc"&gt;
+"When the species found within a quadrat are ranked according to abundance (i.e. the order of dominance in the community), a definite graphic pattern is observed between the rank and abundance of species"
+&lt;br&gt;&lt;br&gt;
+Motomura (1932), apud &lt;a href="https://nsojournals.onlinelibrary.wiley.com/doi/abs/10.1111/j.1600-0706.2012.00068.x" target="_blank"&gt;Doi &amp;amp; Mori 2012&lt;/a&gt;
+&lt;/blockquote&gt;
+&lt;/div&gt;]
+
+---
+
+## Las SAD como distribuciones de probabilidad
+
+.pull-left[
+
+* El estadístico, genetista y eugenista Ronald Fisher fue el primero
+  en describir las SAD con una distribución de probabilidad, usando datos
+  de los entomólogos C. Williams y S. Corbet.
+
+* Fisher propuso que las abundancias de especies en una muestra varían
+  debido a diferencias en las abundancias de las especies y también al error
+  muestral.
+
+* Así, un modelo de SAD debe definir la **probabilidad** de
+observar cada abundancia posible en una **muestra**. 
+
+] 
+
+.pull-right[
+&lt;div style="text-align:center"&gt; 
+&lt;img src="figs/Fisher_1943.jpg"style="width:30%"&gt; &lt;p style="font-size:0.7em; margin-top:2px"&gt;
+&lt;a href="https://www.npg.org.uk/collections/search/portrait/mw93489/Sir-Ronald-Aylmer-Fisher?_gl=1*1xkj9kl*_up*MQ..*_ga*Mzc2MTQ3MDk4LjE3ODg2NTA3NTA.*_ga_3D53N72CHJ*czE3ODg2NTA3NDkkbzEkZzEkdDE3ODg2NTA3NTUkajU0JGwwJGgw"
+target="_blank"&gt;Ronald Fisher (1890-1962)&lt;/a&gt;&lt;/p&gt; &lt;/div&gt; 
+&lt;div style="text-align:center"&gt; 
+&lt;img src="figs/CBWilliams.jpeg"
+style="width:30%"&gt; &lt;p style="font-size:0.7em; margin-top:2px"&gt;&lt;a
+href="https://doi.org/10.1098/rsbm.1982.0025"
+target="_blank"&gt;C. B. Williams (1889-1981)&lt;/a&gt;&lt;/p&gt; &lt;/div&gt; 
+]
+
+---
+
+## Las SAD como distribuciones de probabilidad
+
+.pull-left[
+
+* El modelo de Fisher es un caso límite de la distribución
+  binomial negativa truncada en cero, que después se conoció como
+  **log-series**.
+
+* En este modelo, la probabilidad de registrar
+`\(n\)` individuos de cualquier especie en una muestra es proporcional a: 
+
+`$$\frac{\alpha X^n}{n}$$`
+
+donde `\(X\)` y `\(\alpha\)` son parámetros de la distribución de probabilidad.
+]
+
+.pull-right[
+&lt;div style="text-align:center; margin-bottom:10px"&gt;
+&lt;img src="figs/fisher_et_al_fig1B.png" style="width:75%"&gt;
+&lt;p style="font-size:0.7em; margin-top:2px"&gt;Ajuste de la log-series a la frecuencia de especies de mariposas nocturnas por número de individuos capturados en trampas de luz. (&lt;a href="https://www.jstor.org/stable/1411" target="_blank"&gt;Fisher et al. 1943&lt;/a&gt;)&lt;/p&gt;
+&lt;/div&gt;
+]
+
+---
+
+## Las SAD como distribuciones de probabilidad
+
+.pull-left[
+
+* Preston (1948) categorizó las abundancias de especies en escala
+  logarítmica de base 2 (**octavas**).
+
+* Su modelo es una distribución normal en esta escala, es decir, una
+  distribución **lognormal** de las abundancias.
+
+* La cola izquierda de la distribución estaría escondida por una
+  "línea de velo", debido al truncamiento en la abundancia mínima
+  observable en la muestra.
+  
+* El aumento del muestreo "desplaza el velo", revelando la curva
+completa.
+
+]
+
+.pull-right[ 
+&lt;div style="text-align:center"&gt; 
+&lt;img src="figs/frank_preston_1965.png" style="width:30%"&gt; 
+&lt;p style="font-size:0.7em; margin-top:2px"&gt;
+&lt;a href="https://www.jstor.org/stable/20167145"&gt; Frank Preston
+(1890-1962)&lt;/a&gt;&lt;/p&gt; &lt;/div&gt; &lt;div style="text-align:center"&gt; 
+&lt;img src="figs/preston_1948_fig5.png" style="width:75%"&gt;
+&lt;p style="font-size:0.7em; margin-top:2px"&gt; Número de especies de
+mariposas nocturnas por clase de abundancia en log2 (octavas), y línea del
+ajuste de la distribución lognormal, truncada en el valor 1 &lt;a
+href="https://www.jstor.org/stable/1930989" target="_blank"&gt;(Preston,
+1948)&lt;/a&gt;&lt;/p&gt; &lt;/div&gt; 
+]
+
+---
+## Modelos de mecanismos
+
+.pull-left[
+
+* [Numata *et al.*
+(1953)](https://www.jstage.jst.go.jp/article/bse/3/3/3_KJ00001586575/_pdf/-char/en)
+propusieron el primer modelo de proceso ecológico para SAD: si la
+especie dominante toma una fracción `\(k\)` de todo el recurso, la segunda
+especie toma la misma fracción del recurso que sobra y así
+sucesivamente, las abundancias siguen la serie geométrica de Motomura (1932).
+
+* Hay muchos otros modelos de SAD derivados de procesos, como los
+de partición de nichos (MacArthur 1957, Sugihara 1980, Tokeshi
+1990) y modelos neutros (Caswell 1976, Hubbell 2001).  ]
+
+.pull-right[
+.center[
+![](/home/paulo/work/pesquisa/diversidade/projeto_SAD/taller_sads_unam/01_introduccion/slides_files/figure-html/geometric_part-1.png)&lt;!-- --&gt;
+]]
+
+---
+
+## En resumen: qué sabemos después de más de un siglo
+
+* Más de 40 modelos propuestos, sin señales de agotamiento ([Marquet *et al.* 2003](https://books.google.com.br/books?id=3vUUii37DEQC&amp;lpg=PA64&amp;ots=HKB34n5eS5&amp;dq=marquet%202003%20breaking%20the%20stick&amp;lr&amp;hl=pt-BR&amp;pg=PA73#v=onepage&amp;q&amp;f=false), [McGill *et al.* 2007](https://onlinelibrary.wiley.com/doi/epdf/10.1111/j.1461-0248.2007.01094.x));
+
+* No se encontró ningún modelo universal, pero tampoco se rechazó
+  definitivamente ningún modelo;
+
+* Modelos deducidos de ciertos procesos se ajustan a datos que no
+  fueron generados por esos procesos (p. ej. el modelo neutro);
+
+* De todos modos, las SAD siguen siendo un patrón fundamental en ecología:
+  la descripción cuantitativa más sintética de los patrones de abundancia y
+  rareza de las especies en las comunidades.
+
+
+---
+class: inverse, middle
+
+.col-container[
+.col[
+# Conceptos y definiciones
+]
+
+.col[
+.center[
+&lt;img src="figs/definitions_xkcd.png" style="width: 90%; max-width: 500px; border-radius: 4px;" /&gt;
+
+["Planet definitions", xkcd](https://xkcd.com/3063/)
+]
+]
+]
+
+---
+
+
+## Gráficos de SAD: diagrama de rango-abundancia
+
+.pull-left[ 
+
+* Grafica el logaritmo de la
+abundancia de cada especie (eje y) en función del rango (orden) de la especie,
+ordenadas de la más abundante a la más rara (eje x).  
+
+* La función `rad` del paquete `sads` crea una tabla con los valores de los
+rangos y abundancias, que puede luego usarse para producir el gráfico
+con la función `plot`: 
+
+
+``` r
+&gt; ## En R classico
+&gt; plot( rad(moths) )
+&gt; ## Con "pipe" nativo de R
+&gt; rad(moths) |&gt; plot()
+```
+
+]
+
+.pull-right[
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="/home/paulo/work/pesquisa/diversidade/projeto_SAD/taller_sads_unam/01_introduccion/slides_files/figure-html/rankabundance-plot-1.png" alt="Diagrama de rango-abundancia de mariposas nocturnas capturadas con trampa de luz en la estación de Rothamsted 1933-1936 (Williams 1943)"  /&gt;
+&lt;p class="caption"&gt;Diagrama de rango-abundancia de mariposas nocturnas capturadas con trampa de luz en la estación de Rothamsted 1933-1936 (Williams 1943)&lt;/p&gt;
+&lt;/div&gt;
+]
+
+---
+
+## Gráficos de SAD: histograma de octavas
+
+.pull-left[ 
+
+* Es un histograma del número de especies en cada clase de
+  abundancia. Las clases están en intervalos de potencia de dos 
+  ( `\(2^0 , 2^1, 2^2, \ldots\)` ), que Preston (1948) denominó "octavas".
+
+* La función `octav` del paquete `sads` crea una tabla con el número de
+especies por octavas, que puede luego usarse para producir el gráfico
+con la función `plot`:
+
+
+``` r
+&gt; ## En R classico
+&gt; plot( ocatv(moths) )
+&gt; ## Con "pipe" nativo de R
+&gt; octav(moths) |&gt; plot()
+```
+
+]
+
+.pull-right[
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="/home/paulo/work/pesquisa/diversidade/projeto_SAD/taller_sads_unam/01_introduccion/slides_files/figure-html/octave-plot-1.png" alt="Número de especies por octavas, mariposas nocturnas capturadas con trampa de luz en la estación de Rothamsted 1933-1936 (Williams 1943)"  /&gt;
+&lt;p class="caption"&gt;Número de especies por octavas, mariposas nocturnas capturadas con trampa de luz en la estación de Rothamsted 1933-1936 (Williams 1943)&lt;/p&gt;
+&lt;/div&gt;
+]
+
+---
+
+## Modelos de SAD
+
+.pull-left[ 
+
+* Los modelos de SAD son distribuciones de probabilidad, es decir, son
+  funciones matemáticas que asignan probabilidades a cada evento de un
+  espacio muestral. Hay dos tipos de modelos, cada uno con su propio espacio
+  muestral:
+  
+  * Distribuciones de la probabilidad de abundancias
+  
+  * Distribuciones de la probabilidad de rangos de abundancia 
+]
+
+.pull-right[
+
+&lt;img src="/home/paulo/work/pesquisa/diversidade/projeto_SAD/taller_sads_unam/01_introduccion/slides_files/figure-html/distribuciones-1.png" alt="" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Modelos de SAD
+
+En el paquete `sads` cada modelo tiene las funciones estándar para
+  distribuciones de probabilidad con los siguientes prefijos: 
+
+  * `d` para densidad de probabilidad: `dpoilog`, `dls` ... 
+  
+  * `p` para probabilidad acumulada: `ppoilog`, `pls` ...
+  
+  * `q` para función cuantil: `qpoilog`, `qls` ...
+  
+  * `r` para generar sorteos de la distribución: `rpoilog`, `rls` ... 
+
+---
+
+## Ejemplos
+
+### Función de densidad
+
+Probabilidad de que un individuo de la muestra pertenezca a la segunda especie
+más abundante, según la serie geométrica
+
+
+``` r
+&gt; dgs(x = 2, k = 0.5, S = 10)
+```
+
+```
+[1] 0.2502444
+```
+
+### Función de probabilidad acumulada
+Probabilidad de que una especie tenga hasta 5 individuos en una distribución log-series
+
+``` r
+&gt; pls(q = 3, alpha = 30, N = 500)
+```
+
+```
+[1] 0.5809379
+```
+
+---
+
+## Ejemplos 
+
+### Función cuantil
+Qué abundancia acumula la mitad de las especies en una distribución
+log-series
+
+
+``` r
+&gt; qls(p = 0.5, alpha = 30, N = 500)
+```
+
+```
+[1] 3
+```
+
+### Sorteo de una distribución
+Sorteo de 5 valores de rangos de una distribución Zipf-Mandelbrot
+
+``` r
+&gt; rmand(n = 5, s = 2, v = 1, N = 500)
+```
+
+```
+[1] 1 1 5 2 1
+```
+---
+
+## Parámetros de los modelos
+.pull-left[
+* Cada modelo de distribución de probabilidad tiene sus parámetros,
+  que definen la forma, posición y dispersión de las probabilidades.
+  
+* Por ejemplo:
+  * El parámetro `\(\alpha\)` de la log-series afecta la riqueza de
+    especies y la proporción de especies raras
+  * El parámetro `\(k\)` de la serie geométrica define la dominancia de las especies
+	 de mayor rango
+
+* Los modelos de SAD tienen entre uno y tres parámetros, en general.	 
+]
+
+.pull-right[
+&lt;img src="/home/paulo/work/pesquisa/diversidade/projeto_SAD/taller_sads_unam/01_introduccion/slides_files/figure-html/parametros-1.png" alt="" style="display: block; margin: auto;" /&gt;
+]
+---
+
+## Qué hacer ahora
+
+.left-column[
+&lt;img src="figs/borala_dic.png" alt="" width="583" style="display: block; margin: auto;" /&gt;
+]
+
+.right-column[
+
+#### Bora lá!
+
+Encuentra en nuestro sitio los [tutoriales](https://piklprado.github.io/sads_UNAM/01_introduccion.html)
+
+* **Gráficos** - *La línea de corte de Preston*
+
+* **Parametros** - *De los parámetros a la forma de la SAD*
+
+           
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false,
+  "ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
