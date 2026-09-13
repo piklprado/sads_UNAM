@@ -2720,6 +2720,12 @@ cada uno de ellos, hasta encontrar el valor que resulta en la mayor
 log-verosimilitud. Es decir, vamos a estimar el parámetro por máxima
 verosimilitud “a la fuerza bruta”, sin usar ningún algoritmo de
 optimización, para entender paso a paso en qué consiste este método.</p>
+<p>Para empezar, cargue el paquete <code>sads</code></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/piLaboratory/sads'>sads</a></span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
 <h2 id="una-función-de-log-verosimilitud">Una función de log-verosimilitud</h2>
 <p>El primer paso es definir una función en R que calcula la
 log-verosimilitud de la log-series, condicionada a los datos. Esta
@@ -2777,8 +2783,8 @@ valores de <code>alfa</code>:</p>
 <p><strong>Ponte a prueba:</strong> según este gráfico, ¿cuál es tu mejor estimación
 para el valor de <em>alfa</em> que da la máxima verosimilitud de la log-series
 ajustada a estos datos?</p>
-<div id="radio_VMUVFGTVPC" class="webex-radiogroup">
-<label><input type="radio" autocomplete="off" name="radio_VMUVFGTVPC" value=""></input> <span>20</span></label><label><input type="radio" autocomplete="off" name="radio_VMUVFGTVPC" value=""></input> <span>35</span></label><label><input type="radio" autocomplete="off" name="radio_VMUVFGTVPC" value="answer"></input> <span>40</span></label><label><input type="radio" autocomplete="off" name="radio_VMUVFGTVPC" value=""></input> <span>50</span></label>
+<div id="radio_FAXIWULPAC" class="webex-radiogroup">
+<label><input type="radio" autocomplete="off" name="radio_FAXIWULPAC" value=""></input> <span>20</span></label><label><input type="radio" autocomplete="off" name="radio_FAXIWULPAC" value=""></input> <span>35</span></label><label><input type="radio" autocomplete="off" name="radio_FAXIWULPAC" value="answer"></input> <span>40</span></label><label><input type="radio" autocomplete="off" name="radio_FAXIWULPAC" value=""></input> <span>50</span></label>
 </div>
 <p>Ahora verifica cuál fue el valor de <code>alfa</code> para el mayor valor de
 log-verosimilitud:</p>

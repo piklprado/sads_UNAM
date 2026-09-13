@@ -30,6 +30,13 @@ log-verosimilitud. Es decir, vamos a estimar el parámetro por máxima
 verosimilitud "a la fuerza bruta", sin usar ningún algoritmo de
 optimización, para entender paso a paso en qué consiste este método.
 
+Para empezar, cargue el paquete `sads`
+
+
+```{r carga-sads}
+library(sads)
+```
+
 ## Una función de log-verosimilitud
 
 El primer paso es definir una función en R que calcula la
