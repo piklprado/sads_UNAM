@@ -2706,8 +2706,8 @@ Contenido
 <summary>
 <b>1. Maxima verosimilitud</b>
 </summary>
-<h2 id="mle-en-la-fuerza-bruta">MLE en la fuerza bruta</h2>
 <div class="layout-chunk" data-layout="l-body">
+<h2 id="mle-en-la-fuerza-bruta">MLE en la fuerza bruta</h2>
 <p>En este tutorial vamos a buscar el ajuste por máxima verosimilitud del
 modelo log-series a los datos originalmente usados por Fisher <em>et al</em>.
 (1943) para presentar este modelo: el número de mariposas nocturnas de
@@ -2783,8 +2783,8 @@ valores de <code>alfa</code>:</p>
 <p><strong>Ponte a prueba:</strong> según este gráfico, ¿cuál es tu mejor estimación
 para el valor de <em>alfa</em> que da la máxima verosimilitud de la log-series
 ajustada a estos datos?</p>
-<div id="radio_ANUZSYPNQH" class="webex-radiogroup">
-<label><input type="radio" autocomplete="off" name="radio_ANUZSYPNQH" value=""></input> <span>20</span></label><label><input type="radio" autocomplete="off" name="radio_ANUZSYPNQH" value=""></input> <span>35</span></label><label><input type="radio" autocomplete="off" name="radio_ANUZSYPNQH" value="answer"></input> <span>40</span></label><label><input type="radio" autocomplete="off" name="radio_ANUZSYPNQH" value=""></input> <span>50</span></label>
+<div id="radio_DSWLZSHAKM" class="webex-radiogroup">
+<label><input type="radio" autocomplete="off" name="radio_DSWLZSHAKM" value=""></input> <span>20</span></label><label><input type="radio" autocomplete="off" name="radio_DSWLZSHAKM" value=""></input> <span>35</span></label><label><input type="radio" autocomplete="off" name="radio_DSWLZSHAKM" value="answer"></input> <span>40</span></label><label><input type="radio" autocomplete="off" name="radio_DSWLZSHAKM" value=""></input> <span>50</span></label>
 </div>
 <p>Ahora verifica cuál fue el valor de <code>alfa</code> para el mayor valor de
 log-verosimilitud:</p>
@@ -2854,7 +2854,269 @@ Bolker 2008, 2026).</p>
 <summary>
 <b>2. Ajuste </b>
 </summary>
-<h2 id="ajuste-y-seleción-de-modelos-de-sads">Ajuste y seleción de modelos de SADs</h2>
+<section id="ajuste-y-selección-de-modelos-de-sads" class="layout-chunk" data-layout="l-body">
+<h1>Ajuste y selección de modelos de SADs</h1>
+<p>Hubbell (2001) dedujo un modelo de distribución de abundancia de
+especies a partir de su teoría neutral de la biodiversidad. En el
+libro donde presenta su teoría, muestra el número de especies de arboles en bosques tropicales
+predicho por octavas, tanto para su modelo como para la log-normal:</p>
+<div style="text-align:center">
+<iframe frameborder="0" scrolling="no" style="border:0px" src="https://books.google.com.br/books?id=EIQpFBu84NoC&amp;lpg=PA135&amp;vq=Fig.%205.7&amp;hl=pt-BR&amp;pg=PA135&amp;output=embed" width="500" height="500">
+</iframe>
+<p style="font-size:0.85em">
+Ajuste de la log-normal y del modelo multinomial de suma cero a los datos de BCI (Hubbell 2001)
+</p>
+</div>
+<p>Pasó algún tiempo hasta que desarrollos analíticos y computacionales
+permitieran comparar estos modelos con un criterio de verosimilitud.
+En este tutorial vamos a usar el paquete <code>sads</code> para hacer este tipo
+de comparaciones con el criterio de información de Akaike (AIC).
+Empieza cargando el paquete <code>sads</code>:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/piLaboratory/sads'>sads</a></span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<h2 id="conjunto-de-datos-árboles-en-la-parcela-permanente-de-bci">Conjunto de datos: árboles en la parcela permanente de BCI</h2>
+<p>Vamos a usar una vez más los datos de conteos de árboles de la
+<a href="https://ctfs.si.edu/webatlas/datasets/bci/">parcela permanente de la isla de Barro Colorado</a>
+(Panamá), pero ahora solo el total de individuos por especie en las
+50 ha de la parcela. El paquete <code>sads</code> tiene el objeto de datos <code>bci</code>
+con esta información. Al cargar el paquete, los datos ya están
+disponibles. Mira las abundancias de las 10 especies más comunes con:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='va'>bci</span>, decreasing <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>, <span class='fl'>10</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Y aquí verificas el número total de especies:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>bci</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Ahora creamos un objeto con el número de especies por octavas de
+abundancia:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>bci.oc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/octav.html'>octav</a></span><span class='op'>(</span><span class='va'>bci</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>bci.oc</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Con el cual podemos producir el histograma de octavas:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>bci.oc</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<h2 id="ajuste-de-los-modelos">Ajuste de los modelos</h2>
+<p>Ahora vamos a ajustar tres modelos a estos datos:</p>
+<ul>
+<li>Una <strong>log-normal</strong>: en R esta distribución (<code>[dpqr]lnorm</code>) empieza
+en cero. Para aproximar la línea de velo propuesta por Preston,
+vamos a ajustar una distribución truncada en 0,99.</li>
+<li>La <strong>log-series</strong>.</li>
+<li>El <strong>modelo multinomial de suma cero</strong> de la teoría neutral.
+Usaremos la distribución propuesta por Volkov <em>et al.</em> (2003) para este modelo.</li>
+</ul>
+<p>Empezamos con el ajuste de la log-normal. La función del paquete
+<code>sads</code> para este ajuste es <code>fitlnorm()</code>, que tiene un argumento
+<code>trunc</code>, con el cual definimos la truncación en 0,99:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='op'>(</span><span class='va'>bci.ln</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/fitsad.html'>fitlnorm</a></span><span class='op'>(</span><span class='va'>bci</span>, trunc <span class='op'>=</span> <span class='fl'>0.99</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Ahora ajustamos la log-series:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='op'>(</span><span class='va'>bci.ls</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/fitsad.html'>fitls</a></span><span class='op'>(</span><span class='va'>bci</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Y finalmente la multinomial de suma cero de la teoría neutral. Los
+cálculos de este ajuste tardan un poco más, y pueden llevar uno a
+varios minutos, dependiendo de tu computadora<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='op'>(</span><span class='va'>bci.vk</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/fitsad.html'>fitvolkov</a></span><span class='op'>(</span><span class='va'>bci</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<h2 id="selección-de-modelos-con-aic">Selección de modelos con AIC</h2>
+<p>El AIC es una medida del error de predicción de un modelo
+estadístico, calculado como:</p>
+<p><span class="math display">\[\text{AIC} = -2 \ln(\hat{\mathcal{L}}) + 2k\]</span></p>
+<p>donde <span class="math inline">\(\hat{\mathcal{L}}\)</span> es el valor de la máxima verosimilitud del
+modelo ajustado a los datos, y <span class="math inline">\(k\)</span> es el número de parámetros del
+modelo. Los objetos de modelos ajustados por el paquete <code>sads</code>
+guardan el valor de <span class="math inline">\(\ln \hat{\mathcal{L}}\)</span>. Verifica este valor para
+el modelo log-normal:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/stats/logLik.html'>logLik</a></span><span class='op'>(</span><span class='va'>bci.ln</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>El número de parámetros <span class="math inline">\(k\)</span> del modelo aparece como <code>df</code>. En la
+log-normal tenemos dos parámetros, <code>mu</code> y <code>sigma</code>.</p>
+<p>Con esto, podemos calcular el AIC de este modelo explícitamente así:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>2</span> <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/stats/logLik.html'>logLik</a></span><span class='op'>(</span><span class='va'>bci.ln</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>2</span><span class='op'>*</span><span class='fl'>2</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Pero esto ni siquiera es necesario, porque <em>R</em> ya tiene una función
+para calcular el AIC:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/stats/AIC.html'>AIC</a></span><span class='op'>(</span><span class='va'>bci.ln</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>El valor de AIC de un modelo, por sí solo, no es interpretable. Gana
+sentido cuando se usa para comparar modelos ajustados a los mismos
+datos<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. El AIC expresa la pérdida de información que
+ocurre al sustituir los datos por el modelo: cuanto menor la
+pérdida, mayor el poder predictivo del modelo, y por eso un menor AIC
+indica un modelo mejor. Para comparar modelos así, calculamos sus
+AIC, los ordenamos de menor a mayor, y calculamos la diferencia entre
+cada uno y el menor de todos. El mejor modelo entre los evaluados es
+el de menor AIC, pero por convención se considera que todos los
+modelos con una diferencia de AIC menor que 2
+están igualmente bien sustentados por los datos.</p>
+<p>El paquete <code>bbmle</code>, sobre el cual están construidas las rutinas de
+<code>sads</code>, tiene una función que hace todos estos cálculos:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/pkg/bbmle/man/ICtab.html'>AICtab</a></span><span class='op'>(</span><span class='va'>bci.ln</span>, <span class='va'>bci.ls</span>, <span class='va'>bci.vk</span>,</span>
+<span>       mnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Lognormal"</span>, <span class='st'>"Log-series"</span>, <span class='st'>"Neutral"</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p><strong>Ponte a prueba:</strong> con esta selección de modelos, ¿qué podemos
+concluir?</p>
+<div id="radio_UFTSZJSGVR" class="webex-radiogroup">
+<label><input type="radio" autocomplete="off" name="radio_UFTSZJSGVR" value=""></input> <span>los tres modelos están igualmente bien apoyados por los datos</span></label><label><input type="radio" autocomplete="off" name="radio_UFTSZJSGVR" value=""></input> <span>el modelo lognormal y el de log-series son equivalentes</span></label><label><input type="radio" autocomplete="off" name="radio_UFTSZJSGVR" value="answer"></input> <span>el modelo neutral tiene el mayor soporte de los datos, entre los tres evaluados</span></label><label><input type="radio" autocomplete="off" name="radio_UFTSZJSGVR" value=""></input> <span>el modelo neutral es el mejor modelo posible para estos datos</span></label>
+</div>
+<h2 id="comparación-gráfica-de-los-ajustes">Comparación gráfica de los ajustes</h2>
+<p>Esta comparación nos permite evaluar estrictamente estos tres modelos
+en cuanto a su poder predictivo. Esperamos que el modelo con mayor
+poder predictivo también tenga el mejor ajuste a los datos.
+Evaluemos gráficamente el ajuste de los tres modelos con el gráfico
+de octavas:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>bci.oc</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/octavpred.html'>octavpred</a></span><span class='op'>(</span><span class='va'>bci.ln</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>1</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/octavpred.html'>octavpred</a></span><span class='op'>(</span><span class='va'>bci.ls</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>2</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/octavpred.html'>octavpred</a></span><span class='op'>(</span><span class='va'>bci.vk</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>3</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/legend.html'>legend</a></span><span class='op'>(</span><span class='st'>"topright"</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Lognormal"</span>, <span class='st'>"Log-series"</span>, <span class='st'>"Neutral"</span><span class='op'>)</span>,</span>
+<span>       lty <span class='op'>=</span> <span class='fl'>1</span>, pch <span class='op'>=</span> <span class='fl'>1</span>, col <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>, cex <span class='op'>=</span> <span class='fl'>1.25</span>, bty <span class='op'>=</span> <span class='st'>"n"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Y también con el gráfico de rank-abundancia:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/rad.html'>rad</a></span><span class='op'>(</span><span class='va'>bci</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/radpred.html'>radpred</a></span><span class='op'>(</span><span class='va'>bci.ln</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>1</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/radpred.html'>radpred</a></span><span class='op'>(</span><span class='va'>bci.ls</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>2</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/radpred.html'>radpred</a></span><span class='op'>(</span><span class='va'>bci.vk</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>3</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/legend.html'>legend</a></span><span class='op'>(</span><span class='st'>"topright"</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Lognormal"</span>, <span class='st'>"Log-series"</span>, <span class='st'>"Neutral"</span><span class='op'>)</span>,</span>
+<span>       lty <span class='op'>=</span> <span class='fl'>1</span>, pch <span class='op'>=</span> <span class='fl'>1</span>, col <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>, cex <span class='op'>=</span> <span class='fl'>1.25</span>, bty <span class='op'>=</span> <span class='st'>"n"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>La principal diferencia entre la log-normal y la distribución de la
+teoría neutral ajustados los datos de BCI es un mejor ajuste de las
+abundancias más bajas. Esto ocurre porque el modelo neutral tiene un
+parámetro de inmigración, que controla la proporción de especies raras
+en la muestra, es decir, la forma de la cola izquierda de la SAD. Este
+parámetro se estima al ajustar la SAD de este modelo. Bajo la Teoria
+Neutral, expresa la proporción de las muertes que son reemplazadas por
+individuos migrantes (que no nacen dentro de la comunidad). El otro
+parámetro de la SAD del modelo neutral es <span class="math inline">\(\Theta\)</span> (theta), que
+Hubbell (2001) llamó el número fundamental de la biodiversidad. Nota
+que los intervalos de confianza de ambos parámetros son bastante
+amplios para el ajuste a los datos de BCI:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/stats/confint.html'>confint</a></span><span class='op'>(</span><span class='va'>bci.vk</span>, method <span class='op'>=</span> <span class='st'>"quad"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<h2 id="ejercicio-evaluando-otros-modelos">Ejercicio: evaluando otros modelos</h2>
+<p>Puedes incluir tantos modelos como quieras en tu selección de
+modelos, siempre que todos estén ajustados exactamente a los mismos
+datos. Como ejercicio, agregue mas estos dos modelos a la selección,
+ajustados a los mismos datos de <code>bci</code>:</p>
+<ul>
+<li><strong>Power bend</strong>, del cual la log-series es un caso particular. Este
+modelo tiene un parámetro más, que permite una distribución más
+flexible que la log-series, sobre todo en su cola izquierda (Pueyo,
+2006). Por eso puede ser una alternativa que resuelva el problema
+de sobreestimación del número de especies raras que tuvo la
+log-series.</li>
+<li><strong>Poisson-lognormal</strong>: es la solución analítica para la truncación
+causada por el muestreo de una comunidad log-normal (Bulmer 1974,
+Grøtan &amp; Engen 2008). Por eso puede ser una alternativa mejor que
+la aproximación que usamos al ajustar una log-normal truncada de
+forma arbitraria en 0,99.</li>
+</ul>
+<p>Adapta los comandos usados arriba para ajustar estos dos modelos e
+inclúyelos en la selección de modelos (mira el apéndice al final de
+este tutorial si quieres comparar tu solución, pero intenta resolverlo
+por tu cuenta primero).</p>
+<p>Con tu nueva selección de modelos, marca V (verdadero) o F (falso)
+para cada una de las siguientes afirmaciones:</p>
+<ul>
+<li>Confirmamos la expectativa de que los modelos power-bend y poilog
+son mejores alternativas que la log-series y la log-normal
+truncada, respectivamente: <select class='webex-select'><option value='blank'></option><option value='falso'>F</option><option value='answer'>V</option></select></li>
+<li>Los modelos power-bend y Poisson-lognormal son igualmente
+plausibles, pero inferiores al modelo de la teoría neutral:
+<select class='webex-select'><option value='blank'></option><option value='falso'>F</option><option value='answer'>V</option></select></li>
+<li>El modelo power-bend sobreestima menos el número de especies raras,
+en comparación con la log-series: <select class='webex-select'><option value='blank'></option><option value='falso'>F</option><option value='answer'>V</option></select></li>
+<li>El modelo Poisson-lognormal subestima el número de especies raras
+tanto como el modelo log-normal truncado: <select class='webex-select'><option value='blank'></option><option value='answer'>F</option><option value='verdadero'>V</option></select></li>
+</ul>
+<h2 id="conclusiones">Conclusiones</h2>
+<p>En este tutorial ajustamos y comparamos varios modelos de SAD a los
+mismos datos, usando el AIC como criterio de selección. Vimos que el
+AIC solo tiene sentido como medida relativa entre modelos ajustados
+exactamente a los mismos datos. Aplicamos el criterio de que una
+diferencia de AIC menor que 2 indica soporte estadístico equivalente.
+También vimos que un mejor ajuste global (medido por el AIC) no
+siempre es visible a simple vista en todas las partes de la
+distribución: aquí, la ventaja del modelo neutral se concentra en las
+especies raras, gracias a su parámetro de inmigración.</p>
+<h2 id="apéndice-código-de-la-solución-del-ejercicio">Apéndice: código de la solución del ejercicio</h2>
+<details>
+<summary>
+Ver el código de la solución
+</summary>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>bci.pb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/fitsad.html'>fitpowbend</a></span><span class='op'>(</span><span class='va'>bci</span><span class='op'>)</span></span>
+<span><span class='va'>bci.pl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/fitsad.html'>fitpoilog</a></span><span class='op'>(</span><span class='va'>bci</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/pkg/bbmle/man/ICtab.html'>AICtab</a></span><span class='op'>(</span><span class='va'>bci.ln</span>, <span class='va'>bci.ls</span>, <span class='va'>bci.vk</span>, <span class='va'>bci.pb</span>, <span class='va'>bci.pl</span>,</span>
+<span>       mnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Lognormal"</span>, <span class='st'>"Log-series"</span>, <span class='st'>"Neutral"</span>, <span class='st'>"Power-bend"</span>, <span class='st'>"Poilog"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>bci.oc</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/octavpred.html'>octavpred</a></span><span class='op'>(</span><span class='va'>bci.ln</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>1</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/octavpred.html'>octavpred</a></span><span class='op'>(</span><span class='va'>bci.ls</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>2</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/octavpred.html'>octavpred</a></span><span class='op'>(</span><span class='va'>bci.vk</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>3</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/legend.html'>legend</a></span><span class='op'>(</span><span class='st'>"topright"</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Lognormal"</span>, <span class='st'>"Log-series"</span>, <span class='st'>"Neutral"</span><span class='op'>)</span>,</span>
+<span>       lty <span class='op'>=</span> <span class='fl'>1</span>, pch <span class='op'>=</span> <span class='fl'>1</span>, col <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>, cex <span class='op'>=</span> <span class='fl'>1.25</span>, bty <span class='op'>=</span> <span class='st'>"n"</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>bci.oc</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/octavpred.html'>octavpred</a></span><span class='op'>(</span><span class='va'>bci.pl</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>1</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/octavpred.html'>octavpred</a></span><span class='op'>(</span><span class='va'>bci.pb</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>2</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/octavpred.html'>octavpred</a></span><span class='op'>(</span><span class='va'>bci.vk</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>3</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/legend.html'>legend</a></span><span class='op'>(</span><span class='st'>"topright"</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Poilog"</span>, <span class='st'>"Power-bend"</span>, <span class='st'>"Neutral"</span><span class='op'>)</span>,</span>
+<span>       lty <span class='op'>=</span> <span class='fl'>1</span>, pch <span class='op'>=</span> <span class='fl'>1</span>, col <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>, cex <span class='op'>=</span> <span class='fl'>1.25</span>, bty <span class='op'>=</span> <span class='st'>"n"</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+</details>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+</section>
 </details>
 <h1 id="referencias">Referencias</h1>
 <p>Bolker, B. M. (2008). Ecological models and data in R. In Ecological
@@ -2863,11 +3125,32 @@ models and data in R. Princeton University Press.</p>
 Likelihood Estimation</em>. <a href="doi:10.32614/CRAN.package.bbmle" class="uri">doi:10.32614/CRAN.package.bbmle</a>
 <a href="https://doi.org/10.32614/CRAN.package.bbmle" class="uri">https://doi.org/10.32614/CRAN.package.bbmle</a>. R package version
 1.0.26, <a href="https://CRAN.R-project.org/package=bbmle" class="uri">https://CRAN.R-project.org/package=bbmle</a>.</p>
+<p>Bulmer, M.G. (1974) On Fitting the Poisson Lognormal Distribution to
+Species-Abundance Data. Biometrics, 30: 101-110.</p>
+<p>Grøtan V. and Engen S. (2008) poilog: Poisson lognormal and
+bivariate Poisson lognormal distribution. R package version 0.4.</p>
 <p>Fisher, R.A., Corbet, A.S. and Williams, C.B. (1943) The relation
 between the number of species and the number of individuals in a
 random sample of an animal population. <em>Journal of Animal Ecology</em>,
 12: 42–58.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<p>Hubbell, S.P. (2001) The Unified Neutral Theory of Biodiversity. Princeton University Press.</p>
+<p>Pueyo, S. (2006) Diversity: Between neutrality and structure, Oikos 112: 392-405.</p>
+<p>Volkov, I., Banavar, J.R., Hubbell, S.P., Maritan, A. (2003) Neutral theory and relative species abundance in ecology Nature 424:1035-1037</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Si tienes problemas
+para ajustar este modelo, puedes descargar el objeto con el ajuste ya
+hecho <a href="../02_ajustes/bci_vk.rds">aquí</a> y cargarlo con el comando
+<code>bci.vk &lt;- readRDS("bci_vk.rds")</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Esto es muy importante: como el AIC se calcula a partir de la
+verosimilitud, también es una cantidad condicionada a los datos. Por
+lo tanto, no tiene sentido comparar los AIC de modelos ajustados a
+datos diferentes — solo de distintos modelos ajustados exactamente a
+los mismos datos.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

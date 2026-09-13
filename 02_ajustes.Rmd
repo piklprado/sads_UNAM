@@ -75,7 +75,6 @@ xaringanExtra::embed_xaringan("02_ajustes/slides.html")
 <details>
 <summary><b>1. Maxima verosimilitud</b></summary>
 
-## MLE en la fuerza bruta
 
 ```{r tutorial-mle, echo = FALSE, results = "asis", eval = TRUE}
 cat(incluir_capitulo("02_ajustes/tutorial_maxima_verosimilitud.Rmd", eval = FALSE), sep = "\n")
@@ -85,7 +84,10 @@ cat(incluir_capitulo("02_ajustes/tutorial_maxima_verosimilitud.Rmd", eval = FALS
 <details>
 <summary><b>2. Ajuste </b></summary>
 
-## Ajuste y seleción de modelos de SADs
+
+```{r tutorial-ajustes, echo = FALSE, results = "asis", eval = TRUE}
+cat(incluir_capitulo("02_ajustes/tutorial_ajuste_seleccion.Rmd", eval = FALSE), sep = "\n")
+```
 
 </details>
 
@@ -99,8 +101,20 @@ Bolker B, R Development Core Team (2026). _bbmle: Tools for General Maximum
 Likelihood Estimation_.  doi:10.32614/CRAN.package.bbmle
 <https://doi.org/10.32614/CRAN.package.bbmle>. R package version
 1.0.26, <https://CRAN.R-project.org/package=bbmle>.
-  
+
+Bulmer, M.G. (1974) On Fitting the Poisson Lognormal Distribution to
+Species-Abundance Data. Biometrics, 30: 101-110.
+
+Grøtan V. and Engen S. (2008) poilog: Poisson lognormal and
+     bivariate Poisson lognormal distribution. R package version 0.4.
+	 
 Fisher, R.A., Corbet, A.S. and Williams, C.B. (1943) The relation
 between the number of species and the number of individuals in a
 random sample of an animal population. *Journal of Animal Ecology*,
 12: 42–58.
+
+Hubbell, S.P. (2001) The Unified Neutral Theory of Biodiversity.  Princeton University Press.
+
+Pueyo, S. (2006) Diversity: Between neutrality and structure, Oikos 112: 392-405.
+
+Volkov, I., Banavar, J.R., Hubbell, S.P., Maritan, A. (2003) Neutral theory and relative species abundance in ecology Nature 424:1035-1037

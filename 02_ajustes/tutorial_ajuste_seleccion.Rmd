@@ -1,0 +1,305 @@
+---
+title: "Ajuste y selección de modelos de SADs"
+author: "Paulo Inácio Prado"
+date: "2026-09-21"
+---
+
+```{r setup-tutorial-sel, include=FALSE}
+## Este chunk asegura que el tutorial también funcione si se renderiza
+## de forma independiente (fuera de incluir_capitulo()), sin depender
+## de que la página que lo incluye ya haya cargado sads/webexercises
+## y las funciones html_mcq()/html_longmcq() de funciones.R.
+if (!exists("html_longmcq", mode = "function")) {
+  library(webexercises)
+  html_longmcq <- webexercises::longmcq
+}
+if (!exists("html_mcq", mode = "function")) {
+  library(webexercises)
+  html_mcq <- webexercises::mcq
+}
+library(sads)
+```
+
+# Ajuste y selección de modelos de SADs
+
+Hubbell (2001) dedujo un modelo de distribución de abundancia de
+especies a partir de su teoría neutral de la biodiversidad. En el
+libro donde presenta su teoría, muestra el número de especies de arboles en bosques tropicales
+predicho por octavas, tanto para su modelo como para la log-normal:
+
+<div style="text-align:center">
+<iframe frameborder="0" scrolling="no" style="border:0px" src="https://books.google.com.br/books?id=EIQpFBu84NoC&lpg=PA135&vq=Fig.%205.7&hl=pt-BR&pg=PA135&output=embed" width="500" height="500"></iframe>
+<p style="font-size:0.85em">Ajuste de la log-normal y del modelo multinomial de suma cero a los datos de BCI (Hubbell 2001)</p>
+</div>
+
+Pasó algún tiempo hasta que desarrollos analíticos y computacionales
+permitieran comparar estos modelos con un criterio de verosimilitud.
+En este tutorial vamos a usar el paquete `sads` para hacer este tipo
+de comparaciones con el criterio de información de Akaike (AIC).
+Empieza cargando el paquete `sads`:
+
+```{r library-sel}
+library(sads)
+```
+
+## Conjunto de datos: árboles en la parcela permanente de BCI
+
+Vamos a usar una vez más los datos de conteos de árboles de la
+[parcela permanente de la isla de Barro Colorado](https://ctfs.si.edu/webatlas/datasets/bci/)
+(Panamá), pero ahora solo el total de individuos por especie en las
+50 ha de la parcela. El paquete `sads` tiene el objeto de datos `bci`
+con esta información. Al cargar el paquete, los datos ya están
+disponibles. Mira las abundancias de las 10 especies más comunes con:
+
+```{r bci-top10-sel}
+head(sort(bci, decreasing = TRUE), 10)
+```
+
+Y aquí verificas el número total de especies:
+
+```{r bci-nsp-sel}
+length(bci)
+```
+
+Ahora creamos un objeto con el número de especies por octavas de
+abundancia:
+
+```{r bci-octav-sel}
+bci.oc <- octav(bci)
+head(bci.oc)
+```
+
+Con el cual podemos producir el histograma de octavas:
+
+```{r bci-octav-plot-sel}
+plot(bci.oc)
+```
+
+## Ajuste de los modelos
+
+Ahora vamos a ajustar tres modelos a estos datos:
+
+* Una **log-normal**: en R esta distribución (`[dpqr]lnorm`) empieza
+  en cero. Para aproximar la línea de velo propuesta por Preston,
+  vamos a ajustar una distribución truncada en 0,99.
+* La **log-series**.
+* El **modelo multinomial de suma cero** de la teoría neutral.
+  Usaremos la distribución propuesta por Volkov *et al.* (2003) para este modelo.
+
+Empezamos con el ajuste de la log-normal. La función del paquete
+`sads` para este ajuste es `fitlnorm()`, que tiene un argumento
+`trunc`, con el cual definimos la truncación en 0,99:
+
+```{r fit-lnorm-sel}
+(bci.ln <- fitlnorm(bci, trunc = 0.99))
+```
+
+Ahora ajustamos la log-series:
+
+```{r fit-ls-sel}
+(bci.ls <- fitls(bci))
+```
+
+Y finalmente la multinomial de suma cero de la teoría neutral. Los
+cálculos de este ajuste tardan un poco más, y pueden llevar uno a
+varios minutos, dependiendo de tu computadora^[Si tienes problemas
+para ajustar este modelo, puedes descargar el objeto con el ajuste ya
+hecho [aquí](../02_ajustes/bci_vk.rds) y cargarlo con el comando
+`bci.vk <- readRDS("bci_vk.rds")`.]:
+
+```{r fit-volkov-sel}
+(bci.vk <- fitvolkov(bci))
+```
+
+## Selección de modelos con AIC
+
+El AIC es una medida del error de predicción de un modelo
+estadístico, calculado como:
+
+$$\text{AIC} = -2 \ln(\hat{\mathcal{L}}) + 2k$$
+
+donde $\hat{\mathcal{L}}$ es el valor de la máxima verosimilitud del
+modelo ajustado a los datos, y $k$ es el número de parámetros del
+modelo. Los objetos de modelos ajustados por el paquete `sads`
+guardan el valor de $\ln \hat{\mathcal{L}}$. Verifica este valor para
+el modelo log-normal:
+
+```{r loglik-lnorm-sel}
+logLik(bci.ln)
+```
+
+El número de parámetros $k$ del modelo aparece como `df`. En la
+log-normal tenemos dos parámetros, `mu` y `sigma`.
+
+Con esto, podemos calcular el AIC de este modelo explícitamente así:
+
+```{r aic-manual-sel}
+as.numeric(-2 * logLik(bci.ln) + 2*2)
+```
+
+Pero esto ni siquiera es necesario, porque *R* ya tiene una función
+para calcular el AIC:
+
+```{r aic-funcion-sel}
+AIC(bci.ln)
+```
+
+El valor de AIC de un modelo, por sí solo, no es interpretable. Gana
+sentido cuando se usa para comparar modelos ajustados a los mismos
+datos^[Esto es muy importante: como el AIC se calcula a partir de la
+verosimilitud, también es una cantidad condicionada a los datos. Por
+lo tanto, no tiene sentido comparar los AIC de modelos ajustados a
+datos diferentes — solo de distintos modelos ajustados exactamente a
+los mismos datos.]. El AIC expresa la pérdida de información que
+ocurre al sustituir los datos por el modelo: cuanto menor la
+pérdida, mayor el poder predictivo del modelo, y por eso un menor AIC
+indica un modelo mejor. Para comparar modelos así, calculamos sus
+AIC, los ordenamos de menor a mayor, y calculamos la diferencia entre
+cada uno y el menor de todos. El mejor modelo entre los evaluados es
+el de menor AIC, pero por convención se considera que todos los
+modelos con una diferencia de AIC menor que 2
+están igualmente bien sustentados por los datos.
+
+El paquete `bbmle`, sobre el cual están construidas las rutinas de
+`sads`, tiene una función que hace todos estos cálculos:
+
+```{r aictab-sel}
+AICtab(bci.ln, bci.ls, bci.vk,
+       mnames = c("Lognormal", "Log-series", "Neutral"))
+```
+
+**Ponte a prueba:** con esta selección de modelos, ¿qué podemos
+concluir?
+
+`r html_longmcq(c(
+  "los tres modelos están igualmente bien apoyados por los datos",
+  "el modelo lognormal y el de log-series son equivalentes",
+  answer = "el modelo neutral tiene el mayor soporte de los datos, entre los tres evaluados",
+  "el modelo neutral es el mejor modelo posible para estos datos"
+))`
+
+## Comparación gráfica de los ajustes
+
+Esta comparación nos permite evaluar estrictamente estos tres modelos
+en cuanto a su poder predictivo. Esperamos que el modelo con mayor
+poder predictivo también tenga el mejor ajuste a los datos.
+Evaluemos gráficamente el ajuste de los tres modelos con el gráfico
+de octavas:
+
+```{r plot-octav-comp-sel}
+plot(bci.oc)
+lines(octavpred(bci.ln), col = 1, lwd = 2)
+lines(octavpred(bci.ls), col = 2, lwd = 2)
+lines(octavpred(bci.vk), col = 3, lwd = 2)
+legend("topright", c("Lognormal", "Log-series", "Neutral"),
+       lty = 1, pch = 1, col = 1:3, cex = 1.25, bty = "n")
+```
+
+Y también con el gráfico de rank-abundancia:
+
+```{r plot-rad-comp-sel}
+plot(rad(bci))
+lines(radpred(bci.ln), col = 1, lwd = 2)
+lines(radpred(bci.ls), col = 2, lwd = 2)
+lines(radpred(bci.vk), col = 3, lwd = 2)
+legend("topright", c("Lognormal", "Log-series", "Neutral"),
+       lty = 1, pch = 1, col = 1:3, cex = 1.25, bty = "n")
+```
+
+La principal diferencia entre la log-normal y la distribución de la
+teoría neutral ajustados los datos de BCI es un mejor ajuste de las
+abundancias más bajas. Esto ocurre porque el modelo neutral tiene un
+parámetro de inmigración, que controla la proporción de especies raras
+en la muestra, es decir, la forma de la cola izquierda de la SAD. Este
+parámetro se estima al ajustar la SAD de este modelo. Bajo la Teoria
+Neutral, expresa la proporción de las muertes que son reemplazadas por
+individuos migrantes (que no nacen dentro de la comunidad). El otro
+parámetro de la SAD del modelo neutral es $\Theta$ (theta), que
+Hubbell (2001) llamó el número fundamental de la biodiversidad. Nota
+que los intervalos de confianza de ambos parámetros son bastante
+amplios para el ajuste a los datos de BCI:
+
+```{r confint-volkov-sel}
+confint(bci.vk, method = "quad")
+```
+
+## Ejercicio: evaluando otros modelos
+
+Puedes incluir tantos modelos como quieras en tu selección de
+modelos, siempre que todos estén ajustados exactamente a los mismos
+datos. Como ejercicio, agregue mas estos dos modelos a la selección,
+ajustados a los mismos datos de `bci`:
+
+* **Power bend**, del cual la log-series es un caso particular. Este
+  modelo tiene un parámetro más, que permite una distribución más
+  flexible que la log-series, sobre todo en su cola izquierda (Pueyo,
+  2006). Por eso puede ser una alternativa que resuelva el problema
+  de sobreestimación del número de especies raras que tuvo la
+  log-series.
+* **Poisson-lognormal**: es la solución analítica para la truncación
+  causada por el muestreo de una comunidad log-normal (Bulmer 1974,
+  Grøtan & Engen 2008). Por eso puede ser una alternativa mejor que
+  la aproximación que usamos al ajustar una log-normal truncada de
+  forma arbitraria en 0,99.
+
+Adapta los comandos usados arriba para ajustar estos dos modelos e
+inclúyelos en la selección de modelos (mira el apéndice al final de
+este tutorial si quieres comparar tu solución, pero intenta resolverlo
+por tu cuenta primero).
+
+Con tu nueva selección de modelos, marca V (verdadero) o F (falso)
+para cada una de las siguientes afirmaciones:
+
+* Confirmamos la expectativa de que los modelos power-bend y poilog
+  son mejores alternativas que la log-series y la log-normal
+  truncada, respectivamente: `r html_mcq(c(falso = "F", answer = "V"))`
+* Los modelos power-bend y Poisson-lognormal son igualmente
+  plausibles, pero inferiores al modelo de la teoría neutral:
+  `r html_mcq(c(falso = "F", answer = "V"))`
+* El modelo power-bend sobreestima menos el número de especies raras,
+  en comparación con la log-series: `r html_mcq(c(falso = "F", answer = "V"))`
+* El modelo Poisson-lognormal subestima el número de especies raras
+  tanto como el modelo log-normal truncado: `r html_mcq(c(answer = "F", verdadero = "V"))`
+
+## Conclusiones
+
+En este tutorial ajustamos y comparamos varios modelos de SAD a los
+mismos datos, usando el AIC como criterio de selección. Vimos que el
+AIC solo tiene sentido como medida relativa entre modelos ajustados
+exactamente a los mismos datos. Aplicamos el criterio de que una
+diferencia de AIC menor que 2 indica soporte estadístico equivalente.
+También vimos que un mejor ajuste global (medido por el AIC) no
+siempre es visible a simple vista en todas las partes de la
+distribución: aquí, la ventaja del modelo neutral se concentra en las
+especies raras, gracias a su parámetro de inmigración.
+
+## Apéndice: código de la solución del ejercicio
+
+<details>
+<summary>Ver el código de la solución</summary>
+
+```{r apendice-sel}
+bci.pb <- fitpowbend(bci)
+bci.pl <- fitpoilog(bci)
+
+AICtab(bci.ln, bci.ls, bci.vk, bci.pb, bci.pl,
+       mnames = c("Lognormal", "Log-series", "Neutral", "Power-bend", "Poilog"))
+
+par(mfrow = c(1, 2))
+plot(bci.oc)
+lines(octavpred(bci.ln), col = 1, lwd = 2)
+lines(octavpred(bci.ls), col = 2, lwd = 2)
+lines(octavpred(bci.vk), col = 3, lwd = 2)
+legend("topright", c("Lognormal", "Log-series", "Neutral"),
+       lty = 1, pch = 1, col = 1:3, cex = 1.25, bty = "n")
+
+plot(bci.oc)
+lines(octavpred(bci.pl), col = 1, lwd = 2)
+lines(octavpred(bci.pb), col = 2, lwd = 2)
+lines(octavpred(bci.vk), col = 3, lwd = 2)
+legend("topright", c("Poilog", "Power-bend", "Neutral"),
+       lty = 1, pch = 1, col = 1:3, cex = 1.25, bty = "n")
+par(mfrow = c(1, 1))
+```
+
+</details>

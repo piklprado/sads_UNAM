@@ -686,7 +686,7 @@ Encuentra en nuestro sitio los [tutoriales](https://piklprado.github.io/sads_UNA
 
 * **Gráficos** - *La línea de corte de Preston*
 
-* **Parametros** - *De los parámetros a la forma de la SAD*
+* **Modelos** - *De los parámetros a la forma de la SAD*
 
            
 ]
