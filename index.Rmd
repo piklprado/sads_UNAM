@@ -32,11 +32,34 @@ rápida que él mismo.
 
 * [Paulo Inácio Prado](http://ecologia.ib.usp.br/let/doku.php?id=engl:prado:start), Instituto de Biociências, Universidade de São Paulo, Brasil.
 
+
 ## Programa
 
+1. Introducción: historia, motivación, teoría y conceptos
 
-## Bibliografia
+2. Ajuste por el método de la verosimilitud
 
+3. Ajuste a datos de frecuencia en clases de abundancia o cobertura
+
+
+## Bibliografía Básica
+
+Green, J. & Plotkin, J.B. (2007) A statistical theory for sampling
+species abundances. Ecology Letters, 10: 1037–1045.
+
+Pielou, E.C. (1975) Ecological Diversity. New York: Wiley Interscience.
+
+Pielou, E.C. (1977) Mathematical Ecology. New York: John Wiley and Sons.
+
+Magurran, A. E., & McGill, B. J. (2011). Biological
+diversity. Frontiers in measurement and assessment.
+
+Magurran, A. E. (2013). Ecological diversity and its
+measurement. Springer Science & Business Media.
+
+McGill, B. J. *et al.* (2007). Species abundance
+distributions: moving beyond single prediction theories to integration
+within an ecological framework. Ecology letters, 10(10), 995-1015.
 
 ## Preparate para el curso
 

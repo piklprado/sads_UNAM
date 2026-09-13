@@ -1,0 +1,92 @@
+---
+title: "Ajustes de modelos de distribución de abundancia de especies"
+date: "2026-09-21" 
+author:
+  - name: Paulo Inácio Prado
+ 
+---
+
+```{r setup, include=FALSE}
+
+library(sads)
+library(dplyr)
+library(webexercises)
+library(knitr)
+knitr::opts_chunk$set(eval = FALSE)
+source("funciones.R")
+
+## clipboard
+
+## El webex.js original inicializa los widgets con
+## "window.onload = function(){...}". Esa es una asignación directa
+## que CUALQUIER otro script del sitio que también haga
+## "window.onload = ..." sobrescribe en silencio, sin error. En un
+## sitio con muchas librerías JS (distill, xaringanExtra, etc.) esto
+## puede hacer que la inicialización de webex nunca se ejecute, y los
+## widgets queden clicables pero sin corrección automática.
+## Solución: reescribimos ese único punto para usar
+## window.addEventListener("load", ...), que no sobrescribe otros
+## listeners, sino que se suma a ellos.
+webex_js_raw <- readLines(system.file("reports/default/webex.js", package = "webexercises"), warn = FALSE)
+webex_js_raw <- webex_js_raw[!grepl("^\\s*</?script>\\s*$", webex_js_raw)]
+webex_js_txt <- paste(webex_js_raw, collapse = "\n")
+webex_js_txt <- sub("window\\.onload\\s*=\\s*function\\(\\)\\s*\\{",
+                     "window.addEventListener(\"load\", function() {",
+                     webex_js_txt)
+webex_js_txt <- sub("\\}\\s*$", "});", webex_js_txt)
+
+htmltools::tagList(
+  xaringanExtra::use_clipboard(
+    button_text = "Copy code <i class=\"fa fa-clipboard\"></i>",
+    success_text = "Copied! <i class=\"fa fa-check\" style=\"color: #90BE6D\"></i>",
+    error_text = "Not copied 😕 <i class=\"fa fa-times-circle\" style=\"color: #F94144\"></i>"
+    ),
+  rmarkdown::html_dependency_font_awesome(),
+  htmltools::htmlDependency(
+                 name = "webex-css",
+                 version = as.character(utils::packageVersion("webexercises")),
+                 src = dirname(system.file("reports/default/webex.css", package = "webexercises")),
+                 stylesheet = "webex.css"
+             ),
+  ## IMPORTANTE: una tag suelta (htmltools::tags$script(...)) dentro de
+  ## un chunk include=FALSE es descartada en silencio por knitr (ya 
+  ## pasó antes con includeCSS/includeScript). Solo un objeto
+  ## htmlDependency de verdad sobrevive, por eso el script parcheado va
+  ## en el argumento `head`, no como tag suelta.
+  htmltools::htmlDependency(
+                 name = "webex-js-patched",
+                 version = as.character(utils::packageVersion("webexercises")),
+                 src = c(file = tempdir()),
+                 head = paste0("<script>", webex_js_txt, "</script>")
+             )
+  )
+
+
+```
+
+# Slides
+
+```{r slides, echo=FALSE, eval=TRUE}
+xaringanExtra::embed_xaringan("02_ajustes/slides.html")
+```
+
+# Tutoriales
+
+<details>
+<summary><b>1. Maxima verosimilitud</b></summary>
+
+## MLE en la fuerza bruta
+
+</details>
+
+<details>
+<summary><b>2. Ajuste </b></summary>
+
+## Ajuste y seleción de modelos de SADs
+
+</details>
+
+
+# Referencias
+
+

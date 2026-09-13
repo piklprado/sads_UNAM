@@ -13,6 +13,10 @@ navbar:
       menu:
         - text: "Introducción"
           href: 01_introduccion.html
+        - text: "Ajustes"
+          href: 02_ajustes.html
+        - text: "Datos de cobertura"
+          href: 03_cobertura.html  
     - icon: fa fa-github
       href: https://github.com/piklprado/sads_UNAM
 output: distill::distill_article
