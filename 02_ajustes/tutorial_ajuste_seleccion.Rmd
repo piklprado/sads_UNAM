@@ -79,11 +79,11 @@ plot(bci.oc)
 
 Ahora vamos a ajustar tres modelos a estos datos:
 
-* Una **log-normal**: en R esta distribución (`[dpqr]lnorm`) empieza
+* **log-normal**: en R esta distribución (`[dpqr]lnorm`) empieza
   en cero. Para aproximar la línea de velo propuesta por Preston,
   vamos a ajustar una distribución truncada en 0,99.
-* La **log-series**.
-* El **modelo multinomial de suma cero** de la teoría neutral.
+* **log-series**.
+* **modelo multinomial de suma cero** de la teoría neutral.
   Usaremos la distribución propuesta por Volkov *et al.* (2003) para este modelo.
 
 Empezamos con el ajuste de la log-normal. La función del paquete

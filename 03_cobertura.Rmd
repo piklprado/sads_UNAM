@@ -1,5 +1,5 @@
 ---
-title: "Ajustes de modelos de distribución de abundancia de especies"
+title: "Ajuste a datos de frecuencia en clases de abundancia o cobertura"
 date: "2026-09-21" 
 author:
   - name: Paulo Inácio Prado
@@ -67,22 +67,21 @@ htmltools::tagList(
 # Slides
 
 ```{r slides, echo=FALSE, eval=TRUE}
-xaringanExtra::embed_xaringan("02_ajustes/slides.html")
+xaringanExtra::embed_xaringan("03_cobertura/slides.html")
 ```
 
 # Tutoriales
 
 <details>
-<summary><b>1. Maxima verosimilitud</b></summary>
+<summary><b>1. Ajuste</b></summary>
 
-## MLE en la fuerza bruta
 
 </details>
 
 <details>
 <summary><b>2. Ajuste </b></summary>
 
-## Ajuste y seleción de modelos de SADs
+
 
 </details>
 
