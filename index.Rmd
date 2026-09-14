@@ -18,7 +18,7 @@ library(kableExtra)
   <blockquote style="margin: 0;">
     «Most ecological communities contain many species of organisms, and the species may vary greatly in their abundance from very common to very rare. Therefore, as soon as one attempts to study whole communities, rather than interrelations among a few chosen species, the question immediately arises: how are the abundances of different species ditributed?»
     <br>
-    `r tufte::quote_footer('--- [Evelyn C. Pielou]((https://en.wikipedia.org/wiki/Evelyn_Chrystalla_Pielou)), Mathematical Ecology. Wiley, 1977.')`
+    `r tufte::quote_footer('--- [Evelyn C. Pielou](https://en.wikipedia.org/wiki/Evelyn_Chrystalla_Pielou), Mathematical Ecology. Wiley, 1977.')`
   </blockquote>
 </div>
 
