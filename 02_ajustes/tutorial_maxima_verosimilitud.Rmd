@@ -15,7 +15,7 @@ if (!exists("html_longmcq", mode = "function")) {
 }
 library(sads)
 ```
-## MLE en la fuerza bruta
+
 
 En este tutorial vamos a buscar el ajuste por máxima verosimilitud del
 modelo log-series a los datos originalmente usados por Fisher *et al*.

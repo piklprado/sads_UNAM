@@ -2701,19 +2701,221 @@ Contenido
 <script>fitvids('.shareagain', {players: 'iframe'});</script>
 </div>
 </div>
-<h1 id="tutoriales">Tutoriales</h1>
-<details>
-<summary>
-<b>1. Ajuste</b>
-</summary>
-</details>
-<details>
-<summary>
-<b>2. Ajuste </b>
-</summary>
-</details>
+<h1 id="tutorial">Tutorial</h1>
+<h2 id="ajuste-de-modelos-a-datos-de-clases-de-cobertura">Ajuste de modelos a datos de clases de cobertura</h2>
+<div class="layout-chunk" data-layout="l-body">
+<p>Para muchos organismos, sobre todo los sésiles, contar individuos o
+estimar su biomasa es extremadamente laborioso. Por eso, es una
+práctica común registrar la abundancia de cada especie mediante una
+<strong>clase de cobertura</strong>: un intervalo de porcentaje del área muestreada
+que está cubierto por los individuos de esa especie. En este tutorial
+vamos a aprender a ajustar modelos de distribución de abundancia a
+este tipo de datos categorizados, usando las funciones que el paquete
+<code>sads</code> ofrece específicamente para este caso.</p>
+<blockquote>
+<p><strong>Importante:</strong> las funciones que usamos en este tutorial llevan algunas modificaciones que todavía no
+forman parte de la versión de <code>sads</code> publicada en CRAN. Para este
+tutorial en particular, es necesario instalar la versión de
+desarrollo del paquete directamente desde GitHub:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(remotes)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;pilaboratory/sads&quot;</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">ref =</span> <span class="st">&quot;dev&quot;</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">dependencies =</span> <span class="fu">c</span>(<span class="st">&quot;Depends&quot;</span>, <span class="st">&quot;Imports&quot;</span>))</span></code></pre></div>
+<p>Y luego cargar el paquete de la forma habitual:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sads)</span></code></pre></div>
+</blockquote>
+<h3 id="los-datos-cobertura-de-plantas-en-pastizales">Los datos: cobertura de plantas en pastizales</h3>
+<p>Vamos a usar los datos de Vieira <em>et al.</em> (2020), que registraron la
+clase de cobertura de cada especie de planta en parcelas de pastizales
+del sur de Brasil. El objeto <code>grasslands</code> del paquete <code>sads</code> tiene los
+datos de la parcela “<em>CA8</em>”, la que registró el mayor número de especies
+en ese estudio.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>grasslands</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>La columna <code>cover</code> de este data frame tiene la clase de cobertura de
+cada especie de planta, es decir, la proporción del área de la parcela
+cubierta por todos los individuos de esa especie. La cobertura está
+expresada en una escala de 13 intervalos, definidos por los siguientes
+puntos de corte:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='op'>(</span><span class='va'>grass.brk</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>3</span>, <span class='fl'>5</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>15</span>, <span class='fl'>100</span>, by <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>, <span class='fl'>100</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Podemos contar el número de especies en cada clase de cobertura usando
+un histograma:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>grass.h</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/hist.html'>hist</a></span><span class='op'>(</span><span class='va'>grasslands</span><span class='op'>$</span><span class='va'>mids</span>, breaks <span class='op'>=</span> <span class='va'>grass.brk</span>, plot <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>El objeto resultante, de clase <code>histogram</code>, tiene el número de
+especies en cada clase de cobertura, así como el punto medio de cada
+clase:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>grass.h</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>punto_medio <span class='op'>=</span> <span class='va'>grass.h</span><span class='op'>$</span><span class='va'>mids</span>, N_especies <span class='op'>=</span> <span class='va'>grass.h</span><span class='op'>$</span><span class='va'>counts</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<h3 id="ajustando-distribuciones-continuas-fitsadc">Ajustando distribuciones continuas: <code>fitsadC</code></h3>
+<p>La función <code>fitsadC</code> ajusta por máxima verosimilitud las
+distribuciones continuas más usadas para este tipo de datos. A
+diferencia de <code>fitsad</code>, que vimos en en tutoriales anteriores, <code>fitsadC</code>
+espera como datos un objeto de clase <code>histogram</code>, no un vector de
+abundancias.</p>
+<p>Empecemos ajustando los cinco modelos disponibles, sin ninguna
+restricción sobre el valor máximo que puede tomar la variable:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>grass.e</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/fitsadC.html'>fitsadC</a></span><span class='op'>(</span><span class='va'>grass.h</span>, <span class='st'>'exp'</span><span class='op'>)</span>      <span class='co'># Exponencial</span></span>
+<span><span class='va'>grass.g</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/fitsadC.html'>fitsadC</a></span><span class='op'>(</span><span class='va'>grass.h</span>, <span class='st'>'gamma'</span><span class='op'>)</span>    <span class='co'># Gamma</span></span>
+<span><span class='va'>grass.l</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/fitsadC.html'>fitsadC</a></span><span class='op'>(</span><span class='va'>grass.h</span>, <span class='st'>'lnorm'</span><span class='op'>)</span>    <span class='co'># Lognormal</span></span>
+<span><span class='va'>grass.p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/fitsadC.html'>fitsadC</a></span><span class='op'>(</span><span class='va'>grass.h</span>, <span class='st'>'pareto'</span><span class='op'>)</span>   <span class='co'># Pareto</span></span>
+<span><span class='va'>grass.w</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/fitsadC.html'>fitsadC</a></span><span class='op'>(</span><span class='va'>grass.h</span>, <span class='st'>'weibull'</span><span class='op'>)</span>  <span class='co'># Weibull</span></span></code></pre>
+</div>
+</div>
+<p>Los modelos ajustados son de clase <code>fitsadC</code>, para la cual están
+disponibles la mayoría de los métodos de diagnóstico y comparación de
+modelos que ya usamos con <code>fitsad</code>. Por ejemplo, podemos comparar los
+modelos de la forma usual:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>m.nombres</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Exponencial"</span>, <span class='st'>"Gamma"</span>, <span class='st'>"Log-normal"</span>, <span class='st'>"Pareto"</span>, <span class='st'>"Weibull"</span><span class='op'>)</span> </span>
+<span><span class='fu'><a href='https://rdrr.io/pkg/bbmle/man/ICtab.html'>AICctab</a></span><span class='op'>(</span><span class='va'>grass.e</span>, <span class='va'>grass.g</span>, <span class='va'>grass.l</span>, <span class='va'>grass.p</span>, <span class='va'>grass.w</span>,</span>
+<span>        mnames <span class='op'>=</span> <span class='va'>m.nombres</span>, </span>
+<span>        weights <span class='op'>=</span> <span class='cn'>TRUE</span>, base <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>En esta selección hemos utilizado el AIC corregido para muestras
+pequeñas (<em>AICc</em>, Burnham y Anderson, 2002), ya que los datos cuentan
+con pocas observaciones (abundancias de especies). Observamos que los
+modelos log-normal y de Pareto están igualmente bien respaldados por
+los datos.</p>
+<h3 id="gráficos-de-diagnóstico">Gráficos de diagnóstico</h3>
+<p>Un histograma con los valores observados se grafica simplemente con:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>grass.h</span>, main <span class='op'>=</span> <span class='st'>""</span>, xlab <span class='op'>=</span> <span class='st'>"Clase de abundancia"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Como R grafica por defecto histogramas de clases de distinto tamaño en
+una escala de densidad, el paquete <code>sads</code> ofrece la función
+<code>coverpred</code>, que calcula el número de especies esperado según cada
+modelo ajustado, en escala de frecuencia, frecuencia relativa o
+densidad (por defecto):</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>grass.e.p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/coverpred.html'>coverpred</a></span><span class='op'>(</span><span class='va'>grass.e</span><span class='op'>)</span></span>
+<span><span class='va'>grass.g.p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/coverpred.html'>coverpred</a></span><span class='op'>(</span><span class='va'>grass.g</span><span class='op'>)</span></span>
+<span><span class='va'>grass.l.p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/coverpred.html'>coverpred</a></span><span class='op'>(</span><span class='va'>grass.l</span><span class='op'>)</span></span>
+<span><span class='va'>grass.p.p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/coverpred.html'>coverpred</a></span><span class='op'>(</span><span class='va'>grass.p</span><span class='op'>)</span></span>
+<span><span class='va'>grass.w.p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/coverpred.html'>coverpred</a></span><span class='op'>(</span><span class='va'>grass.w</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Con este objeto podemos agregar al histograma las densidades
+esperadas por cada modelo:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>grass.h</span>, main <span class='op'>=</span> <span class='st'>""</span>, xlab <span class='op'>=</span> <span class='st'>"Clase de abundancia"</span>, xlim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>40</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/points.html'>points</a></span><span class='op'>(</span><span class='va'>grass.e.p</span>, col <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/points.html'>points</a></span><span class='op'>(</span><span class='va'>grass.g.p</span>, col <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/points.html'>points</a></span><span class='op'>(</span><span class='va'>grass.l.p</span>, col <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/points.html'>points</a></span><span class='op'>(</span><span class='va'>grass.p.p</span>, col <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/points.html'>points</a></span><span class='op'>(</span><span class='va'>grass.w.p</span>, col <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/legend.html'>legend</a></span><span class='op'>(</span><span class='st'>"topright"</span>,</span>
+<span>       legend <span class='op'>=</span> <span class='va'>m.nombres</span>,</span>
+<span>       col <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, bty <span class='op'>=</span> <span class='st'>"n"</span>, lty <span class='op'>=</span> <span class='fl'>1</span>, pch <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p><strong>Otra forma de comparar los modelos es con un diagrama de
+rango-abundancia</strong>, tal como hicimos con datos de conteos en el
+tutorial anterior. La función <code>rad</code> también puede aplicarse a un
+objeto <code>histogram</code> como <code>grass.h</code>, devolviendo las clases de cobertura
+de cada espécie, ordenadas por rango. Y así como usamos <code>radpred</code> para
+obtener el RAD esperado por un modelo ajustado con <code>fitsad</code>, podemos
+usarla de la misma manera con los modelos ajustados con <code>fitsadC</code>,
+agregando una línea por modelo:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/rad.html'>rad</a></span><span class='op'>(</span><span class='va'>grass.h</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/radpred.html'>radpred</a></span><span class='op'>(</span><span class='va'>grass.e</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/radpred.html'>radpred</a></span><span class='op'>(</span><span class='va'>grass.g</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/radpred.html'>radpred</a></span><span class='op'>(</span><span class='va'>grass.l</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/radpred.html'>radpred</a></span><span class='op'>(</span><span class='va'>grass.p</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/sads/man/radpred.html'>radpred</a></span><span class='op'>(</span><span class='va'>grass.w</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/legend.html'>legend</a></span><span class='op'>(</span><span class='st'>"topright"</span>,</span>
+<span>       legend <span class='op'>=</span> <span class='va'>m.nombres</span>,</span>
+<span>       col <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, bty <span class='op'>=</span> <span class='st'>"n"</span>, lty <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<h3 id="truncar-o-no-truncar-el-argumento-trunc.max">¿Truncar o no truncar? El argumento <code>trunc.max</code></h3>
+<p>Hasta acá ajustamos los modelos sin ninguna restricción sobre el valor
+máximo de la variable de abundancia. Pero, a rigor, esto no es del todo correcto:
+las distribuciones continuas que usamos (exponencial, gamma,
+lognormal, Pareto, Weibull) tienen soporte que se extiende hasta el
+infinito, mientras que nuestra escala de cobertura tiene un máximo
+posible bien definido, de 100%. Un valor de cobertura no puede ser
+mayor a eso.</p>
+<p>Para respetar esta restricción, <code>fitsadC</code> acepta el argumento
+<code>trunc.max</code>, que trunca la distribución ajustada por la derecha en el
+valor indicado. Ajustemos de nuevo los cinco modelos, esta vez
+truncando en 100:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>grass.e.t</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/fitsadC.html'>fitsadC</a></span><span class='op'>(</span><span class='va'>grass.h</span>, <span class='st'>'exp'</span>, trunc.max <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>      <span class='co'># Exponencial</span></span>
+<span><span class='va'>grass.g.t</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/fitsadC.html'>fitsadC</a></span><span class='op'>(</span><span class='va'>grass.h</span>, <span class='st'>'gamma'</span>, trunc.max <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>    <span class='co'># Gamma</span></span>
+<span><span class='va'>grass.l.t</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/fitsadC.html'>fitsadC</a></span><span class='op'>(</span><span class='va'>grass.h</span>, <span class='st'>'lnorm'</span>, trunc.max <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>    <span class='co'># Lognormal</span></span>
+<span><span class='va'>grass.p.t</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/fitsadC.html'>fitsadC</a></span><span class='op'>(</span><span class='va'>grass.h</span>, <span class='st'>'pareto'</span>, trunc.max <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>   <span class='co'># Pareto</span></span>
+<span><span class='va'>grass.w.t</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/fitsadC.html'>fitsadC</a></span><span class='op'>(</span><span class='va'>grass.h</span>, <span class='st'>'weibull'</span>, trunc.max <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>  <span class='co'># Weibull</span></span></code></pre>
+</div>
+</div>
+<p>Ahora comparemos los diez modelos —los cinco sin truncar y los cinco
+truncados en 100— en una sola tabla:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/pkg/bbmle/man/ICtab.html'>AICctab</a></span><span class='op'>(</span><span class='va'>grass.e</span>, <span class='va'>grass.g</span>, <span class='va'>grass.l</span>, <span class='va'>grass.p</span>, <span class='va'>grass.w</span>,</span>
+<span>        <span class='va'>grass.e.t</span>, <span class='va'>grass.g.t</span>, <span class='va'>grass.l.t</span>, <span class='va'>grass.p.t</span>, <span class='va'>grass.w.t</span>,</span>
+<span>        weights <span class='op'>=</span> <span class='cn'>TRUE</span>, base <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>Para este conjunto de datos en particular, vas a notar que los modelos
+truncados y sin truncar son equivalentes, aunque se ha producido una
+pequeña mejora en la plausibilidad del mejor modelo (Pareto).</p>
+<p>Asi es posiblemente porque ninguna especie de esta muestra llega
+siquiera a clase de mitad de la cobertura. Como las densidades de
+probabilidad de estas distribuciones ya son prácticamente nulas mucho
+antes de llegar a 100, truncar en ese punto no cambia casi nada la
+verosimilitud del modelo.</p>
+<p>Esto no significa que el argumento <code>trunc.max</code> sea innecesario: en un
+conjunto de datos donde sí hubiera especies con coberturas cercanas al
+máximo posible de la escala, la diferencia entre truncar y no truncar
+sería mucho más importante. Como regla general, siempre que la
+variable que estás modelando tenga un límite superior conocido (como
+ocurre con las escalas de cobertura, que van de 0 a 100%), es una
+buena práctica declarar ese límite con <code>trunc.max</code>, incluso si en tu
+conjunto de datos particular el efecto resulta pequeño.</p>
+<h3 id="conclusión">Conclusión</h3>
+<p>Vimos que el paquete <code>sads</code> no se limita a datos de conteos de
+individuos: con <code>fitsadC</code>, <code>coverpred</code> y el argumento <code>trunc.max</code>,
+podemos ajustar y comparar modelos de distribución de abundancia
+también para datos categorizados en clases, como los de cobertura,
+respetando además los límites naturales que la escala de medición
+pueda imponer.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+</div>
 <h1 id="referencias">Referencias</h1>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<p>Burnham, K.P., &amp; Anderson, D.R. . (2002). Model selection and
+multimodel inference: a practical information-theoretic approach. New
+York, NY: Springer New York.</p>
+<p>Vieira, M. &amp; Overbeck, G. (2020). Small seed bank in
+grasslands and tree plantations in former grassland sites in the
+South Brazilian highlands [Dataset]. Dryad.
+<a href="https://doi.org/10.5061/dryad.n2z34tmsw" class="uri">https://doi.org/10.5061/dryad.n2z34tmsw</a></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

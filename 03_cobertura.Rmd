@@ -70,23 +70,13 @@ htmltools::tagList(
 xaringanExtra::embed_xaringan("03_cobertura/slides.html")
 ```
 
-# Tutoriales
+# Tutorial
 
-<details>
-<summary><b>1. Ajuste</b></summary>
-
-
-</details>
-
-<details>
-<summary><b>2. Ajuste </b></summary>
+## Ajuste de modelos a datos de clases de cobertura
 
 ```{r tutorial-cobertura, echo = FALSE, results = "asis", eval = TRUE}
-cat(incluir_capitulo("03_ajustes/tutorial_clases_abundancia.Rmd", eval = FALSE), sep = "\n")
+cat(incluir_capitulo("03_cobertura/tutorial_clases_abundancia.Rmd", eval = FALSE), sep = "\n")
 ```
-
-</details>
-
 
 # Referencias
 

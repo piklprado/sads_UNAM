@@ -1,0 +1,241 @@
+---
+title: "Ajuste de modelos a datos de clases de cobertura"
+subtitle: "Un tutorial con el paquete sads"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+---
+
+```{r setup_clases, include=FALSE, eval=TRUE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.align = "center")
+library(sads)
+```
+
+Para muchos organismos, sobre todo los sésiles, contar individuos o
+estimar su biomasa es extremadamente laborioso. Por eso, es una
+práctica común registrar la abundancia de cada especie mediante una
+**clase de cobertura**: un intervalo de porcentaje del área muestreada
+que está cubierto por los individuos de esa especie. En este tutorial
+vamos a aprender a ajustar modelos de distribución de abundancia a
+este tipo de datos categorizados, usando las funciones que el paquete
+`sads` ofrece específicamente para este caso.
+
+> **Importante:** las funciones que usamos en este tutorial llevan algunas modificaciones que todavía no
+> forman parte de la versión de `sads` publicada en CRAN. Para este
+> tutorial en particular, es necesario instalar la versión de
+> desarrollo del paquete directamente desde GitHub:
+>
+> ```r
+> library(remotes)
+> remotes::install_github("pilaboratory/sads",
+>                         ref = "dev",
+>                         dependencies = c("Depends", "Imports"))
+> ```
+>
+> Y luego cargar el paquete de la forma habitual:
+>
+> ```r
+> library(sads)
+> ```
+
+### Los datos: cobertura de plantas en pastizales
+
+Vamos a usar los datos de Vieira *et al.* (2020), que registraron la
+clase de cobertura de cada especie de planta en parcelas de pastizales
+del sur de Brasil. El objeto `grasslands` del paquete `sads` tiene los
+datos de la parcela "*CA8*", la que registró el mayor número de especies
+en ese estudio.
+
+```{r grasslands-head}
+head(grasslands)
+```
+
+La columna `cover` de este data frame tiene la clase de cobertura de
+cada especie de planta, es decir, la proporción del área de la parcela
+cubierta por todos los individuos de esa especie. La cobertura está
+expresada en una escala de 13 intervalos, definidos por los siguientes
+puntos de corte:
+
+```{r grasslands-breakpoints}
+(grass.brk <- c(0, 1, 3, 5, seq(15, 100, by = 10), 100))
+```
+
+Podemos contar el número de especies en cada clase de cobertura usando
+un histograma:
+
+```{r grasslands-hist}
+grass.h <- hist(grasslands$mids, breaks = grass.brk, plot = FALSE)
+```
+
+El objeto resultante, de clase `histogram`, tiene el número de
+especies en cada clase de cobertura, así como el punto medio de cada
+clase:
+
+```{r grasslands-hist-tabla}
+str(grass.h)
+data.frame(punto_medio = grass.h$mids, N_especies = grass.h$counts)
+```
+
+### Ajustando distribuciones continuas: `fitsadC`
+
+La función `fitsadC` ajusta por máxima verosimilitud las
+distribuciones continuas más usadas para este tipo de datos. A
+diferencia de `fitsad`, que vimos en en tutoriales anteriores, `fitsadC`
+espera como datos un objeto de clase `histogram`, no un vector de
+abundancias.
+
+Empecemos ajustando los cinco modelos disponibles, sin ninguna
+restricción sobre el valor máximo que puede tomar la variable:
+
+```{r grasslands-fit-sin-trunc}
+grass.e <- fitsadC(grass.h, 'exp')      # Exponencial
+grass.g <- fitsadC(grass.h, 'gamma')    # Gamma
+grass.l <- fitsadC(grass.h, 'lnorm')    # Lognormal
+grass.p <- fitsadC(grass.h, 'pareto')   # Pareto
+grass.w <- fitsadC(grass.h, 'weibull')  # Weibull
+```
+
+Los modelos ajustados son de clase `fitsadC`, para la cual están
+disponibles la mayoría de los métodos de diagnóstico y comparación de
+modelos que ya usamos con `fitsad`. Por ejemplo, podemos comparar los
+modelos de la forma usual:
+
+```{r grasslands-aicctab-sin-trunc}
+m.nombres <- c("Exponencial", "Gamma", "Log-normal", "Pareto", "Weibull") 
+AICctab(grass.e, grass.g, grass.l, grass.p, grass.w,
+        mnames = m.nombres, 
+        weights = TRUE, base = TRUE)
+```
+
+En esta selección hemos utilizado el AIC corregido para muestras
+pequeñas (*AICc*, Burnham y Anderson, 2002), ya que los datos cuentan
+con pocas observaciones (abundancias de especies). Observamos que los
+modelos log-normal y de Pareto están igualmente bien respaldados por
+los datos.
+
+
+### Gráficos de diagnóstico
+
+Un histograma con los valores observados se grafica simplemente con:
+
+```{r grasslands-hist-plot, fig.width=6, fig.height=5}
+plot(grass.h, main = "", xlab = "Clase de abundancia")
+```
+
+Como R grafica por defecto histogramas de clases de distinto tamaño en
+una escala de densidad, el paquete `sads` ofrece la función
+`coverpred`, que calcula el número de especies esperado según cada
+modelo ajustado, en escala de frecuencia, frecuencia relativa o
+densidad (por defecto):
+
+```{r grasslands-coverpred}
+grass.e.p <- coverpred(grass.e)
+grass.g.p <- coverpred(grass.g)
+grass.l.p <- coverpred(grass.l)
+grass.p.p <- coverpred(grass.p)
+grass.w.p <- coverpred(grass.w)
+```
+
+Con este objeto podemos agregar al histograma las densidades
+esperadas por cada modelo:
+
+```{r grasslands-coverpred-plot, fig.width=6, fig.height=5}
+plot(grass.h, main = "", xlab = "Clase de abundancia", xlim = c(0, 40))
+points(grass.e.p, col = 1)
+points(grass.g.p, col = 2)
+points(grass.l.p, col = 3)
+points(grass.p.p, col = 4)
+points(grass.w.p, col = 5)
+legend("topright",
+       legend = m.nombres,
+       col = 1:5, bty = "n", lty = 1, pch = 1)
+```
+
+**Otra forma de comparar los modelos es con un diagrama de
+rango-abundancia**, tal como hicimos con datos de conteos en el
+tutorial anterior. La función `rad` también puede aplicarse a un
+objeto `histogram` como `grass.h`, devolviendo las clases de cobertura
+de cada espécie, ordenadas por rango. Y así como usamos `radpred` para
+obtener el RAD esperado por un modelo ajustado con `fitsad`, podemos
+usarla de la misma manera con los modelos ajustados con `fitsadC`,
+agregando una línea por modelo:
+
+```{r grasslands-rad-plot, fig.width=6, fig.height=5}
+plot(rad(grass.h))
+lines(radpred(grass.e), col = 1)
+lines(radpred(grass.g), col = 2)
+lines(radpred(grass.l), col = 3)
+lines(radpred(grass.p), col = 4)
+lines(radpred(grass.w), col = 5)
+legend("topright",
+       legend = m.nombres,
+       col = 1:5, bty = "n", lty = 1)
+```
+
+### ¿Truncar o no truncar? El argumento `trunc.max`
+
+Hasta acá ajustamos los modelos sin ninguna restricción sobre el valor
+máximo de la variable de abundancia. Pero, a rigor, esto no es del todo correcto:
+las distribuciones continuas que usamos (exponencial, gamma,
+lognormal, Pareto, Weibull) tienen soporte que se extiende hasta el
+infinito, mientras que nuestra escala de cobertura tiene un máximo
+posible bien definido, de 100%. Un valor de cobertura no puede ser
+mayor a eso.
+
+Para respetar esta restricción, `fitsadC` acepta el argumento
+`trunc.max`, que trunca la distribución ajustada por la derecha en el
+valor indicado. Ajustemos de nuevo los cinco modelos, esta vez
+truncando en 100:
+
+```{r grasslands-fit-con-trunc}
+grass.e.t <- fitsadC(grass.h, 'exp', trunc.max = 100)      # Exponencial
+grass.g.t <- fitsadC(grass.h, 'gamma', trunc.max = 100)    # Gamma
+grass.l.t <- fitsadC(grass.h, 'lnorm', trunc.max = 100)    # Lognormal
+grass.p.t <- fitsadC(grass.h, 'pareto', trunc.max = 100)   # Pareto
+grass.w.t <- fitsadC(grass.h, 'weibull', trunc.max = 100)  # Weibull
+```
+
+Ahora comparemos los diez modelos —los cinco sin truncar y los cinco
+truncados en 100— en una sola tabla:
+
+```{r grasslands-aicctab-con-trunc}
+AICctab(grass.e, grass.g, grass.l, grass.p, grass.w,
+        grass.e.t, grass.g.t, grass.l.t, grass.p.t, grass.w.t,
+        weights = TRUE, base = TRUE)
+```
+
+Para este conjunto de datos en particular, vas a notar que los modelos
+truncados y sin truncar son equivalentes, aunque se ha producido una
+pequeña mejora en la plausibilidad del mejor modelo (Pareto). 
+
+Asi es posiblemente porque ninguna especie de esta muestra llega
+siquiera a clase de mitad de la cobertura.  Como las densidades de
+probabilidad de estas distribuciones ya son prácticamente nulas mucho
+antes de llegar a 100, truncar en ese punto no cambia casi nada la
+verosimilitud del modelo.
+
+Esto no significa que el argumento `trunc.max` sea innecesario: en un
+conjunto de datos donde sí hubiera especies con coberturas cercanas al
+máximo posible de la escala, la diferencia entre truncar y no truncar
+sería mucho más importante. Como regla general, siempre que la
+variable que estás modelando tenga un límite superior conocido (como
+ocurre con las escalas de cobertura, que van de 0 a 100%), es una
+buena práctica declarar ese límite con `trunc.max`, incluso si en tu
+conjunto de datos particular el efecto resulta pequeño.
+
+### Conclusión
+
+Vimos que el paquete `sads` no se limita a datos de conteos de
+individuos: con `fitsadC`, `coverpred` y el argumento `trunc.max`,
+podemos ajustar y comparar modelos de distribución de abundancia
+también para datos categorizados en clases, como los de cobertura,
+respetando además los límites naturales que la escala de medición
+pueda imponer.
+
+
+
+

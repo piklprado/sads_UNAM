@@ -58,9 +58,9 @@ style_solarized_light(
 # clipboard
 htmltools::tagList(
   xaringanExtra::use_clipboard(
-    button_text = "Copy code <i class=\"fa fa-clipboard\"></i>",
-    success_text = "Copied! <i class=\"fa fa-check\" style=\"color: #90BE6D\"></i>",
-    error_text = "Not copied 😕 <i class=\"fa fa-times-circle\" style=\"color: #F94144\"></i>"
+    button_text = "Copiar código <i class=\"fa fa-clipboard\"></i>",
+    success_text = "¡Copiado! <i class=\"fa fa-check\" style=\"color: #90BE6D\"></i>",
+    error_text = "No se copió 😕 <i class=\"fa fa-times-circle\" style=\"color: #F94144\"></i>"
   ),
   rmarkdown::html_dependency_font_awesome()
   )
@@ -71,14 +71,14 @@ htmltools::tagList(
 
 .pull-left[
 
-* Em muitos inventários ecológicos não é possível medir com precisão a
-  abundância de cada espécie, seja pelo contagem de indivíduos ou por
-  outra medida, como biomassa.
+* En muchos inventarios ecológicos no es posible medir con precisión la
+  abundancia de cada especie, ya sea por el conteo de individuos o por
+  otra medida, como la biomasa.
 
-* Neste casos, as espécies são categorizadas em **classes de abundância**
+* En estos casos, las especies se categorizan en **clases de abundancia**
   
-* Um caso muito comum são as classes de cobertura para organismos
-sésseis, como plantas ou bentos.]
+* Un caso muy común son las clases de cobertura para organismos
+sésiles, como plantas o bentos.]
 
 .pull-right[
 <div style="text-align:center; margin-bottom:10px">
@@ -89,9 +89,9 @@ sésseis, como plantas ou bentos.]
 
 ---
 
-## Estrutura de dados em classes de abundância
+## Estructura de datos en clases de abundancia
 
-Os dados obtidos obtidos por este tipo de inventário são a classe de abudância de cada espécie:
+Los datos obtenidos por este tipo de inventario son la clase de abundancia de cada especie:
 
 <br>
 
@@ -103,13 +103,13 @@ grasslands |>
     kable(col.names = "Clase de Cobertura")|>
     column_spec(1,italic=TRUE)
 ```
-Coverage class of plant species in plots in grasslands in Southern Brazil [(Vieira & Overbeck 2020)](https://lume.ufrgs.br/handle/10183/221527)
+Clase de cobertura de especies de plantas en parcelas de pastizales del sur de Brasil [(Vieira & Overbeck 2020)](https://lume.ufrgs.br/handle/10183/221527)
 
 ---
 
-## Estrutura das SADs em classes de abundância
+## Estructura de las SAD en clases de abundancia
 
-As SADs resultantes são tabelas de frequência de espécies em cada classe:
+Las SAD resultantes son tablas de frecuencia de especies en cada clase:
 
 <br>
 
@@ -128,16 +128,16 @@ grasslands |>
 
 ---
 
-## Como ajustar modelos de SADs a dados em classes?
+## ¿Cómo ajustar modelos de SAD a datos en clases?
 
 .pull-left[
-* Lembre que nossos modelos de SADs atribuem probabilidades a cada valor de abundância.
+* Recuerda que nuestros modelos de SAD asignan probabilidades a cada valor de abundancia.
 
-* No entanto, agora temos classes, que agregam mais de um valor de
-  abundância. Como atribuir probabilidade as estas classes?
+* Sin embargo, ahora tenemos clases, que agregan más de un valor de
+  abundancia. ¿Cómo asignar probabilidad a estas clases?
 
-* Para buscar uma solução, vamos começar com um exemplo de
-classificação de número de indivíduos em oitavas (pois oitavas são um tipod e classe de abundância). 
+* Para buscar una solución, vamos a empezar con un ejemplo de
+clasificación del número de individuos en octavas (ya que las octavas son un tipo de clase de abundancia).
 ]
 
 .pull-right[
@@ -157,15 +157,15 @@ moth.class|>
 ]
 ---
 
-## Como ajustar modelos de SADs a dados em classes?
+## ¿Cómo ajustar modelos de SAD a datos en clases?
 
 .pull-left[
 
-* Cada oitava inclui um ou mais valores de abundância.
+* Cada octava incluye uno o más valores de abundancia.
 
-* Qualquer modelo de SADs pode atribuir probabilidades a cada uma destas abundâncias
+* Cualquier modelo de SAD puede atribuir probabilidades a cada una de estas abundancias
 
-* Assim, a probabilidade que o modelo atribui à oitava, será a soma das probabilidades atribuídas às abundâncias que pretencem a esta oitava
+* Así, la probabilidad que el modelo atribuye a la octava será la suma de las probabilidades atribuidas a las abundancias que pertenecen a esa octava
 ]
 
 .pull-right[
@@ -175,7 +175,7 @@ moth.class|>
     data.frame(abund = 1:8) |>
     mutate(oct=cut(abund, breaks=c(0,1,2,4,8),include.lowest=TRUE, labels=c("0-1","1-2","2-4","4-8")),
            prob = dls(abund, N=1000, alpha =20))
-# 1. Trata os dados (evita erro de tipo no bind_rows)
+# 1. Procesa los datos (evita error de tipo en bind_rows)
 df_prep <- moths.class.p |> 
   mutate(abund = as.character(abund))
 
@@ -190,16 +190,16 @@ dados_com_subtotal <- df_prep |>
 
 tabela_final <- bind_rows(dados_sem_subtotal, dados_com_subtotal)
 
-# 2. Encontra os índices das linhas de subtotal
+# 2. Encuentra los índices de las filas de subtotal
 linhas_subtotal <- which(tabela_final$abund == "-")
 
- c1 <- "#f0f0f0" # Linha 1 (Cinza muito claro)
- c2 <- "#d9d9d9" # Linha 2 (Cinza claro)
- c3 <- "#bfbfbf" # Linhas 3 e 4 (Cinza médio)
- c4 <- "#969696" # Linhas 5 a 8 (Cinza mais escuro)
+ c1 <- "#f0f0f0" # Fila 1 (Gris muy claro)
+ c2 <- "#d9d9d9" # Fila 2 (Gris claro)
+ c3 <- "#bfbfbf" # Filas 3 y 4 (Gris medio)
+ c4 <- "#969696" # Filas 5 a 8 (Gris más oscuro)
 
  tabela_final |> 
-     kable(col.names = c("Abundância", "Octava", "Probabilidade"), digits =c(1,1,3))|>
+     kable(col.names = c("Abundancia", "Octava", "Probabilidad"), digits =c(1,1,3))|>
      row_spec(1, background=c1)|>
      row_spec(2, background=c2, col=c2)|>
      row_spec(3:5, background=c2,col=c2)|>
@@ -208,22 +208,22 @@ linhas_subtotal <- which(tabela_final$abund == "-")
 ]
 ---
 
-## Como ajustar modelos de SADs a dados em classes?
+## ¿Cómo ajustar modelos de SAD a datos en clases?
 
 .pull-left[
 
-* Cada oitava inclui um ou mais valores de abundância.
+* Cada octava incluye uno o más valores de abundancia.
 
-* Qualquer modelo de SADs pode atribuir probabilidades a cada uma destas abundâncias
+* Cualquier modelo de SAD puede atribuir probabilidades a cada una de estas abundancias
 
-* Assim, a probabilidade que o modelo atribui à oitava, será a soma das probabilidades atribuídas às abundâncias que pretencem a esta oitava
+* Así, la probabilidad que el modelo atribuye a la octava será la suma de las probabilidades atribuidas a las abundancias que pertenecen a esa octava
 ]
 
 .pull-right[
 	
 ```{r octavas-com-probs2}
  tabela_final |> 
-     kable(col.names = c("Abundância", "Octava", "Probabilidade"), digits =c(1,1,3))|>
+     kable(col.names = c("Abundancia", "Octava", "Probabilidad"), digits =c(1,1,3))|>
      row_spec(1, background=c2, col=c1)|>
      row_spec(2, background=c1)|>
      row_spec(3:5, background=c2, col=c2)|>
@@ -231,22 +231,22 @@ linhas_subtotal <- which(tabela_final$abund == "-")
 ```
 ]
 ---
-## Como ajustar modelos de SADs a dados em classes?
+## ¿Cómo ajustar modelos de SAD a datos en clases?
 
 .pull-left[
 
-* Cada oitava inclui um ou mais valores de abundância.
+* Cada octava incluye uno o más valores de abundancia.
 
-* Qualquer modelo de SADs pode atribuir probabilidades a cada uma destas abundâncias
+* Cualquier modelo de SAD puede atribuir probabilidades a cada una de estas abundancias
 
-* Assim, a probabilidade que o modelo atribui à oitava, será a soma das probabilidades atribuídas às abundâncias que pretencem a esta oitava
+* Así, la probabilidad que el modelo atribuye a la octava será la suma de las probabilidades atribuidas a las abundancias que pertenecen a esa octava
 ]
 
 .pull-right[
 	
 ```{r octavas-com-probs3}
  tabela_final |> 
-     kable(col.names = c("Abundância", "Octava", "Probabilidade"), digits =c(1,1,3))|>
+     kable(col.names = c("Abundancia", "Octava", "Probabilidad"), digits =c(1,1,3))|>
      row_spec(1, background=c2, col=c1)|>
      row_spec(2, background=c2, col=c1)|>
      row_spec(3:5, background=c1)|>
@@ -256,22 +256,22 @@ linhas_subtotal <- which(tabela_final$abund == "-")
 ]
 
 ---
-## Como ajustar modelos de SADs a dados em classes?
+## ¿Cómo ajustar modelos de SAD a datos en clases?
 
 .pull-left[
 
-* Cada oitava inclui um ou mais valores de abundância.
+* Cada octava incluye uno o más valores de abundancia.
 
-* Qualquer modelo de SADs pode atribuir probabilidades a cada uma destas abundâncias
+* Cualquier modelo de SAD puede atribuir probabilidades a cada una de estas abundancias
 
-* Assim, a probabilidade que o modelo atribui à oitava, será a soma das probabilidades atribuídas às abundâncias que pretencem a esta oitava
+* Así, la probabilidad que el modelo atribuye a la octava será la suma de las probabilidades atribuidas a las abundancias que pertenecen a esa octava
 ]
 
 .pull-right[
 	
 ```{r octavas-com-probs4}
  tabela_final |> 
-     kable(col.names = c("Abundância", "Octava", "Probabilidade"), digits =c(1,1,3))|>
+     kable(col.names = c("Abundancia", "Octava", "Probabilidad"), digits =c(1,1,3))|>
      row_spec(1, background=c2, col=c1)|>
      row_spec(2, background=c2, col=c1)|>
      row_spec(3:5, background=c2, col=c1)|>
@@ -280,14 +280,15 @@ linhas_subtotal <- which(tabela_final$abund == "-")
 ```
 ]
 ---
+
 ## Formalizando
 <br>
-Seja $X$ uma variável aleatória discreta que representa a abundância de uma espécie, com suporte (conjunto de valores possíveis) 
+Sea $X$ una variable aleatoria discreta que representa la abundancia de una especie, con soporte (conjunto de valores posibles) 
 
 $$\mathcal{X} = \{1, 2, 3, \ldots, n\}$$.
 --
 <br>
-Uma classe de abundância $C_i$ é um subconjunto de $\mathcal{X}$, definido por um intervalo entre um valor mínimo $L_i$ (exclusivo) e um valor máximo $U_i$ (inclusivo):
+Una clase de abundancia $C_i$ es un subconjunto de $\mathcal{X}$, definida por un intervalo entre un valor mínimo $L_i$ (exclusivo) y un valor máximo $U_i$ (inclusivo):
 
 $$C_i = \{x \in \mathcal{X} : L_i < x \leq U_i\}$$
 
@@ -297,29 +298,29 @@ $$C_i = \{x \in \mathcal{X} : L_i < x \leq U_i\}$$
 ## Formalizando
 
 <br>
-Um modelo $f(x)$ atribui uma probabilidade a cada valor possível de abundância:
+Un modelo $f(x)$ asigna una probabilidad a cada valor posible de abundancia:
 
 $$f(x) = P(X = x), \quad x \in \mathcal{X}$$
 
 --
 
 <br>
-Então a probabilidade de uma espécie tomada ao acaso pertencer à classe $C_i$ é a soma das probabilidades atribuídas pelo modelo a todos os valores de abundância contidos nessa classe:
+Entonces la probabilidad de que una especie tomada al azar pertenezca a la clase $C_i$ es la suma de las probabilidades atribuidas por el modelo a todos los valores de abundancia contenidos en esa clase:
 
 $$P(X \in C_i) = \sum_{x=L_i+1}^{U_i} f(x)$$
 
 ---
 
-## Distribuições de probabilidades contínuas
+## Distribuciones de probabilidad continuas
 
 .pull-left[
 
-* Para medidas de abundâncias contínuas (como massas, áreas ou
-  cobertura), usamos modelos de distribuição contínuas
-  (e.g. lognormal, exponencial, gama).
+* Para medidas de abundancia continuas (como masas, áreas o
+  cobertura), usamos modelos de distribución continuas
+  (p. ej. lognormal, exponencial, gama).
 
-* Para estes modelos, a probabilidade sempre é calculada somando
-  valores atribuídos pelo modelo, em um intervalo, por meio de uma
+* Para estos modelos, la probabilidad siempre se calcula sumando
+  los valores atribuidos por el modelo, en un intervalo, por medio de una
   integral:
 
 $$ P(L \leq x \leq U) ~ = ~ \int_L^U f(x) \, dx $$
@@ -329,21 +330,21 @@ $$ P(L \leq x \leq U) ~ = ~ \int_L^U f(x) \, dx $$
 
 ```{r lognormal-probabilidad}
 
-## 1. Curva lognomral com suporte até ca.1
+## 1. Curva lognormal con soporte hasta ca. 1
 meanlog <- -1.3
 sdlog <- 0.45
 tmp <- data.frame(x = seq(0, 1, length.out = 500)) |>
   mutate(y = dlnorm(x, meanlog = meanlog, sdlog = sdlog))
-## 2. grafico base
+## 2. Gráfico base
 p2 <- ggplot(tmp, aes(x = x, y = y)) +
   geom_line(linewidth = 1) +
   labs(x = "x", y = "f(x)") +
   theme_minimal(base_size = 16)
-## 3. Intervalo de interesse
+## 3. Intervalo de interés
 a <- 0.3
 b <- 0.5
 y_max <- max(tmp$y)
-## 04. Grafico final
+## 4. Gráfico final
 p2 +
   geom_ribbon(aes(x = x, ymin = 0, ymax = y),
               data = filter(tmp, x >= a & x <= b),
@@ -359,21 +360,21 @@ p2 +
 ]
 
 ---
-## Ajuste com el paquete `sads`
+## Ajuste con el paquete `sads`
 .pull-left[
-* `sads` tem a função `fitsadC` para ajuste de dados agregados em
-  classes de abundância
+* `sads` tiene la función `fitsadC` para el ajuste de datos agregados en
+  clases de abundancia
 
-* Por enquanto, é possível ajustar as distribuições contínuas:
-exponencial, gama, lognormal, Weibull e Pareto. 
+* Por ahora, es posible ajustar las distribuciones continuas:
+exponencial, gama, lognormal, Weibull y Pareto. 
 
-* Para usar esta função, você precisa de um vetor numérico com o valor
-de abundância de cada espécie. Pode ser qualquer valor
-contido dentro da classe de abundância da espécie, como o limite superior da
-classe ou seu ponto médio. ]
+* Para usar esta función, necesitas un vector numérico con el valor
+de abundancia de cada especie. Puede ser cualquier valor
+contenido dentro de la clase de abundancia de la especie, como el límite superior de la
+clase o su punto medio. ]
 
 .pull-right[
-O conjunto de dados `grasslands` tem o código original da classe de abundância, um label da classe e limite superior e ponto médio da classe de cada espécie numa amostra de plantas nos campos sulinos do Brasil:
+El conjunto de datos `grasslands` tiene el código original de la clase de abundancia, una etiqueta de la clase, y el límite superior y el punto medio de la clase de cada especie en una muestra de plantas de pastizales del sur de Brasil:
 
 ```{r grasslands-dataset, echo=TRUE}
 head(grasslands)
@@ -381,17 +382,15 @@ head(grasslands)
 ]
 ---
 
-## Fitting workflow
+## Flujo de trabajo del ajuste
 
-As funções de ajuste recebem um objeto da classe `histogram`, que você deve criar com seus dados. As etapas do ajuste são:
+La funcion de ajuste recibe un objeto de la clase `histogram`, que debes crear con tus datos. Las etapas del ajuste son:
 
 --
 
 <br>
 
---
-
-**1.**  Defina os intervalos das classes de abundância usada: 
+**1.**  Define los intervalos de las clases de abundancia utilizadas: 
 
 ```{r fitsadC-workflow1, echo=TRUE}
 (grass.brk <- c(0,1,3,5,seq(15,100, by=10),100))
@@ -400,7 +399,7 @@ As funções de ajuste recebem um objeto da classe `histogram`, que você deve c
 
 --
 
-**2.** Crie um objeto histograma estes intervalos e seus dados, com a função `hist()`
+**2.** Crea un objeto histograma con estos intervalos y tus datos, con la función `hist()`
 
 ```{r fitsadC-workflow2, echo=TRUE}
 grass.h <- hist(grasslands$mids, breaks = grass.brk, plot = FALSE)
@@ -408,11 +407,11 @@ grass.h <- hist(grasslands$mids, breaks = grass.brk, plot = FALSE)
 
 ---
 
-## Fitting workflow
+## Flujo de trabajo del ajuste
 
-O objeto resultante tem os intervalos e os pontos médios das
-   classes e o número de observações por classe, entre outras
-   informações:
+El objeto resultante tiene los intervalos y los puntos medios de las
+   clases, y el número de observaciones por clase, entre otra
+   información:
 
 ```{r contenido-hist-grass, echo=TRUE}
 str(grass.h)
@@ -420,9 +419,9 @@ str(grass.h)
 
 ---
 
-## Fitting workflow
+## Flujo de trabajo del ajuste
 
-*3.* Agora passe o objeto de histograma para a função `fitsadC()`, indicando o modelo com o argumento `sad`
+*3.* Ahora pasa el objeto histograma a la función `fitsadC()`, indicando el modelo con el argumento `sad`
 
 ```{r fitsadC-workflow4, echo=TRUE}
 grass.e <- fitsadC(grass.h, "exp")     
@@ -432,7 +431,7 @@ grass.l <- fitsadC(grass.h, "lnorm")
 
 --
 
-Os objetos da classe `fitsadC` aceitam os mesmos métodos que já vimos 
+Los objetos de la clase `fitsadC` aceptan los métodos que ya conocemos 
 
 ```{r fitsadC-coef, echo=TRUE}
 coef(grass.e)
@@ -440,17 +439,17 @@ AIC(grass.g)
 ```
 ---
 
-## Comparação de modelos
+## Comparación de modelos
 
 .pull-left[
-**Tabela de seleção de modelos (AICc)**
+**Tabla de selección de modelos (AICc)**
 ```{r fitsadC-selmod, echo=TRUE}
 AICctab(grass.e, grass.g, grass.l,
         mnames = c("Exponencial", "Gamma",
                    "Log-normal"),
         weights = TRUE, base = TRUE)
 ```
-**RADs observadas e previstas**
+**RAD observadas y previstas**
 ```{r fitsadC-rads, echo=TRUE, eval=FALSE}
 plot(rad(grass.h))
 lines(radpred(grass.e), col=1)
@@ -470,21 +469,23 @@ legend("topright", c("Exponencial", "Gamma", "Log-normal"),
 ```
 ]
 ---
-## Previstos
+
+## Predichos
+
 .pull-left[
-La función `coverpred` calcula el número esperado de espécies por
+La función `coverpred` calcula el número esperado de especies por
 clase de abundancia
 ```{r grasslands-coverpred, echo=TRUE}
 grass.e.p <- coverpred(grass.e)
 grass.g.p <- coverpred(grass.g)
 grass.l.p <- coverpred(grass.l)
 ```
-Que podemos sobrepor aos histograma observado
+Que podemos agregar al histograma observado
 ```{r coverpred-plot, eval=FALSE, echo=TRUE}
 plot(grass.h, main = "", xlab = "Clase de abundancia", xlim = c(0, 40))
-points(grass.e.p, col = 1)
-points(grass.g.p, col = 2)
-points(grass.l.p, col = 3)
+points(grass.e.p, col = 1, lwd =2)
+points(grass.g.p, col = 2, lwd =2)
+points(grass.l.p, col = 3, lwd =2)
 legend("topright",
        legend = c("Exponencial", "Gamma", "Lognormal"),
        col = 1:3, bty = "n", lty = 1, pch = 1)

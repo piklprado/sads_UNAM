@@ -20,7 +20,6 @@ if (!exists("html_mcq", mode = "function")) {
 library(sads)
 ```
 
-# Ajuste y selección de modelos de SADs
 
 Hubbell (2001) dedujo un modelo de distribución de abundancia de
 especies a partir de su teoría neutral de la biodiversidad. En el

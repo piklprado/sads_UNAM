@@ -75,7 +75,7 @@ xaringanExtra::embed_xaringan("02_ajustes/slides.html")
 <details>
 <summary><b>1. Maxima verosimilitud</b></summary>
 
-
+# Máxima verosimilitud a la fuerza bruta
 ```{r tutorial-mle, echo = FALSE, results = "asis", eval = TRUE}
 cat(incluir_capitulo("02_ajustes/tutorial_maxima_verosimilitud.Rmd", eval = FALSE), sep = "\n")
 ```
@@ -83,8 +83,7 @@ cat(incluir_capitulo("02_ajustes/tutorial_maxima_verosimilitud.Rmd", eval = FALS
 
 <details>
 <summary><b>2. Ajuste </b></summary>
-
-
+# Ajuste y selección de modelos de SADs
 ```{r tutorial-ajustes, echo = FALSE, results = "asis", eval = TRUE}
 cat(incluir_capitulo("02_ajustes/tutorial_ajuste_seleccion.Rmd", eval = FALSE), sep = "\n")
 ```
