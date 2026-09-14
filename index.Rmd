@@ -12,13 +12,6 @@ library(tufte)
 library(kableExtra)
 ```
 
-
-## Bienvenida(o)
-
-Este es un taller creado por un estudiante de biología de toda la vida
-para ayudar a otros estudiantes a aprender sobre el tema de manera más fácil y
-rápida que él mismo.
-
 <div style="display: flex; align-items: center; gap: 20px; margin: 20px 0;">
   <img src="images/Pielou.png" alt="Evelyn C. Pielou" style="width: 150px; height: auto; border-radius: 8px; flex-shrink: 0;" />
   
@@ -28,6 +21,13 @@ rápida que él mismo.
     `r tufte::quote_footer('--- [Evelyn C. Pielou]((https://en.wikipedia.org/wiki/Evelyn_Chrystalla_Pielou)), Mathematical Ecology. Wiley, 1977.')`
   </blockquote>
 </div>
+
+
+## Bienvenida(o)
+
+Este es un taller creado por un estudiante de biología de toda la vida
+para ayudar a otros estudiantes a aprender sobre el tema de manera más fácil y
+rápida que él mismo.
 
 
 ## Imparte

@@ -1,6 +1,6 @@
 .caption {
-  font-size: 0.7em;
-  text-align: left;
+  font-size: 0.7em !important;
+  text-align: left !important;
   background: ;
 }
 
