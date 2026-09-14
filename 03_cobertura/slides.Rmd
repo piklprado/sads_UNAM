@@ -309,13 +309,18 @@ Então a probabilidade de uma espécie tomada ao acaso pertencer à classe $C_i$
 $$P(X \in C_i) = \sum_{x=L_i+1}^{U_i} f(x)$$
 
 ---
+
 ## Distribuições de probabilidades contínuas
 
 .pull-left[
 
-* Para medidas de abundâncias contínuas (como massas, áreas ou cobertura), usamos modelos de distribuição contínuas (e.g. lognormal, exponencial, gama).
+* Para medidas de abundâncias contínuas (como massas, áreas ou
+  cobertura), usamos modelos de distribuição contínuas
+  (e.g. lognormal, exponencial, gama).
 
-* Para estes modelos, a probabilidade sempre é calculada somando valores atribuídos pelo modelo, em um intervalo, por meio de uma integral:
+* Para estes modelos, a probabilidade sempre é calculada somando
+  valores atribuídos pelo modelo, em um intervalo, por meio de uma
+  integral:
 
 $$ P(L \leq x \leq U) ~ = ~ \int_L^U f(x) \, dx $$
 ]
@@ -352,7 +357,151 @@ p2 +
 ```
 
 ]
+
 ---
+## Ajuste com el paquete `sads`
+.pull-left[
+* `sads` tem a função `fitsadC` para ajuste de dados agregados em
+  classes de abundância
+
+* Por enquanto, é possível ajustar as distribuições contínuas:
+exponencial, gama, lognormal, Weibull e Pareto. 
+
+* Para usar esta função, você precisa de um vetor numérico com o valor
+de abundância de cada espécie. Pode ser qualquer valor
+contido dentro da classe de abundância da espécie, como o limite superior da
+classe ou seu ponto médio. ]
+
+.pull-right[
+O conjunto de dados `grasslands` tem o código original da classe de abundância, um label da classe e limite superior e ponto médio da classe de cada espécie numa amostra de plantas nos campos sulinos do Brasil:
+
+```{r grasslands-dataset, echo=TRUE}
+head(grasslands)
+```
+]
+---
+
+## Fitting workflow
+
+As funções de ajuste recebem um objeto da classe `histogram`, que você deve criar com seus dados. As etapas do ajuste são:
+
+--
+
+<br>
+
+--
+
+**1.**  Defina os intervalos das classes de abundância usada: 
+
+```{r fitsadC-workflow1, echo=TRUE}
+(grass.brk <- c(0,1,3,5,seq(15,100, by=10),100))
+``` 
+<br>
+
+--
+
+**2.** Crie um objeto histograma estes intervalos e seus dados, com a função `hist()`
+
+```{r fitsadC-workflow2, echo=TRUE}
+grass.h <- hist(grasslands$mids, breaks = grass.brk, plot = FALSE)
+```	
+
+---
+
+## Fitting workflow
+
+O objeto resultante tem os intervalos e os pontos médios das
+   classes e o número de observações por classe, entre outras
+   informações:
+
+```{r contenido-hist-grass, echo=TRUE}
+str(grass.h)
+```
+
+---
+
+## Fitting workflow
+
+*3.* Agora passe o objeto de histograma para a função `fitsadC()`, indicando o modelo com o argumento `sad`
+
+```{r fitsadC-workflow4, echo=TRUE}
+grass.e <- fitsadC(grass.h, "exp")     
+grass.g <- fitsadC(grass.h, "gamma")   
+grass.l <- fitsadC(grass.h, "lnorm")
+```
+
+--
+
+Os objetos da classe `fitsadC` aceitam os mesmos métodos que já vimos 
+
+```{r fitsadC-coef, echo=TRUE}
+coef(grass.e)
+AIC(grass.g)
+```
+---
+
+## Comparação de modelos
+
+.pull-left[
+**Tabela de seleção de modelos (AICc)**
+```{r fitsadC-selmod, echo=TRUE}
+AICctab(grass.e, grass.g, grass.l,
+        mnames = c("Exponencial", "Gamma",
+                   "Log-normal"),
+        weights = TRUE, base = TRUE)
+```
+**RADs observadas e previstas**
+```{r fitsadC-rads, echo=TRUE, eval=FALSE}
+plot(rad(grass.h))
+lines(radpred(grass.e), col=1)
+lines(radpred(grass.g), col=2)
+lines(radpred(grass.l), col=3)
+```
+]
+
+.pull-right[
+```{r fitsadC-rads-plot}
+plot(rad(grass.h))
+lines(radpred(grass.e), col=1, lwd=1.5)
+lines(radpred(grass.g), col=2, lwd=1.5)
+lines(radpred(grass.l), col=3, lwd=1.5)
+legend("topright", c("Exponencial", "Gamma", "Log-normal"),
+       lty=1, col=1:3)
+```
+]
+---
+## Previstos
+.pull-left[
+La función `coverpred` calcula el número esperado de espécies por
+clase de abundancia
+```{r grasslands-coverpred, echo=TRUE}
+grass.e.p <- coverpred(grass.e)
+grass.g.p <- coverpred(grass.g)
+grass.l.p <- coverpred(grass.l)
+```
+Que podemos sobrepor aos histograma observado
+```{r coverpred-plot, eval=FALSE, echo=TRUE}
+plot(grass.h, main = "", xlab = "Clase de abundancia", xlim = c(0, 40))
+points(grass.e.p, col = 1)
+points(grass.g.p, col = 2)
+points(grass.l.p, col = 3)
+legend("topright",
+       legend = c("Exponencial", "Gamma", "Lognormal"),
+       col = 1:3, bty = "n", lty = 1, pch = 1)
+```
+
+]
+
+.pull-right[
+
+```{r coverpred-plot-show, ref.label= "coverpred-plot", echo=FALSE}
+
+```
+]
+
+
+---
+
 .left-column[
 ```{r , echo=FALSE, fig.align='center'}
 include_graphics("../01_introduccion/figs/bora-la.jpg")
@@ -363,9 +512,7 @@ include_graphics("../01_introduccion/figs/bora-la.jpg")
 
 ### ¡Vámonos!
 
-Encuentra en nuestro sitio los [tutoriales](https://piklprado.github.io/sads_UNAM/02_ajustes.html):
+Encuentra en nuestro sitio el [tutorial](https://piklprado.github.io/sads_UNAM/02_ajustes.html):
 
-* **Máxima verosimilitud** - *MLE a la fuerza bruta*
-
-* **Ajuste** - *Ajuste y selección de modelos de SADs*           
+* **Ajuste** - *Ajuste de modelos a datos de clases de cobertura*           
 ]

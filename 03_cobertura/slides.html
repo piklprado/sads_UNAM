@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Taller SADS - UNAM</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Paulo Inácio Prado (PI)" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <script src="libs/clipboard/clipboard.min.js"></script>
+    <link href="libs/shareon/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain/shareagain.js"></script>
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <link href="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.js"></script>
+    <script>window.xaringanExtraClipboard(null, {"button":"Copy code <i class=\"fa fa-clipboard\"><\/i>","success":"Copied! <i class=\"fa fa-check\" style=\"color: #90BE6D\"><\/i>","error":"Not copied 😕 <i class=\"fa fa-times-circle\" style=\"color: #F94144\"><\/i>"})</script>
+    <link href="libs/font-awesome/css/all.min.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.min.css" rel="stylesheet" />
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="../meu_estilo.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Taller SADS - UNAM
+]
+.subtitle[
+## Ajuste a datos de frecuencia en clases de abundancia o cobertura
+]
+.author[
+### Paulo Inácio Prado (PI)
+]
+.date[
+### 21 Septiembre 2026
+]
+
+---
+
+
+
+
+
+
+## Clases de abundancia
+
+.pull-left[
+
+* Em muitos inventários ecológicos não é possível medir com precisão a
+  abundância de cada espécie, seja pelo contagem de indivíduos ou por
+  outra medida, como biomassa.
+
+* Neste casos, as espécies são categorizadas em **classes de abundância**
+  
+* Um caso muito comum são as classes de cobertura para organismos
+sésseis, como plantas ou bentos.]
+
+.pull-right[
+&lt;div style="text-align:center; margin-bottom:10px"&gt;
+&lt;img src="figs/Braun_Blanquet_scale.png" style="width:90%"&gt;
+&lt;p style="font-size:0.7em; margin-top:2px"&gt;Escala de cobertura de  &lt;a href="https://archive.org/details/plantsociologyst00brau/page/32/mode/1up" target="_blank"&gt;Braun-Blanquet (1975)&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+]
+
+---
+
+## Estrutura de dados em classes de abundância
+
+Os dados obtidos obtidos por este tipo de inventário são a classe de abudância de cada espécie:
+
+&lt;br&gt;
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Clase de Cobertura &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-style: italic;"&gt; Tibouchina gracilis &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 25-35% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-style: italic;"&gt; Andropogon lateralis &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 15-25% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-style: italic;"&gt; Verbena hirta &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 5-15% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-style: italic;"&gt; Sisyrinchium palmifolium &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 3-5% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-style: italic;"&gt; Hypoxis decumbens &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1-3% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-style: italic;"&gt; Mecardonia tenella &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1-3% &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+Coverage class of plant species in plots in grasslands in Southern Brazil [(Vieira &amp; Overbeck 2020)](https://lume.ufrgs.br/handle/10183/221527)
+
+---
+
+## Estrutura das SADs em classes de abundância
+
+As SADs resultantes são tabelas de frequência de espécies em cada classe:
+
+&lt;br&gt;
+
+&lt;table class="table" style="margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Clase de cobertura &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; N especies &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;text-align: center;"&gt; &amp;lt;1% &lt;/td&gt;
+   &lt;td style="text-align:right;text-align: center;"&gt; 16 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;text-align: center;"&gt; 1-3% &lt;/td&gt;
+   &lt;td style="text-align:right;text-align: center;"&gt; 9 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;text-align: center;"&gt; 3-5% &lt;/td&gt;
+   &lt;td style="text-align:right;text-align: center;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;text-align: center;"&gt; 5-15% &lt;/td&gt;
+   &lt;td style="text-align:right;text-align: center;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;text-align: center;"&gt; 15-25% &lt;/td&gt;
+   &lt;td style="text-align:right;text-align: center;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;text-align: center;"&gt; 25-35% &lt;/td&gt;
+   &lt;td style="text-align:right;text-align: center;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+.right[
+[(Vieira &amp; Overbeck 2020)](https://lume.ufrgs.br/handle/10183/221527)
+]
+
+---
+
+## Como ajustar modelos de SADs a dados em classes?
+
+.pull-left[
+* Lembre que nossos modelos de SADs atribuem probabilidades a cada valor de abundância.
+
+* No entanto, agora temos classes, que agregam mais de um valor de
+  abundância. Como atribuir probabilidade as estas classes?
+
+* Para buscar uma solução, vamos começar com um exemplo de
+classificação de número de indivíduos em oitavas (pois oitavas são um tipod e classe de abundância). 
+]
+
+.pull-right[
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Octava &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; N especies &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;text-align: center;"&gt; 0-1 &lt;/td&gt;
+   &lt;td style="text-align:right;text-align: center;"&gt; 35 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;text-align: center;"&gt; 1-2 &lt;/td&gt;
+   &lt;td style="text-align:right;text-align: center;"&gt; 11 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;text-align: center;"&gt; 2-4 &lt;/td&gt;
+   &lt;td style="text-align:right;text-align: center;"&gt; 29 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;text-align: center;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;text-align: center;"&gt; 32 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;text-align: center;"&gt; 8-16 &lt;/td&gt;
+   &lt;td style="text-align:right;text-align: center;"&gt; 26 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;text-align: center;"&gt; 16-32 &lt;/td&gt;
+   &lt;td style="text-align:right;text-align: center;"&gt; 32 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+]
+---
+
+## Como ajustar modelos de SADs a dados em classes?
+
+.pull-left[
+
+* Cada oitava inclui um ou mais valores de abundância.
+
+* Qualquer modelo de SADs pode atribuir probabilidades a cada uma destas abundâncias
+
+* Assim, a probabilidade que o modelo atribui à oitava, será a soma das probabilidades atribuídas às abundâncias que pretencem a esta oitava
+]
+
+.pull-right[
+	
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Abundância &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Octava &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Probabilidade &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 0-1 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: rgba(240, 240, 240, 1) !important;"&gt; 0.249 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 1-2 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.122 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 2-4 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.080 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 2-4 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.059 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; Subtotal &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 2-4 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.139 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.046 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.038 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.032 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.027 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; Subtotal &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.142 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+---
+
+## Como ajustar modelos de SADs a dados em classes?
+
+.pull-left[
+
+* Cada oitava inclui um ou mais valores de abundância.
+
+* Qualquer modelo de SADs pode atribuir probabilidades a cada uma destas abundâncias
+
+* Assim, a probabilidade que o modelo atribui à oitava, será a soma das probabilidades atribuídas às abundâncias que pretencem a esta oitava
+]
+
+.pull-right[
+	
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Abundância &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Octava &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Probabilidade &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0-1 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.249 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 1-2 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: rgba(240, 240, 240, 1) !important;"&gt; 0.122 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 2-4 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.080 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 2-4 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.059 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; Subtotal &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 2-4 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.139 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.046 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.038 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.032 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.027 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; Subtotal &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.142 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+---
+## Como ajustar modelos de SADs a dados em classes?
+
+.pull-left[
+
+* Cada oitava inclui um ou mais valores de abundância.
+
+* Qualquer modelo de SADs pode atribuir probabilidades a cada uma destas abundâncias
+
+* Assim, a probabilidade que o modelo atribui à oitava, será a soma das probabilidades atribuídas às abundâncias que pretencem a esta oitava
+]
+
+.pull-right[
+	
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Abundância &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Octava &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Probabilidade &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0-1 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.249 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 1-2 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.122 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 2-4 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: rgba(240, 240, 240, 1) !important;"&gt; 0.080 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 2-4 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: rgba(240, 240, 240, 1) !important;"&gt; 0.059 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; Subtotal &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 2-4 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: rgba(240, 240, 240, 1) !important;"&gt; 0.139 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.046 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.038 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.032 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.027 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; Subtotal &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(217, 217, 217, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.142 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+---
+## Como ajustar modelos de SADs a dados em classes?
+
+.pull-left[
+
+* Cada oitava inclui um ou mais valores de abundância.
+
+* Qualquer modelo de SADs pode atribuir probabilidades a cada uma destas abundâncias
+
+* Assim, a probabilidade que o modelo atribui à oitava, será a soma das probabilidades atribuídas às abundâncias que pretencem a esta oitava
+]
+
+.pull-right[
+	
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Abundância &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Octava &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Probabilidade &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0-1 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.249 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 1-2 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.122 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 2-4 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.080 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 2-4 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.059 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; Subtotal &lt;/td&gt;
+   &lt;td style="text-align:left;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 2-4 &lt;/td&gt;
+   &lt;td style="text-align:right;color: rgba(240, 240, 240, 1) !important;background-color: rgba(217, 217, 217, 1) !important;"&gt; 0.139 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: rgba(240, 240, 240, 1) !important;"&gt; 0.046 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: rgba(240, 240, 240, 1) !important;"&gt; 0.038 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: rgba(240, 240, 240, 1) !important;"&gt; 0.032 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: rgba(240, 240, 240, 1) !important;"&gt; 0.027 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; Subtotal &lt;/td&gt;
+   &lt;td style="text-align:left;background-color: rgba(240, 240, 240, 1) !important;"&gt; 4-8 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: rgba(240, 240, 240, 1) !important;"&gt; 0.142 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+---
+## Formalizando
+&lt;br&gt;
+Seja `\(X\)` uma variável aleatória discreta que representa a abundância de uma espécie, com suporte (conjunto de valores possíveis) 
+
+`$$\mathcal{X} = \{1, 2, 3, \ldots, n\}$$`.
+--
+&lt;br&gt;
+Uma classe de abundância `\(C_i\)` é um subconjunto de `\(\mathcal{X}\)`, definido por um intervalo entre um valor mínimo `\(L_i\)` (exclusivo) e um valor máximo `\(U_i\)` (inclusivo):
+
+`$$C_i = \{x \in \mathcal{X} : L_i &lt; x \leq U_i\}$$`
+
+
+---
+
+## Formalizando
+
+&lt;br&gt;
+Um modelo `\(f(x)\)` atribui uma probabilidade a cada valor possível de abundância:
+
+`$$f(x) = P(X = x), \quad x \in \mathcal{X}$$`
+
+--
+
+&lt;br&gt;
+Então a probabilidade de uma espécie tomada ao acaso pertencer à classe `\(C_i\)` é a soma das probabilidades atribuídas pelo modelo a todos os valores de abundância contidos nessa classe:
+
+`$$P(X \in C_i) = \sum_{x=L_i+1}^{U_i} f(x)$$`
+
+---
+
+## Distribuições de probabilidades contínuas
+
+.pull-left[
+
+* Para medidas de abundâncias contínuas (como massas, áreas ou
+  cobertura), usamos modelos de distribuição contínuas
+  (e.g. lognormal, exponencial, gama).
+
+* Para estes modelos, a probabilidade sempre é calculada somando
+  valores atribuídos pelo modelo, em um intervalo, por meio de uma
+  integral:
+
+$$ P(L \leq x \leq U) ~ = ~ \int_L^U f(x) \, dx $$
+]
+
+.pull-right[
+
+&lt;img src="slides_files/figure-html/lognormal-probabilidad-1.png" alt="" width="90%" /&gt;
+
+]
+
+---
+## Ajuste com el paquete `sads`
+.pull-left[
+* `sads` tem a função `fitsadC` para ajuste de dados agregados em
+  classes de abundância
+
+* Por enquanto, é possível ajustar as distribuições contínuas:
+exponencial, gama, lognormal, Weibull e Pareto. 
+
+* Para usar esta função, você precisa de um vetor numérico com o valor
+de abundância de cada espécie. Pode ser qualquer valor
+contido dentro da classe de abundância da espécie, como o limite superior da
+classe ou seu ponto médio. ]
+
+.pull-right[
+O conjunto de dados `grasslands` tem o código original da classe de abundância, um label da classe e limite superior e ponto médio da classe de cada espécie numa amostra de plantas nos campos sulinos do Brasil:
+
+
+``` r
+&gt; head(grasslands)
+```
+
+```
+                      class  cover upper mids
+Andropogon lateralis    2.0 15-25%    25 20.0
+Andropogon macrothrix   0.1    &lt;1%     1  0.5
+Axonopus affinis        0.1    &lt;1%     1  0.5
+Baccharis trimera       0.1    &lt;1%     1  0.5
+Briza poaemorpha        0.1    &lt;1%     1  0.5
+Briza uniolae           0.1    &lt;1%     1  0.5
+```
+]
+---
+
+## Fitting workflow
+
+As funções de ajuste recebem um objeto da classe `histogram`, que você deve criar com seus dados. As etapas do ajuste são:
+
+--
+
+&lt;br&gt;
+
+--
+
+**1.**  Defina os intervalos das classes de abundância usada: 
+
+
+``` r
+&gt; (grass.brk &lt;- c(0,1,3,5,seq(15,100, by=10),100))
+```
+
+```
+ [1]   0   1   3   5  15  25  35  45  55  65  75  85  95 100
+```
+&lt;br&gt;
+
+--
+
+**2.** Crie um objeto histograma estes intervalos e seus dados, com a função `hist()`
+
+
+``` r
+&gt; grass.h &lt;- hist(grasslands$mids, breaks = grass.brk, plot = FALSE)
+```
+
+---
+
+## Fitting workflow
+
+O objeto resultante tem os intervalos e os pontos médios das
+   classes e o número de observações por classe, entre outras
+   informações:
+
+
+``` r
+&gt; str(grass.h)
+```
+
+```
+List of 6
+ $ breaks  : num [1:14] 0 1 3 5 15 25 35 45 55 65 ...
+ $ counts  : int [1:13] 16 9 1 1 1 1 0 0 0 0 ...
+ $ density : num [1:13] 0.55172 0.15517 0.01724 0.00345 0.00345 ...
+ $ mids    : num [1:13] 0.5 2 4 10 20 30 40 50 60 70 ...
+ $ xname   : chr "grasslands$mids"
+ $ equidist: logi FALSE
+ - attr(*, "class")= chr "histogram"
+```
+
+---
+
+## Fitting workflow
+
+*3.* Agora passe o objeto de histograma para a função `fitsadC()`, indicando o modelo com o argumento `sad`
+
+
+``` r
+&gt; grass.e &lt;- fitsadC(grass.h, "exp")     
+&gt; grass.g &lt;- fitsadC(grass.h, "gamma")   
+&gt; grass.l &lt;- fitsadC(grass.h, "lnorm")
+```
+
+--
+
+Os objetos da classe `fitsadC` aceitam os mesmos métodos que já vimos 
+
+
+``` r
+&gt; coef(grass.e)
+```
+
+```
+    rate 
+0.358704 
+```
+
+``` r
+&gt; AIC(grass.g)
+```
+
+```
+[1] 79.36705
+```
+---
+
+## Comparação de modelos
+
+.pull-left[
+**Tabela de seleção de modelos (AICc)**
+
+``` r
+&gt; AICctab(grass.e, grass.g, grass.l,
++         mnames = c("Exponencial", "Gamma",
++                    "Log-normal"),
++         weights = TRUE, base = TRUE)
+```
+
+```
+            AICc dAICc df weight
+Log-normal  77.6  0.0  2  0.81  
+Gamma       80.6  2.9  2  0.19  
+Exponencial 95.2 17.6  1  &lt;0.001
+```
+**RADs observadas e previstas**
+
+``` r
+&gt; plot(rad(grass.h))
+&gt; lines(radpred(grass.e), col=1)
+&gt; lines(radpred(grass.g), col=2)
+&gt; lines(radpred(grass.l), col=3)
+```
+]
+
+.pull-right[
+&lt;img src="slides_files/figure-html/fitsadC-rads-plot-1.png" alt="" width="90%" /&gt;
+]
+---
+## Previstos
+.pull-left[
+La función `coverpred` calcula el número esperado de espécies por
+clase de abundancia
+
+``` r
+&gt; grass.e.p &lt;- coverpred(grass.e)
+&gt; grass.g.p &lt;- coverpred(grass.g)
+&gt; grass.l.p &lt;- coverpred(grass.l)
+```
+Que podemos sobrepor aos histograma observado
+
+``` r
+&gt; plot(grass.h, main = "", xlab = "Clase de abundancia", xlim = c(0, 40))
+&gt; points(grass.e.p, col = 1)
+&gt; points(grass.g.p, col = 2)
+&gt; points(grass.l.p, col = 3)
+&gt; legend("topright",
++        legend = c("Exponencial", "Gamma", "Lognormal"),
++        col = 1:3, bty = "n", lty = 1, pch = 1)
+```
+
+]
+
+.pull-right[
+
+&lt;img src="slides_files/figure-html/coverpred-plot-show-1.png" alt="" width="90%" /&gt;
+]
+
+
+---
+
+.left-column[
+&lt;img src="../01_introduccion/figs/bora-la.jpg" alt="" width="90%" style="display: block; margin: auto;" /&gt;
+]
+
+.right-column[
+
+### ¡Vámonos!
+
+Encuentra en nuestro sitio el [tutorial](https://piklprado.github.io/sads_UNAM/02_ajustes.html):
+
+* **Ajuste** - *Ajuste de modelos a datos de clases de cobertura*           
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false,
+  "ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

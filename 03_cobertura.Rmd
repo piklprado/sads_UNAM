@@ -81,11 +81,20 @@ xaringanExtra::embed_xaringan("03_cobertura/slides.html")
 <details>
 <summary><b>2. Ajuste </b></summary>
 
-
+```{r tutorial-cobertura, echo = FALSE, results = "asis", eval = TRUE}
+cat(incluir_capitulo("03_ajustes/tutorial_clases_abundancia.Rmd", eval = FALSE), sep = "\n")
+```
 
 </details>
 
 
 # Referencias
 
+Burnham, K.P., & Anderson, D.R. . (2002). Model selection and
+multimodel inference: a practical information-theoretic approach. New
+York, NY: Springer New York.
 
+Vieira, M. & Overbeck, G. (2020). Small seed bank in
+grasslands and tree plantations in former grassland sites in the
+South Brazilian highlands [Dataset]. Dryad.
+https://doi.org/10.5061/dryad.n2z34tmsw
