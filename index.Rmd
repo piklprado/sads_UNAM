@@ -1,7 +1,7 @@
 ---
 title: "Ajustes de distribuciones de abundancia de especies"
 description: |
-  Taller en lo Instituto de Ecología - UNAM, Ciudad de México, 2026
+  Taller en lo Instituto de Ecología - UNAM, CDMX, 2026
 site: distill::distill_website
 ---
 
