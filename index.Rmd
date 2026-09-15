@@ -68,9 +68,7 @@ Pielou, E.C. (1977) Mathematical Ecology. New York: John Wiley and Sons.
 
 ### Instale R y los paquetes
 
-Dispondremos de computadoras durante las lecciones, pero le
-recomendamos que también instale R en una computadora de trabajo para
-que pueda realizar los tutoriales y ejercicios.
+Para este taller, es necesario que traigas una laptop de trabajo con R y algunos paquetes ya instalados, tal como se explica a continuación: 
 
 1. Ve a la página de [R](https://www.r-project.org/), elige una réplica
 (el más cercano a tu ubicación) y sigue las instrucciones para instalar R
