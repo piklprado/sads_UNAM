@@ -2783,8 +2783,8 @@ valores de <code>alfa</code>:</p>
 <p><strong>Ponte a prueba:</strong> según este gráfico, ¿cuál es tu mejor estimación
 para el valor de <em>alfa</em> que da la máxima verosimilitud de la log-series
 ajustada a estos datos?</p>
-<div id="radio_LTPGSEINQM" class="webex-radiogroup">
-<label><input type="radio" autocomplete="off" name="radio_LTPGSEINQM" value=""></input> <span>20</span></label><label><input type="radio" autocomplete="off" name="radio_LTPGSEINQM" value=""></input> <span>35</span></label><label><input type="radio" autocomplete="off" name="radio_LTPGSEINQM" value="answer"></input> <span>40</span></label><label><input type="radio" autocomplete="off" name="radio_LTPGSEINQM" value=""></input> <span>50</span></label>
+<div id="radio_EQGWNKGTUC" class="webex-radiogroup">
+<label><input type="radio" autocomplete="off" name="radio_EQGWNKGTUC" value=""></input> <span>20</span></label><label><input type="radio" autocomplete="off" name="radio_EQGWNKGTUC" value=""></input> <span>35</span></label><label><input type="radio" autocomplete="off" name="radio_EQGWNKGTUC" value="answer"></input> <span>40</span></label><label><input type="radio" autocomplete="off" name="radio_EQGWNKGTUC" value=""></input> <span>50</span></label>
 </div>
 <p>Ahora verifica cuál fue el valor de <code>alfa</code> para el mayor valor de
 log-verosimilitud:</p>
@@ -2914,17 +2914,17 @@ abundancia:</p>
 <ul>
 <li><strong>log-normal</strong>: en R esta distribución (<code>[dpqr]lnorm</code>) empieza
 en cero. Para aproximar la línea de velo propuesta por Preston,
-vamos a ajustar una distribución truncada en 0,99.</li>
+vamos a ajustar una distribución truncada en 0.5.</li>
 <li><strong>log-series</strong>.</li>
 <li><strong>modelo multinomial de suma cero</strong> de la teoría neutral.
 Usaremos la distribución propuesta por Volkov <em>et al.</em> (2003) para este modelo.</li>
 </ul>
 <p>Empezamos con el ajuste de la log-normal. La función del paquete
 <code>sads</code> para este ajuste es <code>fitlnorm()</code>, que tiene un argumento
-<code>trunc</code>, con el cual definimos la truncación en 0,99:</p>
+<code>trunc</code>, con el cual definimos la truncación en 0.5:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='op'>(</span><span class='va'>bci.ln</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/fitsad.html'>fitlnorm</a></span><span class='op'>(</span><span class='va'>bci</span>, trunc <span class='op'>=</span> <span class='fl'>0.99</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='op'>(</span><span class='va'>bci.ln</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sads/man/fitsad.html'>fitlnorm</a></span><span class='op'>(</span><span class='va'>bci</span>, trunc <span class='op'>=</span> <span class='fl'>0.5</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
 </div>
 </div>
 <p>Ahora ajustamos la log-series:</p>
@@ -2991,8 +2991,8 @@ están igualmente bien sustentados por los datos.</p>
 </div>
 <p><strong>Ponte a prueba:</strong> con esta selección de modelos, ¿qué podemos
 concluir?</p>
-<div id="radio_NWCKQETXIR" class="webex-radiogroup">
-<label><input type="radio" autocomplete="off" name="radio_NWCKQETXIR" value=""></input> <span>los tres modelos están igualmente bien apoyados por los datos</span></label><label><input type="radio" autocomplete="off" name="radio_NWCKQETXIR" value=""></input> <span>el modelo lognormal y el de log-series son equivalentes</span></label><label><input type="radio" autocomplete="off" name="radio_NWCKQETXIR" value="answer"></input> <span>el modelo neutral tiene el mayor soporte de los datos, entre los tres evaluados</span></label><label><input type="radio" autocomplete="off" name="radio_NWCKQETXIR" value=""></input> <span>el modelo neutral es el mejor modelo posible para estos datos</span></label>
+<div id="radio_FUGDNBHEKK" class="webex-radiogroup">
+<label><input type="radio" autocomplete="off" name="radio_FUGDNBHEKK" value=""></input> <span>los tres modelos están igualmente bien apoyados por los datos</span></label><label><input type="radio" autocomplete="off" name="radio_FUGDNBHEKK" value=""></input> <span>el modelo lognormal y el de log-series son equivalentes</span></label><label><input type="radio" autocomplete="off" name="radio_FUGDNBHEKK" value="answer"></input> <span>el modelo neutral tiene el mayor soporte de los datos, entre los tres evaluados</span></label><label><input type="radio" autocomplete="off" name="radio_FUGDNBHEKK" value=""></input> <span>el modelo neutral es el mejor modelo posible para estos datos</span></label>
 </div>
 <h2 id="comparación-gráfica-de-los-ajustes">Comparación gráfica de los ajustes</h2>
 <p>Esta comparación nos permite evaluar estrictamente estos tres modelos
@@ -3054,7 +3054,7 @@ log-series.</li>
 causada por el muestreo de una comunidad log-normal (Bulmer 1974,
 Grøtan &amp; Engen 2008). Por eso puede ser una alternativa mejor que
 la aproximación que usamos al ajustar una log-normal truncada de
-forma arbitraria en 0,99.</li>
+forma arbitraria en 0.5.</li>
 </ul>
 <p>Adapta los comandos usados arriba para ajustar estos dos modelos e
 inclúyelos en la selección de modelos (mira el apéndice al final de
@@ -3142,7 +3142,7 @@ random sample of an animal population. <em>Journal of Animal Ecology</em>,
 <ol>
 <li id="fn1"><p>Si tienes problemas
 para ajustar este modelo, puedes descargar el objeto con el ajuste ya
-hecho <a href="../02_ajustes/bci_vk.rds">aquí</a> y cargarlo con el comando
+hecho <a href="bci_vk.rds">aquí</a> y cargarlo con el comando
 <code>bci.vk &lt;- readRDS("bci_vk.rds")</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>Esto es muy importante: como el AIC se calcula a partir de la
 verosimilitud, también es una cantidad condicionada a los datos. Por

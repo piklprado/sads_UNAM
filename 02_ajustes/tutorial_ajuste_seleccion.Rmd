@@ -80,17 +80,17 @@ Ahora vamos a ajustar tres modelos a estos datos:
 
 * **log-normal**: en R esta distribución (`[dpqr]lnorm`) empieza
   en cero. Para aproximar la línea de velo propuesta por Preston,
-  vamos a ajustar una distribución truncada en 0,99.
+  vamos a ajustar una distribución truncada en 0.5.
 * **log-series**.
 * **modelo multinomial de suma cero** de la teoría neutral.
   Usaremos la distribución propuesta por Volkov *et al.* (2003) para este modelo.
 
 Empezamos con el ajuste de la log-normal. La función del paquete
 `sads` para este ajuste es `fitlnorm()`, que tiene un argumento
-`trunc`, con el cual definimos la truncación en 0,99:
+`trunc`, con el cual definimos la truncación en 0.5:
 
 ```{r fit-lnorm-sel}
-(bci.ln <- fitlnorm(bci, trunc = 0.99))
+(bci.ln <- fitlnorm(bci, trunc = 0.5))
 ```
 
 Ahora ajustamos la log-series:
@@ -103,7 +103,7 @@ Y finalmente la multinomial de suma cero de la teoría neutral. Los
 cálculos de este ajuste tardan un poco más, y pueden llevar uno a
 varios minutos, dependiendo de tu computadora^[Si tienes problemas
 para ajustar este modelo, puedes descargar el objeto con el ajuste ya
-hecho [aquí](../02_ajustes/bci_vk.rds) y cargarlo con el comando
+hecho [aquí](bci_vk.rds) y cargarlo con el comando
 `bci.vk <- readRDS("bci_vk.rds")`.]:
 
 ```{r fit-volkov-sel}
@@ -239,7 +239,7 @@ ajustados a los mismos datos de `bci`:
   causada por el muestreo de una comunidad log-normal (Bulmer 1974,
   Grøtan & Engen 2008). Por eso puede ser una alternativa mejor que
   la aproximación que usamos al ajustar una log-normal truncada de
-  forma arbitraria en 0,99.
+  forma arbitraria en 0.5.
 
 Adapta los comandos usados arriba para ajustar estos dos modelos e
 inclúyelos en la selección de modelos (mira el apéndice al final de
