@@ -66,7 +66,7 @@ conocer a la gente.  ]
 
 ---
 
-## Para que estoy aquí
+## Para qué estoy aquí
 
  - Para ayudarte a entender mejor las distribuciones de abundancia de
    especies y cómo ajustar estos modelos a tus propios datos
@@ -100,7 +100,7 @@ conocer a la gente.  ]
  
 - Tutoriales en R
 
-- Ejercícios
+- Ejercicios
 
 - Todos los recursos de aprendizaje en https://piklprado.github.io/sads_UNAM/
  
@@ -213,7 +213,7 @@ target="_blank"&gt;Isao Motomura (1904-1981)&lt;/a&gt;&lt;/p&gt; &lt;/div&gt;
   la especie.
 
 * También propuso el primer modelo matemático para una SAD: una
-  relación lineal entre el logaritmo de la abundancia (`\(y\)`) y la orden
+  relación lineal entre el logaritmo de la abundancia (`\(y\)`) y el orden
   de abundancia de las especies (`\(R\)`):
 
 `$$\log (y)  = a - b R$$`
@@ -271,7 +271,7 @@ target="_blank"&gt;C. B. Williams (1889-1981)&lt;/a&gt;&lt;/p&gt; &lt;/div&gt;
   **log-series**.
 
 * En este modelo, la probabilidad de registrar
-`\(n\)` individuos de cualquier especie en una muestra es proporcional a: 
+`\(n\)` individuos de una especie tomada al azar en la muestra es proporcional a: 
 
 `$$\frac{\alpha X^n}{n}$$`
 
@@ -338,6 +338,11 @@ de partición de nichos (MacArthur 1957, Sugihara 1980, Tokeshi
 
 .pull-right[
 .center[
+
+```
+Warning: Removed 4 rows containing missing values or values outside the scale range (`geom_text()`).
+```
+
 ![](slides_files/figure-html/geometric_part-1.png)&lt;!-- --&gt;
 ]]
 
@@ -392,7 +397,7 @@ con la función `plot`:
 
 
 ``` r
-&gt; ## En R classico
+&gt; ## En R clássico
 &gt; plot( rad(moths) )
 &gt; ## Con "pipe" nativo de R
 &gt; rad(moths) |&gt; plot()
@@ -424,8 +429,8 @@ con la función `plot`:
 
 
 ``` r
-&gt; ## En R classico
-&gt; plot( ocatv(moths) )
+&gt; ## En R clássico
+&gt; plot( octav(moths) )
 &gt; ## Con "pipe" nativo de R
 &gt; octav(moths) |&gt; plot()
 ```
@@ -530,7 +535,7 @@ Sorteo de 5 valores de rangos de una distribución Zipf-Mandelbrot
 ```
 
 ```
-[1]  6 24  3  1 53
+[1] 53 27  2  3  4
 ```
 ---
 

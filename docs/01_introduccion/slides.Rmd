@@ -85,7 +85,7 @@ conocer a la gente.  ]
 
 ---
 
-## Para que estoy aquí
+## Para qué estoy aquí
 
  - Para ayudarte a entender mejor las distribuciones de abundancia de
    especies y cómo ajustar estos modelos a tus propios datos
@@ -121,7 +121,7 @@ knitr::include_graphics("figs/Painel.Paulo.Freire_cropped.JPG")
  
 - Tutoriales en R
 
-- Ejercícios
+- Ejercicios
 
 - Todos los recursos de aprendizaje en https://piklprado.github.io/sads_UNAM/
  
@@ -236,7 +236,7 @@ target="_blank">Isao Motomura (1904-1981)</a></p> </div>
   la especie.
 
 * También propuso el primer modelo matemático para una SAD: una
-  relación lineal entre el logaritmo de la abundancia ($y$) y la orden
+  relación lineal entre el logaritmo de la abundancia ($y$) y el orden
   de abundancia de las especies ($R$):
 
 $$\log (y)  = a - b R$$
@@ -294,7 +294,7 @@ target="_blank">C. B. Williams (1889-1981)</a></p> </div>
   **log-series**.
 
 * En este modelo, la probabilidad de registrar
-$n$ individuos de cualquier especie en una muestra es proporcional a: 
+$n$ individuos de una especie tomada al azar en la muestra es proporcional a: 
 
 $$\frac{\alpha X^n}{n}$$
 
@@ -368,8 +368,8 @@ df_rects <- data.frame(
     "1. Recurso Total",
     "2. E1 toma el 50%", "2. E1 toma el 50%",
     "3. E2 toma el 25%", "3. E2 toma el 25%", "3. E2 toma el 25%",
-    "4. E3 toma el 12,5%", "4. E3 toma el 12,5%", "4. E3 toma el 12,5%", "4. E3 toma el 12,5%"
-  ), levels = c("1. Recurso Total", "2. E1 toma el 50%", "3. E2 toma el 25%", "4. E3 toma el 12,5%")), 
+    "4. E3 toma el 12.5%", "4. E3 toma el 12.5%", "4. E3 toma el 12.5%", "4. E3 toma el 12.5%"
+  ), levels = c("1. Recurso Total", "2. E1 toma el 50%", "3. E2 toma el 25%", "4. E3 toma el 12.5%")), 
   xmin = c(
     0,
     0, 50,
@@ -426,7 +426,7 @@ ggplot() +
   scale_y_continuous(breaks = 1:4, labels = rev(names(y_map))) +
   scale_x_continuous(labels = function(x) paste0(x, "%")) +
   labs(
-    title = "Serie Geométrica: Partición de Nicho (k = 0,5)",
+    title = "Serie Geométrica: Partición de Nicho (k = 0.5)",
     x = "Proporción del Recurso Total (%)",
     y = NULL
   ) +
@@ -491,7 +491,7 @@ rangos y abundancias, que puede luego usarse para producir el gráfico
 con la función `plot`: 
 
 ```{r code-rank-abund, eval=FALSE}
-## En R classico
+## En R clássico
 plot( rad(moths) )
 ## Con "pipe" nativo de R
 rad(moths) |> plot()
@@ -521,8 +521,8 @@ especies por octavas, que puede luego usarse para producir el gráfico
 con la función `plot`:
 
 ```{r code-octave, eval=FALSE}
-## En R classico
-plot( ocatv(moths) )
+## En R clássico
+plot( octav(moths) )
 ## Con "pipe" nativo de R
 octav(moths) |> plot()
 ```
