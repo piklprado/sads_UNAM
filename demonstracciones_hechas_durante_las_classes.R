@@ -1,12 +1,10 @@
-## Curva del colector del modelo de Fisher
+## Curva del colector del modelo de Fisher##
 ## Una funccion para la curva
 E.x <- function(N, alfa){
     alfa*log(1+N/alfa)
 }
-
 ## Tamanos de muestreo (es decir numero de individuos en la muestra)
 abunds <- seq(10, 1000, by =10)
-
 ## N de especies predicho por el modelo para alfa = 42
 y <- E.x(abunds, alfa = 42)
 ## y alfa = 20
@@ -17,8 +15,8 @@ plot(abunds, y, type ="l",
      ylab = "Riqueza esperada")
 lines(abunds, y2, col=2)
 
-## Log-verissimilitud negativa
-## ----logvero-mle---------------------------------------------------------------------------------
+
+## Log-verissimilitud negativa relativa para logseries (tutorial maxima verossimilitud)
 moths.ls.ll <- function(A)
     sum( dls(moths, N = sum(moths), alpha = A, log = TRUE) )
 ## ----alfas-mle-----------------------------------------------------------------------------------
@@ -33,10 +31,21 @@ moths.ls.L3 <- moths.ls.L2 - min(moths.ls.L2)
 ## Verossimilitud
 par(mfrow=c(1,3))
 plot(moths.ls.L ~ alfas, type = "l", ylab = "Log-verosimilitud")
+abline(h = max(moths.ls.L) - 2, lty = 2, col = "red")
 ## Verossimilitud negativa
 plot(moths.ls.L2 ~ alfas, type = "l", ylab = "Log-verosimilitud")
+abline(h = max(moths.ls.L) + 2, lty = 2, col = "red")
 ## Verissimilitud negativa relativa
 plot(moths.ls.L3 ~ alfas, type = "l", ylab = "Log-verosimilitud")
 ## inttervalo de plausibilidad
 abline(h = 2 , lty =2, col = "red")
 par(mfrow=c(1,1))
+
+## Tutorial 3 ##
+grass.p.p.t <- coverpred(grass.p.p)
+plot(grass.h, main = "", xlab = "Clase de abundancia", xlim = c(0, 40))
+points(grass.p.p, col = 1)
+points(grass.p.p.t, col = 2)
+legend("topright",
+       legend = c("Pareto","Pareto trunc"),
+       col = 1:2, bty = "n", lty = 1, pch = 1)

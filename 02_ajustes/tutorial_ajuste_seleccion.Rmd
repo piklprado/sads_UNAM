@@ -103,7 +103,7 @@ Y finalmente la multinomial de suma cero de la teoría neutral. Los
 cálculos de este ajuste tardan un poco más, y pueden llevar uno a
 varios minutos, dependiendo de tu computadora^[Si tienes problemas
 para ajustar este modelo, puedes descargar el objeto con el ajuste ya
-hecho [aquí](bci_vk.rds) y cargarlo con el comando
+hecho [aquí](02_ajustes/bci_vk.rds) y cargarlo con el comando
 `bci.vk <- readRDS("bci_vk.rds")`.]:
 
 ```{r fit-volkov-sel}

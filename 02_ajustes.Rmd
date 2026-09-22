@@ -24,7 +24,7 @@ source("funciones.R")
 ## sitio con muchas librerías JS (distill, xaringanExtra, etc.) esto
 ## puede hacer que la inicialización de webex nunca se ejecute, y los
 ## widgets queden clicables pero sin corrección automática.
-## Solución: reescribimos ese único punto para usar
+## Reescribimos ese único punto para usar
 ## window.addEventListener("load", ...), que no sobrescribe otros
 ## listeners, sino que se suma a ellos.
 webex_js_raw <- readLines(system.file("reports/default/webex.js", package = "webexercises"), warn = FALSE)
